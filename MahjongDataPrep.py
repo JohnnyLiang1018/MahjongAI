@@ -1,0 +1,48 @@
+import csv
+import MahjongKit as mjkit
+import MahjongAgent as mjagent
+from os import path
+from os import remove
+
+def main():
+    glc = mjkit.GameLogCrawler()
+    agent = mjagent.MahjongAgent()
+    gene = glc.db_get_logs_where_players_lv_gr(19)
+    glc.db_show_tables()
+    Errors = {}
+    if path.exists('test.csv'):
+        remove('test.csv')
+    header = []
+    for i in range(9):
+        header.append('Discard_{}'.format(i))
+    header.append('waiting_tile')
+    with open('test.csv', 'a') as csvFile:
+        wr = csv.writer(csvFile)
+        wr.writerow(header)
+        
+    for i in range(5):
+        try:
+            log = gene.__next__()
+            res = mjkit.PreProcessing.process_one_log(log)
+        except Exception as e:
+            Errors[i] = e
+            pass
+        for r, sa in res.items():
+            for state in sa[-1:]:
+                hand = state.s_hand34
+                row = state.s_discard34[:9]
+                # waiting = waiting_calc(hand) ###TODO####
+                # draw_tile = random_tile() todo
+                waiting_dict = agent.tenpai_status_check(hand)
+                row.append()
+                print(row)
+                # with open('test.csv', 'a') as csvFile:
+                #     wr = csv.writer(csvFile)
+                #     wr.writerow(row)
+
+    print('Finished Writing to CSV')
+
+
+
+if __name__ == '__main__':
+    main()
