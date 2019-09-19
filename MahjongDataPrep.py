@@ -33,7 +33,10 @@ def main():
                 row = state.s_discard34[:9]
                 # waiting = waiting_calc(hand) ###TODO####
                 # draw_tile = random_tile() todo
+                waiting_tile = []
                 waiting_dict = agent.tenpai_status_check(hand)
+                for dis, wait in waiting_dict:
+                    waiting_tile.append[]
                 row.append()
                 print(row)
                 # with open('test.csv', 'a') as csvFile:
