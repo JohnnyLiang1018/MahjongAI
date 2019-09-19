@@ -148,7 +148,7 @@ class MahjongAgent:
                     #print("check point 2")
                     return_list.update(self.tenpai_status_check(remain))
         
-        print("final:")
+        # print("final:")
         return return_list
           
     
@@ -335,7 +335,7 @@ hand_2 = [0,1,2,3,4,5,6,7,8,9,10,11,12,13]
 hand_3 = [2,3,4,6,7,8,13,14,15,16,16,19,20,23]
 hand_4 = [9,10,12,13,14,19,20,21,23,24,25,30,30,31]
 hand_5 = [1,2,3,4,4,4,5,6,7,7,7,9,10,12]
-print(dummy.tenpai_status_check(hand_5))
+# print(dummy.tenpai_status_check(hand_5))
 
 
 
