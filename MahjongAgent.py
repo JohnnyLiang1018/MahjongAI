@@ -134,21 +134,30 @@ class MahjongAgent:
                 remain = self.pair_extract(remain)
                 remain = self.tri_extract(remain)
                 if(len(remain) != 5):
-                    #print("check point 1")
+                    if(len(remain) == 1):
+                        temp_list = []
+                        y = 0
+                        while y < len(hand):
+                            if(hand[y] != remain[0]):
+                                temp_list.append(hand[y])
+                                y+=2
+                            y+=1
+                        return_list.setdefault(remain[0],temp_list)
+                    print("check point 1")
                     return_list.update(self.tenpai_status_check(remain))
 
 
         if(len(hand) > 5):
-            #print("greater 5")
+            print("greater 5")
             remain = []
             for x in range(len(hand)-2):
                 remain = self.seq_extract(hand,x)
                 remain = self.tri_extract(remain)
                 if(len(remain) < len(hand)):
-                    #print("check point 2")
+                    print("check point 2")
                     return_list.update(self.tenpai_status_check(remain))
         
-        # print("final:")
+        print("final:")
         return return_list
           
     
@@ -161,9 +170,10 @@ class MahjongAgent:
                 continue
             remain.append(hand[x])
             x+=1
-        remain.append(hand[x])
-        #print("extract pair:")
-        #print(remain)
+        if(x<len(hand)):
+            remain.append(hand[x])
+        print("extract pair:")
+        print(remain)
         return remain 
     
 
@@ -183,26 +193,46 @@ class MahjongAgent:
         if(x<len(hand)-1):
             remain.append(hand[x+1])
 
-        #print("extract tri:")
-        #print(remain)
+        print("extract tri:")
+        print(remain)
         return remain
 
     def seq_extract(self,hand,index):
         remain = []
         remain.extend(hand[0:index])
         x = index
+        # while x < (len(hand)-2):
+        #     if(hand[x]//9 == hand[x+2]//9):
+        #         if(hand[x]+2 == hand[x+1]+1 == hand[x+2]):
+        #             x+=3
+        #             continue
+        #     remain.append(hand[x])
+        #     x+=1
         while x < (len(hand)-2):
-            if(hand[x]//9 == hand[x+2]//9):
-                if(hand[x]+2 == hand[x+1]+1 == hand[x+2]):
-                    x+=3
+            seq_count = 0
+            y = x
+            while seq_count < 2 and y < (len(hand)-1):
+                if(hand[y+1] == hand[y]+1):
+                    seq_count += 1
+                    y += 1
                     continue
-            remain.append(hand[x])
-            x+=1
+                if(hand[y+1] == hand[y]):
+                    remain.append(hand[y])
+                    y += 1
+                else:
+                    remain.extend(hand[x:y])
+                    break
+            if(seq_count == 2):
+                x += y
+            
+            x += 1
+                    
+
         if(x<len(hand)-1):
             remain.append(hand[x])
             remain.append(hand[x+1])
-        #print("extract seq:")
-        #print(remain)
+        print("extract seq:")
+        print(remain)
         return remain
 
         
@@ -335,7 +365,14 @@ hand_2 = [0,1,2,3,4,5,6,7,8,9,10,11,12,13]
 hand_3 = [2,3,4,6,7,8,13,14,15,16,16,19,20,23]
 hand_4 = [9,10,12,13,14,19,20,21,23,24,25,30,30,31]
 hand_5 = [1,2,3,4,4,4,5,6,7,7,7,9,10,12]
-# print(dummy.tenpai_status_check(hand_5))
+hand_6 = [2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23]
+#2, 11, 12, 13, 20, 21, 22, 28, 28, 29, 29
+# imp 2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23
+# 1, 2, 2, 3, 12, 12, 19, 20, 21, 22, 23, 23, 24, 25
+# 2, 3, 4, 12, 12, 14, 15, 16, 31, 31, 31
+# 2, 2, 2, 4, 5, 6, 13, 14, 15, 16, 16, 21, 22, 23
+
+print(dummy.tenpai_status_check(hand_6))
 
 
 
