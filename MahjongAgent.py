@@ -143,21 +143,21 @@ class MahjongAgent:
                                 y+=2
                             y+=1
                         return_list.setdefault(remain[0],temp_list)
-                    print("check point 1")
+                    # print("check point 1")
                     return_list.update(self.tenpai_status_check(remain))
 
 
         if(len(hand) > 5):
-            print("greater 5")
+            # print("greater 5")
             remain = []
             for x in range(len(hand)-2):
                 remain = self.seq_extract(hand,x)
                 remain = self.tri_extract(remain)
                 if(len(remain) < len(hand)):
-                    print("check point 2")
+                    # print("check point 2")
                     return_list.update(self.tenpai_status_check(remain))
         
-        print("final:")
+        # print("final:")
         return return_list
           
     
@@ -172,8 +172,8 @@ class MahjongAgent:
             x+=1
         if(x<len(hand)):
             remain.append(hand[x])
-        print("extract pair:")
-        print(remain)
+        # print("extract pair:")
+        # print(remain)
         return remain 
     
 
@@ -193,8 +193,8 @@ class MahjongAgent:
         if(x<len(hand)-1):
             remain.append(hand[x+1])
 
-        print("extract tri:")
-        print(remain)
+        # print("extract tri:")
+        # print(remain)
         return remain
 
     def seq_extract(self,hand,index):
@@ -231,8 +231,8 @@ class MahjongAgent:
         if(x<len(hand)-1):
             remain.append(hand[x])
             remain.append(hand[x+1])
-        print("extract seq:")
-        print(remain)
+        # print("extract seq:")
+        # print(remain)
         return remain
 
         
@@ -372,7 +372,7 @@ hand_6 = [2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23]
 # 2, 3, 4, 12, 12, 14, 15, 16, 31, 31, 31
 # 2, 2, 2, 4, 5, 6, 13, 14, 15, 16, 16, 21, 22, 23
 
-print(dummy.tenpai_status_check(hand_6))
+# print(dummy.tenpai_status_check(hand_6))
 
 
 
