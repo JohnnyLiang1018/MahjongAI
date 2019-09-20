@@ -7,6 +7,7 @@ from os import path
 from os import remove
 
 def main():
+    random.seed()
     glc = mjkit.GameLogCrawler()
     agent = mjagent.MahjongAgent()
     gene = glc.db_get_logs_where_players_lv_gr(19)
@@ -31,7 +32,7 @@ def main():
             pass
         for r, sa in res.items():
             for state in sa[-1:]:
-                random_tile = 2
+                random_tile = random.randrange(34)
                 testhand = state.s_hand34
                 testhand.append(random_tile)
                 testhand.sort()
