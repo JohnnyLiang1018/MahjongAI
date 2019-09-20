@@ -3,6 +3,7 @@ import random
 
 import MahjongKit as mjkit
 import MahjongAgent as mjagent
+
 from os import path
 from os import remove
 
@@ -25,7 +26,7 @@ def main():
         header.append('waiting_tile')
         header.append('result')
         wr.writerow(header)
-    for i in range(1000):
+    for i in range(100):
         try:
             log = gene.__next__()
             res = mjkit.PreProcessing.process_one_log(log)
