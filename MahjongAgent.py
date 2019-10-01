@@ -198,46 +198,192 @@ class MahjongAgent:
         return remain
 
     def seq_extract(self,hand,index):
+
         remain = []
         remain.extend(hand[0:index])
-        x = index
+        partial_hand = hand[index:]
+        index_1_count = 0
+        index_2_count = 0
+        index_3_count = 0
+        index_1_move = 0
+        index_2_move = 0
+        index_3_move = 0
+        x = 0
+        value = partial_hand[0]
+        while x < (len(partial_hand)-2):
+            
+            #print(partial_hand)
+            if(index_1_move == 0):
+                value = partial_hand[x]
+                index_1_count = partial_hand.count(value)
+                #print(value)
+            # if three values are within the same type
+            if (value // 9 == (value+2) // 9):
+
+                if(index_2_move == 0):
+                    index_2_count = partial_hand.count(value+1)
+                    #print(value+1)
+                if(index_3_move == 0):
+                    index_3_count = partial_hand.count(value+2)
+                    #print(value+2)
+
+                # print(str(index_1_count) + "," + str(index_2_count) + "," + str(index_3_count))
+
+                # if there are at least one instance of each value
+                if (index_1_count >0 and index_2_count >0 and index_3_count>0):
+
+                    # if the numbers of each value are the same
+                    if(index_1_count == index_2_count == index_3_count):
+                        
+                        # loop index advance move sum * 3
+                        x += ((index_1_count)*3 + index_1_move + index_2_move + index_3_move)
+                        index_1_count = 0
+                        index_2_count = 0
+                        index_3_count = 0
+                        continue
+                    # if the first value is the smallest
+                    if (index_1_count <= index_2_count and index_1_count <= index_3_count):
+                        
+                        
+                        
+                        # index_2 and index_3 -= index_1, index_2_move and 3_move += index_1
+                        index_2_count -= index_1_count
+                        index_3_count -= index_1_count
+                        index_2_move += index_1_count
+                        index_3_move += index_1_count
+
+
+                        # loop index advance index_1_move + index_1_count
+                        if(index_2_count == 0 ):
+                            x += (index_1_move+index_1_count+index_2_move)
+                            index_1_count = index_3_count
+                            index_1_move = index_3_move
+
+                            index_2_count = 0
+                            index_2_move = 0
+                            index_3_count = 0
+                            index_3_move = 0
+
+                            value += 2
+                            continue
+                        
+                        elif(index_3_count == 0 ):
+
+                            x += (index_1_move+index_1_count+index_2_move+index_2_count+index_3_move)
+
+                            index_1_count = 0
+                            index_1_move = 0
+                            index_2_count = 0
+                            index_2_move = 0
+                            index_3_count = 0
+                            index_3_move = 0
+                            continue
+
+                        else:
+                            x += (index_1_move+index_1_count)
+                            # index_1 = index_2, index_2 = index_3, index_3 = 0
+                            index_1_count = index_2_count
+                            index_1_move = index_2_move
+                            index_2_count = index_3_count
+                            index_2_move = index_3_move
+                            index_3_count = 0
+                            index_3_move = 0
+                            value += 1
+                            continue
+                    
+                    elif (index_2_count <= index_1_count and index_2_count <= index_3_count):
+
+                        index_1_count -= index_2_count
+                        index_3_count -= index_2_count
+                        index_1_move += index_2_count
+                        index_3_move += index_2_count
+                        
+                        remain.extend([value for i in range(index_1_count)])
+                        if(index_3_count == 0):
+                            x += (index_1_move + index_1_count + index_2_move + index_2_count + index_3_move)
+                            index_1_count = 0
+                            index_2_count = 0
+                            index_3_count = 0
+                            index_1_move = 0 
+                            index_2_move = 0
+                            index_3_move = 0
+                            continue
+
+                        else:
+                            x += (index_1_move + index_1_count + index_2_count + index_2_move)
+                            index_1_count = index_3_count
+                            index_1_move = index_3_move
+                            index_2_count = 0
+                            index_2_move = 0
+                            index_3_count = 0
+                            index_3_move = 0
+                            value += 2
+                            continue
+                        
+                        
+                        
+                    elif (index_3_count <= index_1_count and index_3_count <= index_2_count):
+                        
+
+                        # remaining 
+                        index_1_count -= index_3_count
+                        index_2_count -= index_3_count
+
+                        index_1_move += index_3_count
+                        index_2_move += index_3_count
+
+                        remain.extend([value for i in range(index_1_count)])
+                        remain.extend([(value+1) for i in range(index_2_count)])
+                        # move index by the tile 
+                        x += (index_1_move+ index_1_count + index_2_move + index_2_count + index_3_count + index_3_move)
+                        
+                        # adjust values
+                        index_1_count = 0
+                        index_2_count = 0
+                        index_3_count = 0
+                        index_1_move = 0
+                        index_2_move = 0
+                        index_3_move = 0 
+                        continue
+                                  
+
+
+            x += (index_1_move + index_2_move + index_3_move + 1)
+            remain.append(value)
+            #print("# of index 1 added to remain "+ str(index_1_count))
+            index_1_count = 0
+            index_1_move = 0
+            index_2_count = 0
+            index_2_move = 0
+            index_3_count = 0
+            index_3_move = 0 
+
+        # seq_extract v1.0
+        # remain = []
+        # remain.extend(hand[0:index])
+        # duplicate = []
+        # x = index
         # while x < (len(hand)-2):
         #     if(hand[x]//9 == hand[x+2]//9):
+        #         while(hand[x] == hand[x+1] or hand[x+1] == hand[x+2]):
+        #             if(hand[x] == hand[x+1]):
+        #                 hand.count
+
         #         if(hand[x]+2 == hand[x+1]+1 == hand[x+2]):
         #             x+=3
         #             continue
-        #     remain.append(hand[x])
-        #     x+=1
-        while x < (len(hand)-2):
-            seq_count = 0
-            y = x
-            while seq_count < 2 and y < (len(hand)-1):
-                if(hand[y+1] == hand[y]+1):
-                    seq_count += 1
-                    y += 1
-                    continue
-                if(hand[y+1] == hand[y]):
-                    remain.append(hand[y])
-                    y += 1
-                else:
-                    remain.extend(hand[x:y])
-                    break
-            if(seq_count == 2):
-                x += y
-            
-            x += 1
                     
+                    
+        #     remain.append(hand[x])
+        #     x+=1   
 
-        if(x<len(hand)-1):
-            remain.append(hand[x])
-            remain.append(hand[x+1])
-        print("extract seq:")
-        print(remain)
+        if(x<len(partial_hand)-1):
+            remain.append(partial_hand[x])
+            remain.append(partial_hand[x+1])
+            #print("append: " + str(partial_hand[x]))
+        # print("extract seq:")
+        # print(remain)
         return remain
-
-        
-
-        
 
 
 
@@ -365,12 +511,15 @@ hand_2 = [0,1,2,3,4,5,6,7,8,9,10,11,12,13]
 hand_3 = [2,3,4,6,7,8,13,14,15,16,16,19,20,23]
 hand_4 = [9,10,12,13,14,19,20,21,23,24,25,30,30,31]
 hand_5 = [1,2,3,4,4,4,5,6,7,7,7,9,10,12]
-hand_6 = [2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23]
+hand_6 = [2,2,3,3,3,4,4,4,5,11,12]
+hand_7 = [2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23]
+hand_test = [6,7,8,9,10,11,12,13]
 #2, 11, 12, 13, 20, 21, 22, 28, 28, 29, 29
 # imp 2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23
 # 1, 2, 2, 3, 12, 12, 19, 20, 21, 22, 23, 23, 24, 25
 # 2, 3, 4, 12, 12, 14, 15, 16, 31, 31, 31
 # 2, 2, 2, 4, 5, 6, 13, 14, 15, 16, 16, 21, 22, 23
+# 3,3,4,4,5,5,5,6,6
 
 print(dummy.tenpai_status_check(hand_6))
 
