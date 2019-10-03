@@ -40,8 +40,6 @@ def main():
                 row.extend(discard)
                 row.append(state.s_hand34)
                 print('discard and hand:', row)
-                # waiting = waiting_calc(hand) ###TODO####
-                # draw_tile = random_tile() todo
                 waiting_tile = []
                 waiting_dict = agent.tenpai_status_check(testhand)
                 print('waiting_dict:', waiting_dict)
@@ -49,7 +47,8 @@ def main():
                     waiting_tile.append(waiting_dict[dis])
                 row.append(waiting_tile)
 
-                print('final:', row)
+                # print('final:', row)
+                wr.writerow(row)
                 # with open('test.csv', 'a') as csvFile:
                 #     wr = csv.writer(csvFile)
                 #     wr.writerow(row)
