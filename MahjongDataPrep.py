@@ -35,10 +35,10 @@ def main():
                         if(len(state.s_discard34) < 9):
                             continue
                         random_tile = random.randrange(34)
-                        random_draw = 4
+                        # random_draw = random.ran
                         testhand = state.s_hand34
                         testhand.append(random_tile)
-                        # random_draw = random.randrange(34)
+                        random_draw = random.randrange(34)
                         testhand.sort()
                         discard = state.s_discard34[:9]
                         row = []
