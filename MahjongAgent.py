@@ -148,16 +148,16 @@ class MahjongAgent:
 
 
         if(len(hand) > 5):
-            # print("greater 5")
+            print("greater 5")
             remain = []
             for x in range(len(hand)-2):
                 remain = self.seq_extract(hand,x)
                 remain = self.tri_extract(remain)
                 if(len(remain) < len(hand)):
-                    # print("check point 2")
+                    print("check point 2")
                     return_list.update(self.tenpai_status_check(remain))
         
-        # print("final:")
+        print("final:")
         return return_list
           
     
@@ -172,8 +172,8 @@ class MahjongAgent:
             x+=1
         if(x<len(hand)):
             remain.append(hand[x])
-        # print("extract pair:")
-        # print(remain)
+        print("extract pair:")
+        print(remain)
         return remain 
     
 
@@ -193,8 +193,8 @@ class MahjongAgent:
         if(x<len(hand)-1):
             remain.append(hand[x+1])
 
-        # print("extract tri:")
-        # print(remain)
+        print("extract tri:")
+        print(remain)
         return remain
 
     def seq_extract(self,hand,index):
@@ -212,22 +212,22 @@ class MahjongAgent:
         value = partial_hand[0]
         while x < (len(partial_hand)-2):
             
-            #print(partial_hand)
+            print(partial_hand)
             if(index_1_move == 0):
                 value = partial_hand[x]
                 index_1_count = partial_hand.count(value)
-                #print(value)
+                print(value)
             # if three values are within the same type
             if (value // 9 == (value+2) // 9):
 
                 if(index_2_move == 0):
                     index_2_count = partial_hand.count(value+1)
-                    #print(value+1)
+                    print(value+1)
                 if(index_3_move == 0):
                     index_3_count = partial_hand.count(value+2)
-                    #print(value+2)
+                    print(value+2)
 
-                # print(str(index_1_count) + "," + str(index_2_count) + "," + str(index_3_count))
+                print(str(index_1_count) + "," + str(index_2_count) + "," + str(index_3_count))
 
                 # if there are at least one instance of each value
                 if (index_1_count >0 and index_2_count >0 and index_3_count>0):
@@ -350,7 +350,7 @@ class MahjongAgent:
 
             x += (index_1_move + index_2_move + index_3_move + 1)
             remain.append(value)
-            #print("# of index 1 added to remain "+ str(index_1_count))
+            print("# of index 1 added to remain "+ str(index_1_count))
             index_1_count = 0
             index_1_move = 0
             index_2_count = 0
@@ -513,7 +513,7 @@ hand_4 = [9,10,12,13,14,19,20,21,23,24,25,30,30,31]
 hand_5 = [1,2,3,4,4,4,5,6,7,7,7,9,10,12]
 hand_6 = [2,2,3,3,3,4,4,4,5,11,12]
 hand_7 = [2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23]
-hand_test = [6,7,8,9,10,11,12,13]
+hand_test = [0,1,2,3,4,13,14,14,14,15,20]
 #2, 11, 12, 13, 20, 21, 22, 28, 28, 29, 29
 # imp 2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23
 # 1, 2, 2, 3, 12, 12, 19, 20, 21, 22, 23, 23, 24, 25
@@ -521,7 +521,7 @@ hand_test = [6,7,8,9,10,11,12,13]
 # 2, 2, 2, 4, 5, 6, 13, 14, 15, 16, 16, 21, 22, 23
 # 3,3,4,4,5,5,5,6,6
 
-# print(dummy.tenpai_status_check(hand_6))
+print(dummy.tenpai_status_check(hand_test))
 
 
 

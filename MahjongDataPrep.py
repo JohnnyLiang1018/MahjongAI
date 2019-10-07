@@ -26,7 +26,7 @@ def main():
         header.append('waiting_tile')
         header.append('result')
         wr.writerow(header)
-        for i in range(10000):
+        for i in range(10):
             try:
                 log = gene.__next__()
                 res = mjkit.PreProcessing.process_one_log(log)
@@ -62,8 +62,8 @@ def main():
                         row.append(waiting_tile)
                         row.append(result)
                         # print('final:', row)
-                        # wr = csv.writer(csvFile)
-                        # wr.writerow(row)
+                        wr = csv.writer(csvFile)
+                        wr.writerow(row)
                 print("Finished writing log {}".format(i))
             except Exception as e:
                 print(e)
