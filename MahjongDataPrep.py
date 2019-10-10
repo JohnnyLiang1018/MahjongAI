@@ -13,7 +13,6 @@ def main():
     agent = mjagent.MahjongAgent()
     gene = glc.db_get_logs_where_players_lv_gr(19)
     glc.db_show_tables()
-    Errors = {}
     if path.exists('test.csv'):     
         remove('test.csv')
     with open('test.csv', 'a') as csvFile:
@@ -38,8 +37,8 @@ def main():
                         # random_draw = random.ran
                         testhand = state.s_hand34
                         testhand.append(random_tile)
-                        random_draw = random.randrange(34)
                         testhand.sort()
+                        random_draw = random.randrange(34)
                         discard = state.s_discard34[:9]
                         row = []
                         row.extend(discard)
@@ -62,7 +61,11 @@ def main():
                         row.append(waiting_tile)
                         row.append(result)
                         # print('final:', row)
+<<<<<<< HEAD
                         wr = csv.writer(csvFile)
+=======
+                        # wr = csv.writer(csvFile)
+>>>>>>> 4f8fa4743b9d9d51eecc67e03f0b60d69c3959d5
                         wr.writerow(row)
                 print("Finished writing log {}".format(i))
             except Exception as e:

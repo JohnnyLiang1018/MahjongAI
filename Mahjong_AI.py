@@ -1,14 +1,13 @@
 class Mahjong_AI:
     # hand_partition, meld: list of tuple(partition_str,index_int)
     def yaku_check(self,hand_partition,meld):
-        return_dict = {pinfu:1,all_simpe:3}
+        return_dict = {}
         # 1. pinfu 
         # condition: all concealed hand, 3 seq-complete, 1 seq-two-way, 1 pair 
         if (len(meld) == 0):
-            if ()
             
 
-            return_dict.setdefault("pinfu", x )
+            return_dict.setdefault("pinfu", #x )
         # 2. all simple
         # condition: check each partition's index != 1 or 9 or honor, and for sequence, index+1 and index+2 if necessary
         # 3. honor yaku
