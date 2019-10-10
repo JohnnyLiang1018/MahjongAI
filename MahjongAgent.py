@@ -51,6 +51,7 @@ class MahjongAgent:
     def tenpai_status_check(self,hand):
         return_list = {}
         single_tile = []
+        value_list = []
         if(len(hand)%3 == 1):
             return return_list
 
@@ -74,58 +75,75 @@ class MahjongAgent:
                 return return_list
             
             if(pair_count == 6):
-                return_list.setdefault(single_tile[0],single_tile[1])
-                return_list.setdefault(single_tile[1],single_tile[0])
+                value_list.append(single_tile[1])
+                return_list.setdefault(single_tile[0],value_list)
+                value_list.clear()
+                value_list.append(single_tile[0])
+                return_list.setdefault(single_tile[1],value_list)
                 return return_list
 
         if(len(hand) == 2):
-            return_list.setdefault(hand[0],hand[1])
-            return_list.setdefault(hand[1],hand[0])
+            value_list.append(hand[1])
+            return_list.setdefault(hand[0],value_list)
+            value_list.clear()
+            value_list.append(hand[0])
+            return_list.setdefault(hand[1],value_list)
+            print(return_list)
             return return_list
         
         if(len(hand) == 3):
             if(hand[0]//9 == hand[1]//9 and hand[1] - hand[0] <= 2):
                 if(hand[1] - hand[0] == 2):
                     # sequence-middle
-                    return_list.setdefault(hand[2],hand[1]-1)
+                    value_list.append(hand[1]-1)
+                    return_list.setdefault(hand[2],value_list)
                 else:
                     # two-way or one-way
-                    temp_list = []
                     left = hand[0] - 1
                     right = hand[1] + 1
                     if(left//9 == right//9):
                         # two-way
-                        temp_list.append(left)
-                        temp_list.append(right)
-                        return_list.setdefault(hand[2],temp_list)
+                        value_list.append(left)
+                        value_list.append(right)
+                        return_list.setdefault(hand[2],value_list)
                     else:
                         # one-way
-                        if(left%8 > right%8):
-                            return_list.setdefault(hand[2],left)
+                        if(left < 0):
+                            value_list.append(right)
+                            return_list.setdefault(hand[2],value_list)
+
+                        elif((right-1) % 9 >= 5):
+                            value_list.append(left)
+                            return_list.setdefault(hand[2],value_list)
                         else:
-                            return_list.setdefault(hand[2],right)
+                            value_list.append(right)
+                            return_list.setdefault(hand[2],value_list)
 
             if(hand[1]//9 == hand[2]//9 and hand[2]-hand[1] <= 2):
                 if(hand[2] - hand[1] == 2):
                     # sequence-middle
-                    return_list.setdefault(hand[0],hand[2]-1)
+                    value_list.append(hand[2]-1)
+                    return_list.setdefault(hand[0],value_list)
                 else:
                     # two-way or one-way
-                    temp_list = []
                     left = hand[1] - 1
                     right = hand[2] + 1
                     if(left // 9  == right // 9):
                         # two-way
-                        temp_list.append(left)
-                        temp_list.append(right)
-                        return_list.setdefault(hand[0],temp_list)
+                        value_list.append(left)
+                        value_list.append(right)
+                        return_list.setdefault(hand[0],value_list)
                     else:
+                        if (left < 0):
+                            value_list.append(right)
+                            return_list.setdefault(hand[0],value_list)
                         # one-way
-                        if(left % 8 > right % 8):
-                            temp_list.append(left)
+                        elif((right-1) % 9 >= 5):
+                            value_list.append(left)
+                            return_list.setdefault(hand[0],value_list)
                         else:
-                            temp_list.append(right)
-                            return_list.setdefault(hand[0],temp_list)
+                            value_list.append(right)
+                            return_list.setdefault(hand[0],value_list)
 
         if(len(hand) == 5):
             remain = []
@@ -134,30 +152,48 @@ class MahjongAgent:
                 remain = self.pair_extract(remain)
                 remain = self.tri_extract(remain)
                 if(len(remain) != 5):
+                    # double pair waiting
                     if(len(remain) == 1):
-                        temp_list = []
                         y = 0
                         while y < len(hand):
                             if(hand[y] != remain[0]):
-                                temp_list.append(hand[y])
+                                value_list.append(hand[y])
                                 y+=2
-                            y+=1
-                        return_list.setdefault(remain[0],temp_list)
+                            else:
+                                y+=1
+                        return_list.setdefault(remain[0],value_list)
                     # print("check point 1")
-                    return_list.update(self.tenpai_status_check(remain))
+                    extend_dict = self.tenpai_status_check(remain)
+                    for key in extend_dict:
+                        if(key in return_list):
+                            for item in extend_dict[key]:
+                                if (item not in return_list[key]):
+                                    return_list[key].append(item)
+                        else:
+                            return_list.setdefault(key,extend_dict[key])
+
+                    
 
 
         if(len(hand) > 5):
-            print("greater 5")
+            # print("greater 5")
             remain = []
             for x in range(len(hand)-2):
                 remain = self.seq_extract(hand,x)
                 remain = self.tri_extract(remain)
                 if(len(remain) < len(hand)):
-                    print("check point 2")
-                    return_list.update(self.tenpai_status_check(remain))
+                    # print("check point 2")
+                    extend_dict = self.tenpai_status_check(remain)
+                    for key in extend_dict:
+                        if(key in return_list):
+                            for item in extend_dict[key]:
+                                if (item not in return_list[key]):
+                                    return_list[key].append(item)
+                        else:
+                            return_list.setdefault(key,extend_dict[key])
         
         print("final:")
+        print(return_list)
         return return_list
           
     
@@ -207,7 +243,7 @@ class MahjongAgent:
         index_3_count = 0
         index_1_move = 0
         index_2_move = 0
-        index_3_move = 0
+        index_3_move = 0 
         x = 0
         value = partial_hand[0]
         while x < (len(partial_hand)-2):
@@ -216,16 +252,23 @@ class MahjongAgent:
             if(index_1_move == 0):
                 value = partial_hand[x]
                 index_1_count = partial_hand.count(value)
-                print(value)
+                #print(value)
+            
+            # no more possible sequences beyong tile 25
+            if(value >= 25):
+                print("greater than 15")
+                remain.extend(partial_hand[x:])
+                return remain
+            
             # if three values are within the same type
             if (value // 9 == (value+2) // 9):
 
                 if(index_2_move == 0):
                     index_2_count = partial_hand.count(value+1)
-                    print(value+1)
+                    #print(value+1)
                 if(index_3_move == 0):
                     index_3_count = partial_hand.count(value+2)
-                    print(value+2)
+                    #print(value+2)
 
                 print(str(index_1_count) + "," + str(index_2_count) + "," + str(index_3_count))
 
@@ -237,9 +280,14 @@ class MahjongAgent:
                         
                         # loop index advance move sum * 3
                         x += ((index_1_count)*3 + index_1_move + index_2_move + index_3_move)
+
+                        # full reset
                         index_1_count = 0
                         index_2_count = 0
                         index_3_count = 0
+                        index_1_move = 0
+                        index_2_move= 0
+                        index_3_move = 0
                         continue
                     # if the first value is the smallest
                     if (index_1_count <= index_2_count and index_1_count <= index_3_count):
@@ -268,15 +316,19 @@ class MahjongAgent:
                             continue
                         
                         elif(index_3_count == 0 ):
+                            
+                            remain.extend([(value+1) for i in range(index_2_count)])
 
                             x += (index_1_move+index_1_count+index_2_move+index_2_count+index_3_move)
 
+                            # full reset
                             index_1_count = 0
                             index_1_move = 0
                             index_2_count = 0
                             index_2_move = 0
                             index_3_count = 0
                             index_3_move = 0
+
                             continue
 
                         else:
@@ -301,6 +353,8 @@ class MahjongAgent:
                         remain.extend([value for i in range(index_1_count)])
                         if(index_3_count == 0):
                             x += (index_1_move + index_1_count + index_2_move + index_2_count + index_3_move)
+
+                            # full reset
                             index_1_count = 0
                             index_2_count = 0
                             index_3_count = 0
@@ -337,7 +391,7 @@ class MahjongAgent:
                         # move index by the tile 
                         x += (index_1_move+ index_1_count + index_2_move + index_2_count + index_3_count + index_3_move)
                         
-                        # adjust values
+                        # full reset
                         index_1_count = 0
                         index_2_count = 0
                         index_3_count = 0
@@ -350,7 +404,7 @@ class MahjongAgent:
 
             x += (index_1_move + index_2_move + index_3_move + 1)
             remain.append(value)
-            print("# of index 1 added to remain "+ str(index_1_count))
+            #print("# of index 1 added to remain "+ str(index_1_count))
             index_1_count = 0
             index_1_move = 0
             index_2_count = 0
@@ -376,14 +430,15 @@ class MahjongAgent:
                     
         #     remain.append(hand[x])
         #     x+=1   
+        x += (index_1_move + index_2_move + index_3_move)
 
         if(x<len(partial_hand)-1):
-            remain.append(partial_hand[x])
             remain.append(partial_hand[x+1])
-            #print("append: " + str(partial_hand[x]))
-        # print("extract seq:")
-        # print(remain)
-        return remain
+        if(x <= len(partial_hand)-1):
+            remain.append(partial_hand[x])
+        #print("extract seq:")
+        print(remain)
+        return sorted(remain)
 
 
 
@@ -513,7 +568,9 @@ hand_4 = [9,10,12,13,14,19,20,21,23,24,25,30,30,31]
 hand_5 = [1,2,3,4,4,4,5,6,7,7,7,9,10,12]
 hand_6 = [2,2,3,3,3,4,4,4,5,11,12]
 hand_7 = [2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23]
-hand_test = [0,1,2,3,4,13,14,14,14,15,20]
+hand_test = [0, 0, 0, 4, 7, 28, 28, 28]
+
+# 3, 3, 5, 5, 5, 12, 13, 14, 18, 19, 21, 22, 23, 23
 #2, 11, 12, 13, 20, 21, 22, 28, 28, 29, 29
 # imp 2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23
 # 1, 2, 2, 3, 12, 12, 19, 20, 21, 22, 23, 23, 24, 25
