@@ -75,75 +75,61 @@ class MahjongAgent:
                 return return_list
             
             if(pair_count == 6):
-                value_list.append(single_tile[1])
-                return_list.setdefault(single_tile[0],value_list)
-                value_list.clear()
-                value_list.append(single_tile[0])
-                return_list.setdefault(single_tile[1],value_list)
+                return_list.setdefault(single_tile[0],[single_tile[1]])
+                return_list.setdefault(single_tile[1],[single_tile[0]])
                 return return_list
 
         if(len(hand) == 2):
-            value_list.append(hand[1])
-            return_list.setdefault(hand[0],value_list)
-            value_list.clear()
-            value_list.append(hand[0])
-            return_list.setdefault(hand[1],value_list)
-            print(return_list)
+            return_list.setdefault(hand[0],[hand[1]])
+            return_list.setdefault(hand[1],[hand[0]])
+            #print(return_list)
             return return_list
         
         if(len(hand) == 3):
-            if(hand[0]//9 == hand[1]//9 and hand[1] - hand[0] <= 2):
+
+            left_dis = hand[1] - hand[0]
+            right_dis = hand[2] - hand[1]
+
+            if(hand[0]//9 == hand[1]//9 and left_dis <= 2):
                 if(hand[1] - hand[0] == 2):
                     # sequence-middle
-                    value_list.append(hand[1]-1)
-                    return_list.setdefault(hand[2],value_list)
+                    return_list.setdefault(hand[2],[hand[1]-1])
                 else:
                     # two-way or one-way
                     left = hand[0] - 1
                     right = hand[1] + 1
                     if(left//9 == right//9):
                         # two-way
-                        value_list.append(left)
-                        value_list.append(right)
-                        return_list.setdefault(hand[2],value_list)
+                        return_list.setdefault(hand[2],[left,right])
                     else:
                         # one-way
                         if(left < 0):
-                            value_list.append(right)
-                            return_list.setdefault(hand[2],value_list)
+                            return_list.setdefault(hand[2],[right])
 
                         elif((right-1) % 9 >= 5):
-                            value_list.append(left)
-                            return_list.setdefault(hand[2],value_list)
+                            return_list.setdefault(hand[2],[left])
                         else:
-                            value_list.append(right)
-                            return_list.setdefault(hand[2],value_list)
+                            return_list.setdefault(hand[2],[right])
 
-            if(hand[1]//9 == hand[2]//9 and hand[2]-hand[1] <= 2):
+            if(hand[1]//9 == hand[2]//9 and right_dis <= 2):
                 if(hand[2] - hand[1] == 2):
                     # sequence-middle
-                    value_list.append(hand[2]-1)
-                    return_list.setdefault(hand[0],value_list)
+                    return_list.setdefault(hand[0],[hand[2]-1])
                 else:
                     # two-way or one-way
                     left = hand[1] - 1
                     right = hand[2] + 1
                     if(left // 9  == right // 9):
                         # two-way
-                        value_list.append(left)
-                        value_list.append(right)
-                        return_list.setdefault(hand[0],value_list)
+                        return_list.setdefault(hand[0],[left,right])
                     else:
                         if (left < 0):
-                            value_list.append(right)
-                            return_list.setdefault(hand[0],value_list)
+                            return_list.setdefault(hand[0],[right])
                         # one-way
                         elif((right-1) % 9 >= 5):
-                            value_list.append(left)
-                            return_list.setdefault(hand[0],value_list)
+                            return_list.setdefault(hand[0],[left])
                         else:
-                            value_list.append(right)
-                            return_list.setdefault(hand[0],value_list)
+                            return_list.setdefault(hand[0],[right])
 
         if(len(hand) == 5):
             remain = []
@@ -192,8 +178,8 @@ class MahjongAgent:
                         else:
                             return_list.setdefault(key,extend_dict[key])
         
-        print("final:")
-        print(return_list)
+        # print("final:")
+        # print(return_list)
         return return_list
           
     
@@ -208,8 +194,8 @@ class MahjongAgent:
             x+=1
         if(x<len(hand)):
             remain.append(hand[x])
-        print("extract pair:")
-        print(remain)
+        # print("extract pair:")
+        # print(remain)
         return remain 
     
 
@@ -229,8 +215,8 @@ class MahjongAgent:
         if(x<len(hand)-1):
             remain.append(hand[x+1])
 
-        print("extract tri:")
-        print(remain)
+        # print("extract tri:")
+        # print(remain)
         return remain
 
     def seq_extract(self,hand,index):
@@ -248,7 +234,7 @@ class MahjongAgent:
         value = partial_hand[0]
         while x < (len(partial_hand)-2):
             
-            print(partial_hand)
+            # print(partial_hand)
             if(index_1_move == 0):
                 value = partial_hand[x]
                 index_1_count = partial_hand.count(value)
@@ -256,7 +242,7 @@ class MahjongAgent:
             
             # no more possible sequences beyong tile 25
             if(value >= 25):
-                print("greater than 15")
+                # print("greater than 15")
                 remain.extend(partial_hand[x:])
                 return remain
             
@@ -270,7 +256,7 @@ class MahjongAgent:
                     index_3_count = partial_hand.count(value+2)
                     #print(value+2)
 
-                print(str(index_1_count) + "," + str(index_2_count) + "," + str(index_3_count))
+                # print(str(index_1_count) + "," + str(index_2_count) + "," + str(index_3_count))
 
                 # if there are at least one instance of each value
                 if (index_1_count >0 and index_2_count >0 and index_3_count>0):
@@ -436,8 +422,8 @@ class MahjongAgent:
             remain.append(partial_hand[x+1])
         if(x <= len(partial_hand)-1):
             remain.append(partial_hand[x])
-        #print("extract seq:")
-        print(remain)
+        # print("extract seq:")
+        # print(remain)
         return sorted(remain)
 
 
@@ -568,7 +554,7 @@ hand_4 = [9,10,12,13,14,19,20,21,23,24,25,30,30,31]
 hand_5 = [1,2,3,4,4,4,5,6,7,7,7,9,10,12]
 hand_6 = [2,2,3,3,3,4,4,4,5,11,12]
 hand_7 = [2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23]
-hand_test = [0, 0, 0, 4, 7, 28, 28, 28]
+hand_test = [5, 5, 9, 9, 10, 10, 10, 11, 13, 13, 13, 30, 30, 30]
 
 # 3, 3, 5, 5, 5, 12, 13, 14, 18, 19, 21, 22, 23, 23
 #2, 11, 12, 13, 20, 21, 22, 28, 28, 29, 29
@@ -578,7 +564,7 @@ hand_test = [0, 0, 0, 4, 7, 28, 28, 28]
 # 2, 2, 2, 4, 5, 6, 13, 14, 15, 16, 16, 21, 22, 23
 # 3,3,4,4,5,5,5,6,6
 
-print(dummy.tenpai_status_check(hand_test))
+#print(dummy.tenpai_status_check(hand_test))
 
 
 
