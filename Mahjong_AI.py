@@ -1,3 +1,5 @@
+
+
 class Mahjong_AI:
     # hand_partition, meld: list of tuple(partition_str,index_int)
     #hand_partition ex: {seq-complete:[start_tile_seq1, start_tile_seq2, etch],  pair:tile}
@@ -61,6 +63,14 @@ class Mahjong_AI:
         
         return return_dict
 
-def main:
-    hand_paritiion = {'seq-complete': }
-    yaku_check(hand_partition, meld)
+
+                
+
+
+
+    
+
+
+
+hand_paritiion = {'seq-complete': }
+yaku_check(hand_partition, meld)
