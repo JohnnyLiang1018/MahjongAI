@@ -10,11 +10,11 @@ class Mahjong_AI:
         if len(meld) == 0:
             num_seq_com = len(hand_partition['seq-complete'])
             if num_seq_com > 3: 
-                num_waiting == 99
+                num_waiting = 99
             else: # +2 waiting tiles for every seq-com under 3
                 temp = 3 - num_seq_com
                 num_waiting = temp * 2
-                num_waiting = num_waiting - len(hand_pariton['seq-middle'])
+                num_waiting = num_waiting - len(hand_partition['seq-middle'])
             num_seq_two = len(hand_partition['seq-two-way'])
             if num_seq_two == 0: 
                 num_waiting = num_waiting + 1 # need +1 to complete two-way-seq
@@ -28,19 +28,19 @@ class Mahjong_AI:
         num_waiting = 0
         # 2. all simple
         # condition: check each partition's index != 1 or 9 or honor, and for sequence, index+1 and index+2 if necessary
-        for k, v in hand_partition:
-            if ((v mod 9) is 0 or 8) or (v > 26):
+        for k, v in hand_partition.items(): 
+            if (v%9 is 0 or 8) or (v > 26):
                 num_waiting = num_waiting + 1
             if 'seq' in k:
                 if k == 'seq-com':
-                    if ((v+2) mod 9) is 0 or 8:
+                    if ((v+2)%9) is 0 or 8:
                         num_waiting = num_waiting + 1
                 if k == 'seq-one-way':
                     num_waiting = num_waiting + 2
                 if k == 'seq-two-way':
                     num_waiting = num_waiting + 1
                 if k == 'seq-middle':
-                    if(v mod 9) is 6:
+                    if(v%9) is 6:
                         num_waiting = num_waiting + 2
                     else:
                         num_waiting = num_waiting + 1
@@ -61,17 +61,22 @@ class Mahjong_AI:
         # 4. two identical seq
         # condition: all concealed hand, 2 seq with same index
         if len(meld) == 0:
-            for k, v in hand_partition:
+            for k, v in hand_partition.items():
                 if 'seq' in k:
                     if k is 'seq-com':
                         if any(v.count(x) > 1 for x in v): #2 identical seq-com
                             num_waiting = 0
-                        if v in hand_partition['']
+                            break
+                        for s in hand_partition:
+                            if 'seq' in s and v in s: #1 seq-com and 1 incomplete seq with same
+                                num_waiting = 1
                     elif any(v.count(x) > 1 for x in v): #2 identical partial seq
                         num_waiting = 2
                 else:
                     num_waiting = 4 * len(hand_partition['pair']) #pairs could possible become identical seq
         else: num_waiting = 99
+        return_dict.setdefault('honor-yaku', num_waiting)
+        num_waiting = 0
         ## above Christoph 1-4 ##
 
         # 5. straight
@@ -93,14 +98,12 @@ class Mahjong_AI:
         return return_dict
 
 
-                
-
-
-
-    
-
-
-def main:
-    hand_paritiion = {'seq-complete':[], 'seq-middle': [], 'seq-two-way': [], 'pair': [], 
+def main():
+    mai = Mahjong_AI()
+    hand_partition = {'seq-complete':[], 'seq-middle': [], 'seq-two-way': [], 'pair': [], 
                         'triplet': [], 'single': []}
-    yaku_check(hand_partition, meld)
+    meld = []
+    mai.yaku_check(hand_partition, meld)
+
+if __name__ == '__main__':
+    main()
