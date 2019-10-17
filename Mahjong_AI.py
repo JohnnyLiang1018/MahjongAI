@@ -87,12 +87,69 @@ class Mahjong_AI:
         # condition: 3 triplet with the same index
         ## above Dane  5-7 ##
 
+        num_pair = len(hand_partition['pair'])
+        num_triplet = len(hand_partition['triplet'])
+        num_seq = len(hand_partition['seq-complete'])
+
         # 8. all triplet
-        # condition: 4 triplet with 1 pair 
+        # condition: 4 triplet ( or quads) with 1 pair
+        if num_pair > 1:
+            extra_pair = num_pair - 1 # get number of extra pair
+        else:
+            extra_pair = 0     
+
+        if num_triplet == 4: # 4 tri
+            num_waiting = 0
+        else if: # less than 4 tri
+            temp = 4 - num_triplet # triplet to complete
+            num_waiting = temp * 2
+            num_waiting = temp - extra_pair # -1 for each extra pair
+        if num_pair == 0: # no pair wait +1
+            num_waiting = num_waiting + 1    
+        return_dict.setdefault("all_triplet", num_waiting)
+
         # 9. terminal in all meld
         # condition: (seq + triplet) = 4, index is 1 or 9 or honor, for seq check index+1 and index+2 
+        num_com = 0
+        num_almost = 0
+        pair_used = 0
+        for k, v in hand_partition:
+            if 'triplet' in k:
+                if v < 26
+                    if(v % 9) is 0 or 8:
+                        num_com = num_com + 1
+                else:
+                    num_com = num_com + 1
+            if 'seq-complete' in k:
+                if (v % 9) is 0 or 6:
+                    num_com = num_com + 1
+            if 'seq-one-way' in k:
+                if (v % 9) is 0 or 6:
+                    num_almost = num_almost + 1
+            if 'seq-two-way' in k:
+                if (v % 9) is 1 or 6:
+                    num_almost = num_almost + 1
+            if 'seq-middle' in k:
+                if (v % 9) is 0 or 6:
+                    num_almost = num_almost + 1
+            if 'pair' in k:
+                if(v % 9) is 0 or 8:
+                    num_almost = num_almost + 1
+                    pair_used = pair_used +1                                                          
+        temp = 4 - num_com 
+        num_waiting = (temp * 2) - num_almost
+        if (num_pair - pair_used) < 1 :
+            num_waiting = num_waiting + 1
+        return_dict.setdefault("ternimal_in_all", num_waiting)
+
         # 10. seven pair 
         # condition: 7 pair partition
+        if len(meld) == 0:
+            if num_pair < 7:
+                temp = 7 - num_pair
+                num_waiting = temp - num_triplet 
+        else: num_waiting = 99         
+        return_dict.setdefault("seven_pairs", num_waiting)
         ## above Lee 8-10 ##
         
         return return_dict
