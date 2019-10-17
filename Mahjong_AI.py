@@ -29,18 +29,22 @@ class Mahjong_AI:
         # 2. all simple
         # condition: check each partition's index != 1 or 9 or honor, and for sequence, index+1 and index+2 if necessary
         for k, v in hand_partition.items(): 
-            if (v%9 is 0 or 8) or (v > 26):
+            mod_var = v % 9
+            if (mod_var is (0 or 8)) or (v > 26):
                 num_waiting = num_waiting + 1
             if 'seq' in k:
                 if k == 'seq-com':
-                    if ((v+2)%9) is 0 or 8:
+                    if mod_var is 6: # 789 sequence
                         num_waiting = num_waiting + 1
                 if k == 'seq-one-way':
-                    num_waiting = num_waiting + 2
+                    if mod_var is 0: # Have already added 1 waiting tile in previous check
+                        num_waiting = num_waiting + 1
+                    else:
+                        num_waiting = num_waiting + 2
                 if k == 'seq-two-way':
                     num_waiting = num_waiting + 1
                 if k == 'seq-middle':
-                    if(v%9) is 6:
+                    if mod_var is 6: # 7_9 sequence 
                         num_waiting = num_waiting + 2
                     else:
                         num_waiting = num_waiting + 1
@@ -64,13 +68,14 @@ class Mahjong_AI:
             for k, v in hand_partition.items():
                 if 'seq' in k:
                     if k is 'seq-com':
-                        if any(v.count(x) > 1 for x in v): #2 identical seq-com
-                            num_waiting = 0
-                            break
-                        for s in hand_partition:
-                            if 'seq' in s and v in s: #1 seq-com and 1 incomplete seq with same
+                        for temp_k, temp_v in hand_partition.items():
+                            if temp_k is 'seq-com' and v is temp_v: #identical seq-com
+                                num_waiting = 0
+                            elif 'seq' in temp_k and v in temp_k: #1 seq-com and 1 incomplete seq with same index
                                 num_waiting = 1
-                    elif any(v.count(x) > 1 for x in v): #2 identical partial seq
+                            elif temp_k is 'seq-two-way' and (v % 9) + 1 is temp_v: #seq-two-way index starts at seq-com index+1
+                                num_waiting = 1
+                    elif any(v.count(x) > 1 for x in v): #2 identical incomplete seq
                         num_waiting = 2
                 else:
                     num_waiting = 4 * len(hand_partition['pair']) #pairs could possible become identical seq
