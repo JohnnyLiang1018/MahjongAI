@@ -52,8 +52,8 @@ def main():
                             # play_tile = random.ran
                             # play_tile = random.randrange(34)
                             row = []
-                            for i in range(34):
-                                if i in state.s_discard34:
+                            for j in range(34):
+                                if j in state.s_discard34:
                                     row.append(1)
                                 else: row.append(0)
                             if play_tile in waiting_tile:
