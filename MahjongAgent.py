@@ -220,7 +220,7 @@ class MahjongAgent:
         return remain
 
     def seq_extract(self,hand,index):
-
+        
         remain = []
         remain.extend(hand[0:index])
         partial_hand = hand[index:]
@@ -549,34 +549,35 @@ class MahjongAgent:
         if("seq" in parti_type):
             # sequence
             hand_1 = self.seq_extract(hand,0)
-            num_seq_complete = (len(hand) - len(hand_1)) / 3
+            temp_list = self.locate_index(hand,hand_1,True)
             seq_dict = self.inc_seq_extract(hand_1)
 
-            return_dict.setdefault("seq-complete",num_seq_complete)
+            return_dict.setdefault("seq-complete",temp_list)
             return_dict.setdefault("seq-two-way",seq_dict["seq-two-way"])
             return_dict.setdefault("seq-one-way",seq_dict["seq-one-way"])
             return_dict.setdefault("seq-middle",seq_dict["seq-middle"])
 
             # triplet
             hand_2 = self.tri_extract(hand_1)
-            num_tri = (len(hand_1) - len(hand_2)) / 3
-            return_dict.setdefault("triplet",num_tri)
+            temp_list_2 = self.locate_index(hand_1,hand_2,False)
+            return_dict.setdefault("triplet",temp_list_2)
 
             # pair
             hand_3 = self.pair_extract(hand_2)
-            num_pair = (len(hand_2) - len(hand_3)) / 2
-            return_dict.setdefault("pair",num_pair)
+            temp_list_3 = self.locate_index(hand_2,hand_3,False)
+            return_dict.setdefault("pair",temp_list_3)
+            return_dict.setdefault("single",hand_3)
 
         elif("tri" in parti_type):
             # triplet 
             hand_1 = self.tri_extract(hand)
-            num_tri = (len(hand) - len(hand_1))/3
-            return_dict.setdefault("triplet",num_tri)
+            temp_list = self.locate_index(hand,hand_1,False)
+            return_dict.setdefault("triplet",temp_list)
 
             # sequence
             hand_2 = self.seq_extract(hand_1,0)
-            num_seq_complete = (len(hand_1) - len(hand_2)) / 3
-            return_dict.setdefault("seq-complete",num_seq_complete)
+            temp_list_2 = self.locate_index(hand_1,hand_2,True)
+            return_dict.setdefault("seq-complete",temp_list_2)
 
             seq_dict = self.inc_seq_extract(hand_2)
             return_dict.setdefault("seq-two-way",seq_dict["seq-two-way"])
@@ -585,24 +586,68 @@ class MahjongAgent:
 
             # pair
             hand_3 = self.pair_extract(hand_2)
-            num_pair = (len(hand_2) - len(hand_3)) / 2
-            return_dict.setdefault("pair",num_pair)
+            temp_list_3 = self.locate_index(hand_2,hand_3,False)
+            return_dict.setdefault("pair",temp_list_3)
+            return_dict.setdefault("single",hand_3)
+
         else:
             # seven pairs
             hand_1 = self.pair_extract(hand)
-            num_pair = (len(hand) - len(hand_1)) / 2
-            return_dict.setdefault("pair",num_pair)
+            temp_list = self.locate_index(hand,hand_1,False)
+            return_dict.setdefault("pair",temp_list)
+            return_dict.setdefault("single",hand_1)
 
         return return_dict
 
+    def locate_index(self,hand_bef,hand_aft,isSeq):
+        return_list = []
+        index = 0
+        diff = []
+        # find the difference
+        while index < len(hand_bef):
+            value = hand_bef[index]
+            if(hand_aft.count(value) == 0):
+                diff.append(value)
+            
+            index += 1
+        
+        if(isSeq == False):
+            return_list = list(dict.fromkeys(diff))
+            return return_list
 
+        # the tile value
+        tile = 0
+        while tile < 25:
+            if (len(diff) == 0):
+                break
+
+            num_tile_1 = diff.count(tile)
+            if(num_tile_1 == 0):
+                tile += 1
+                continue
+            
+            elif(diff.count(tile+1) > 0 and diff.count(tile+2) > 0):
+                return_list.append(tile)
+                diff.remove(tile)
+                diff.remove(tile+1)
+                diff.remove(tile+2)
+
+            else:
+                tile += 1
+        
+        return return_list
+            
+
+        
+
+            
 
         
     def inc_seq_extract(self,hand):
         return_dict = {}
-        return_dict.setdefault("seq-two-way",0)
-        return_dict.setdefault("seq-one-way",0)
-        return_dict.setdefault("seq-middle",0)
+        return_dict.setdefault("seq-two-way",[])
+        return_dict.setdefault("seq-one-way",[])
+        return_dict.setdefault("seq-middle",[])
         x = 0
         while x < 25:
             first_tile = hand.count(x)
@@ -619,18 +664,18 @@ class MahjongAgent:
                 # if there are two consecutive tiles
                 if(second_tile > 0):
                     if(x % 9 == 0 or x % 9 == 8):
-                        return_dict["seq-one-way"] += 1
+                        return_dict["seq-one-way"].append(x)
                     else:
-                        return_dict["seq-two-way"] += 1
+                        return_dict["seq-two-way"].append(x)
                     
                     x += 2
 
                 elif(third_tile > 0):
-                    if((x+2) // 9 != (x+3) // 9 and hand.count(x+3) == 0):
-                        return_dict["seq-middle"] += 1
+                    if((x+2) // 9 == (x+3) // 9 and hand.count(x+3) == 0):
+                        return_dict["seq-middle"].append(x)
                     
-                    if(third_tile == 1):
-                        x += 1
+                    if(third_tile == 1 and hand.count(x+3) == 0):
+                        x += 2
                 
             x += 1
 
@@ -646,8 +691,8 @@ hand_4 = [9,10,12,13,14,19,20,21,23,24,25,30,30,31]
 hand_5 = [1,2,3,4,4,4,5,6,7,7,7,9,10,12]
 hand_6 = [2,2,3,3,3,4,4,4,5,11,12]
 hand_7 = [2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23]
-hand_test = [5, 5, 9, 9, 10, 10, 10, 11, 13, 13, 13, 30, 30, 30]
-print(dummy.partition_dict(hand_2,"seq"))
+hand_test = [1,3,5,7]
+print(dummy.partition_dict(hand_5,"tri"))
 
 # 3, 3, 5, 5, 5, 12, 13, 14, 18, 19, 21, 22, 23, 23
 #2, 11, 12, 13, 20, 21, 22, 28, 28, 29, 29
