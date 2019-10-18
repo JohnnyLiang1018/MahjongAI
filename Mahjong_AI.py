@@ -1,8 +1,6 @@
-
-
 class Mahjong_AI:
     # hand_partition, meld: list of tuple(partition_str,index_int)
-    #hand_partition ex: {seq-complete:[start_tile_seq1, start_tile_seq2, etch],  pair:tile}
+    # hand_partition ex: {seq-complete:[start_tile_seq1, start_tile_seq2, etch],  pair:tile}
     def yaku_check(self,hand_partition,meld):
         return_dict = {}
         # 1. pinfu 
