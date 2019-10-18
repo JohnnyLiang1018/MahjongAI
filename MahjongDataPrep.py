@@ -18,14 +18,16 @@ def main():
     with open('test.csv', 'a') as csvFile:
         wr = csv.writer(csvFile, lineterminator='\n')
         header = []
-        for i in range(9):
-            header.append('Discard_{}'.format(i))
+        for i in range(34):
+            header.append('discard_tile_{}'.format(i))
+        header.append('discard_list')
         header.append('hand')
+        header.append('meld')
         header.append('random_tile')
         header.append('waiting_tile')
         header.append('result')
         wr.writerow(header)
-        for i in range(10000):
+        for i in range(5):
             try:
                 log = gene.__next__()
                 res = mjkit.PreProcessing.process_one_log(log)
@@ -34,18 +36,10 @@ def main():
                         if(len(state.s_discard34) < 9):
                             continue
                         random_tile = random.randrange(34)
-                        # random_draw = random.ran
+                        testhand = []
                         testhand = state.s_hand34
                         testhand.append(random_tile)
                         testhand.sort()
-                        random_draw = random.randrange(34)
-                        discard = state.s_discard34[:9]
-                        row = []
-                        row.extend(discard)
-                        # row.append(state.s_hand34)
-                        row.append(testhand)
-                        row.append(random_draw)
-                        # print('discard and hand:', row)
                         waiting_tile = []
                         waiting_dict = agent.tenpai_status_check(testhand)
                         # print('waiting_dict:', waiting_dict)
@@ -54,15 +48,29 @@ def main():
                             if(type(waiting_dict[key]) is int):
                                 waiting_tile.append(waiting_dict[key])
                             else: waiting_tile.extend(waiting_dict[key])
-                        if random_draw in waiting_tile:
-                            result = 1
-                        else: 
-                            result = 0
-                        row.append(waiting_tile)
-                        row.append(result)
-                        # print('final:', row)
-                        # wr = csv.writer(csvFile)
-                        wr.writerow(row)
+                        for play_tile in range(34):
+                            # play_tile = random.ran
+                            # play_tile = random.randrange(34)
+                            row = []
+                            for i in range(34):
+                                if i in state.s_discard34:
+                                    row.append(1)
+                                else: row.append(0)
+                            if play_tile in waiting_tile:
+                                result = 1
+                            else: 
+                                result = 0
+                            # row.append(state.s_hand34)
+                            row.append(state.s_discard34)
+                            row.append(testhand)
+                            row.append(state.s_meld34)
+                            row.append(play_tile)
+                            # print('discard and hand:', row)
+                            row.append(waiting_tile)
+                            row.append(result)
+                            print('final:', row)
+                            # wr = csv.writer(csvFile)
+                            wr.writerow(row)
                 print("Finished writing log {}".format(i))
             except Exception as e:
                 print(e)

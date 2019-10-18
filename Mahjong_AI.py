@@ -26,42 +26,46 @@ class Mahjong_AI:
         else: num_waiting = 99
         return_dict.setdefault("pinfu", num_waiting)
         num_waiting = 0
+
         # 2. all simple
         # condition: check each partition's index != 1 or 9 or honor, and for sequence, index+1 and index+2 if necessary
-        for k, v in hand_partition.items(): 
-            mod_var = v % 9
-            if (mod_var is (0 or 8)) or (v > 26):
-                num_waiting = num_waiting + 1
-            if 'seq' in k:
-                if k == 'seq-com':
-                    if mod_var is 6: # 789 sequence
-                        num_waiting = num_waiting + 1
-                if k == 'seq-one-way':
-                    if mod_var is 0: # Have already added 1 waiting tile in previous check
-                        num_waiting = num_waiting + 1
-                    else:
-                        num_waiting = num_waiting + 2
-                if k == 'seq-two-way':
+        for k, v in hand_partition.items():
+            for tile in v:
+                mod_var = tile % 9
+                if (mod_var is (0 or 8)) or (tile > 26):
                     num_waiting = num_waiting + 1
-                if k == 'seq-middle':
-                    if mod_var is 6: # 7_9 sequence 
-                        num_waiting = num_waiting + 2
-                    else:
+                if 'seq' in k:
+                    if k == 'seq-com':
+                        if mod_var is 6: # 789 sequence
+                            num_waiting = num_waiting + 1
+                    if k == 'seq-one-way':
+                        if mod_var is 0: # Have already added 1 waiting tile in previous check
+                            num_waiting = num_waiting + 1
+                        else:
+                            num_waiting = num_waiting + 2
+                    if k == 'seq-two-way':
                         num_waiting = num_waiting + 1
+                    if k == 'seq-middle':
+                        if mod_var is 6: # 7_9 sequence 
+                            num_waiting = num_waiting + 2
+                        else:
+                            num_waiting = num_waiting + 1
         return_dict.setdefault('all-simple', num_waiting)
         num_waiting = 0
+
         # 3. honor yaku
         # condition: check if honor triplet exist
-        if hand_partition['triplet'] >= 27:
+        if any(t >= 27 for t in hand_partition['triplet']):
             num_waiting = 0
-        elif hand_partition['pair'] >= 27:
+        elif any(t >= 27 for t in hand_partition['pair']):
             num_waiting = 1
-        elif hand_partition['single'] >= 27:
+        elif any(t >= 27 for t in hand_partition['single']):
             num_waiting = 2
         else:
             num_waiting = 3
         return_dict.setdefault('honor-yaku', num_waiting)
         num_waiting = 0
+
         # 4. two identical seq
         # condition: all concealed hand, 2 seq with same index
         if len(meld) == 0:
@@ -80,7 +84,7 @@ class Mahjong_AI:
                 else:
                     num_waiting = 4 * len(hand_partition['pair']) #pairs could possible become identical seq
         else: num_waiting = 99
-        return_dict.setdefault('honor-yaku', num_waiting)
+        return_dict.setdefault('two-identical-seq', num_waiting)
         num_waiting = 0
         ## above Christoph 1-4 ##
 
@@ -105,7 +109,7 @@ class Mahjong_AI:
 
         if num_triplet == 4: # 4 tri
             num_waiting = 0
-        else if: # less than 4 tri
+        else: # less than 4 tri
             temp = 4 - num_triplet # triplet to complete
             num_waiting = temp * 2
             num_waiting = temp - extra_pair # -1 for each extra pair
@@ -118,9 +122,9 @@ class Mahjong_AI:
         num_com = 0
         num_almost = 0
         pair_used = 0
-        for k, v in hand_partition:
+        for k, v in hand_partition.items():
             if 'triplet' in k:
-                if v < 26
+                if v < 26:
                     if(v % 9) is 0 or 8:
                         num_com = num_com + 1
                 else:
@@ -162,10 +166,10 @@ class Mahjong_AI:
 
 def main():
     mai = Mahjong_AI()
-    hand_partition = {'seq-complete':[], 'seq-middle': [], 'seq-two-way': [], 'pair': [], 
+    hand_partition = {'seq-complete':[1,2,3], 'seq-middle': [], 'seq-two-way': [1], 'pair': [1], 
                         'triplet': [], 'single': []}
     meld = []
-    mai.yaku_check(hand_partition, meld)
+    print(mai.yaku_check(hand_partition, meld))
 
 if __name__ == '__main__':
     main()
