@@ -3,6 +3,8 @@ class Mahjong_AI:
     # hand_partition ex: {seq-complete:[start_tile_seq1, start_tile_seq2, etch],  pair:tile}
     def yaku_check(self,hand_partition,meld):
         return_dict = {}
+        num_waiting = 0
+        tiles_needed = []
         # 1. pinfu 
         # condition: all concealed hand, 3 seq-complete, 1 seq-two-way, 1 pair 
         if len(meld) == 0:
@@ -13,17 +15,30 @@ class Mahjong_AI:
                 temp = 3 - num_seq_com
                 num_waiting = temp * 2
                 num_waiting = num_waiting - len(hand_partition['seq-middle'])
+                for x in hand_partition['seq-middle']:
+                    tiles_needed.append(x + 1) # need index tile + 1
+                num_waiting = num_waiting - len(hand_partition['seq-one-way'])
+                for x in hand_partition['seq-one-way']:
+                    if x % 9 == 0: tiles_needed.append(x + 2) # need 4 or 7
+                    else: tiles_needed.append(x - 1)
             num_seq_two = len(hand_partition['seq-two-way'])
             if num_seq_two == 0: 
-                num_waiting = num_waiting + 1 # need +1 to complete two-way-seq
+                num_waiting = num_waiting + 1 # need +1 tile to complete two-way-seq
+                for x in hand_partition['single']:
+                    if 7 > (x % 9) > 1 and x < 26:
+                        tiles_needed.extend([x-1, x+1]) # every single needs + or - 1 to become 2-way
             else: # -1 waiting tile for every two-way-seq over the needed 1
                 temp = num_seq_two - 1
                 num_waiting = num_waiting - temp
+                if num_seq_two > 1:
+                    for x in hand_partition['seq-two-way']:
+                        tiles_needed.extend([x-1, x+2]) # each 2-way is waiting for x-1 or x+2
             if len(hand_partition['pair']) == 0: #add 1 if there is no pair
                 num_waiting = num_waiting + 1
         else: num_waiting = 99
-        return_dict.setdefault("pinfu", num_waiting)
+        return_dict.setdefault("pinfu", [num_waiting, tiles_needed])
         num_waiting = 0
+        tiles_needed.clear()
 
         # 2. all simple
         # condition: check each partition's index != 1 or 9 or honor, and for sequence, index+1 and index+2 if necessary
@@ -32,35 +47,50 @@ class Mahjong_AI:
                 mod_var = tile % 9
                 if (mod_var is (0 or 8)) or (tile > 26):
                     num_waiting = num_waiting + 1
+                    if k is 'triplet':
+                        num_waiting = num_waiting + 2
+                    if k is 'pair':
+                        num_waiting = num_waiting + 1
                 if 'seq' in k:
                     if k == 'seq-com':
                         if mod_var is 6: # 789 sequence
                             num_waiting = num_waiting + 1
+                            tiles_needed.append(tile-1) # need tile 6
+                        if mod_var is 0:
+                            tiles_needed.append(tile+3) # need tile 4
                     if k == 'seq-one-way':
                         if mod_var is 0: # Have already added 1 waiting tile in previous check
                             num_waiting = num_waiting + 1
+                            tiles_needed.extend([tile+2, tile+3]) # need 3, 4
                         else:
                             num_waiting = num_waiting + 2
+                            tiles_needed.extend([tile-1, tile-2]) # need 6, 5
                     if k == 'seq-two-way':
                         num_waiting = num_waiting + 1
+                        tiles_needed.extend([tile-1, tile+2])
                     if k == 'seq-middle':
                         if mod_var is 6: # 7_9 sequence 
                             num_waiting = num_waiting + 2
+                            tiles_needed.extend([tile+1, tile-1]) # need 6, 8
                         else:
                             num_waiting = num_waiting + 1
-        return_dict.setdefault('all-simple', num_waiting)
+                            tiles_needed.append(tile+1) # need middle tile
+                # Possibly need to deal with single tiles
+        return_dict.setdefault('all-simple', [num_waiting, tiles_needed])
         num_waiting = 0
+        tiles_needed.clear()
 
         # 3. honor yaku
         # condition: check if honor triplet exist
         if any(t >= 27 for t in hand_partition['triplet']):
             num_waiting = 0
-        elif any(t >= 27 for t in hand_partition['pair']):
-            num_waiting = 1
-        elif any(t >= 27 for t in hand_partition['single']):
-            num_waiting = 2
-        else:
-            num_waiting = 3
+        else: 
+            for t in hand_partition['pair']:
+                if t >= 27
+            elif any(t >= 27 for t in hand_partition['single']):
+                num_waiting = 2
+            else:
+                num_waiting = 3
         return_dict.setdefault('honor-yaku', num_waiting)
         num_waiting = 0
 
