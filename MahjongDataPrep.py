@@ -7,6 +7,7 @@ import MahjongAgent as mjagent
 from os import path
 from os import remove
 
+
 def main():
     random.seed()
     glc = mjkit.GameLogCrawler()
@@ -57,8 +58,8 @@ def main():
                         for play_tile in range(34):
                             # play_tile = random.ran
                             # play_tile = random.randrange(34)
-                            play_tile_attr = {0} * 4
-                            play_tile_num = {0} * 9
+                            play_tile_attr = [0] * 4
+                            play_tile_num = [0] * 9
                             play_tile_attr[play_tile // 9] = 1
                             play_tile_num[play_tile % 9] = 1
                             row = []
@@ -82,7 +83,7 @@ def main():
                             row.append(result)
                             print('final:', row)
                             # wr = csv.writer(csvFile)
-                            wr.writerow(row)
+                            # wr.writerow(row)
                 print("Finished writing log {}".format(i))
             except Exception as e:
                 print(e)
