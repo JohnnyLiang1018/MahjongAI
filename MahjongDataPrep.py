@@ -23,7 +23,13 @@ def main():
         header.append('discard_list')
         header.append('hand')
         header.append('meld')
-        header.append('random_tile')
+        # header.append('random_tile')
+        header.append('random_man')
+        header.append('random_pin')
+        header.append('random_sou')
+        header.append('random_honor')
+        for i in range(9):
+            header.append('random_tile_num_{}'.format(i))
         header.append('waiting_tile')
         header.append('result')
         wr.writerow(header)
@@ -51,6 +57,10 @@ def main():
                         for play_tile in range(34):
                             # play_tile = random.ran
                             # play_tile = random.randrange(34)
+                            play_tile_attr = {0} * 4
+                            play_tile_num = {0} * 9
+                            play_tile_attr[play_tile // 9] = 1
+                            play_tile_num[play_tile % 9] = 1
                             row = []
                             for j in range(34):
                                 if j in state.s_discard34:
@@ -64,7 +74,9 @@ def main():
                             row.append(state.s_discard34)
                             row.append(testhand)
                             row.append(state.s_meld34)
-                            row.append(play_tile)
+                            # row.append(play_tile)
+                            row.extend(play_tile_attr)
+                            row.extend(play_tile_num)
                             # print('discard and hand:', row)
                             row.append(waiting_tile)
                             row.append(result)
