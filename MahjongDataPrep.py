@@ -21,19 +21,19 @@ def main():
         header = []
         for i in range(34):
             header.append('discard_tile_{}'.format(i))
-            header.append('discard_list')
-            header.append('hand')
-            header.append('meld')
-            # header.append('random_tile')
-            header.append('random_man')
-            header.append('random_pin')
-            header.append('random_sou')
-            header.append('random_honor')
-            for i in range(9):
-                header.append('random_tile_num_{}'.format(i))
-            header.append('waiting_tile')
-            header.append('result')
-            wr.writerow(header)
+        header.append('discard_list')
+        header.append('hand')
+        header.append('meld')
+        # header.append('random_tile')
+        header.append('random_man')
+        header.append('random_pin')
+        header.append('random_sou')
+        header.append('random_honor')
+        for i in range(9):
+            header.append('random_tile_num_{}'.format(i))
+        header.append('waiting_tile')
+        header.append('result')
+        wr.writerow(header)
         for i in range(5):
             try:
                 log = gene.__next__()
