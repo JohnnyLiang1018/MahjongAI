@@ -1,2 +1,8 @@
-#ignore test data
-*.csv
+#ignore any csv data
+**.csv
+
+#ignore user pycache
+__pycache__/
+
+#ignore user vscode setting
+.vscode/
