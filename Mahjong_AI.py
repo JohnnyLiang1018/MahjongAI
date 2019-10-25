@@ -36,7 +36,6 @@ class Mahjong_AI:
             if len(hand_partition['pair']) == 0: #add 1 if there is no pair
                 num_waiting = num_waiting + 1
         else: num_waiting = 99
-        print(tiles_needed)
         return_dict.setdefault("pinfu", [num_waiting, tuple(tiles_needed)])
         num_waiting = 0
         tiles_needed.clear()
