@@ -34,7 +34,7 @@ def main():
         header.append('waiting_tile')
         header.append('result')
         wr.writerow(header)
-        for i in range(5):
+        for i in range(10000):
             try:
                 log = gene.__next__()
                 res = mjkit.PreProcessing.process_one_log(log)
