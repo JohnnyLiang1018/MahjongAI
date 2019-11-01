@@ -2,11 +2,12 @@ class Mahjong_AI:
     # hand_partition, meld: list of tuple(partition_str,index_int)
     # hand_partition ex: {seq-complete:[start_tile_seq1, start_tile_seq2, etch],  pair:tile}
 
-    # return dict : {yaku_name: [num_waiting,[waiting_tiles_list],partition_dict_used]}
+    # return dict : {yaku_name: [num_waiting,[waiting_tiles_list], tiles_used_list]}
     def yaku_check(self,hand_partition,meld):
         return_dict = {}
         num_waiting = 0
         tiles_needed = []
+        tiles_used = []
         # 1. pinfu 
         # condition: all concealed hand, 3 seq-complete, 1 seq-two-way, 1 pair 
         if len(meld) == 0:
@@ -17,30 +18,46 @@ class Mahjong_AI:
             else: # +2 waiting tiles for every seq-com under 3
                 temp = 3 - num_seq_com
                 num_waiting = num_waiting + temp * 2
+                for x  in hand_partition['seq-complete']:
+                    tiles_used.append(x)
+                    tiles_used.append(x + 1)
+                    tiles_used.append(x + 2)
                 num_waiting = num_waiting - len(hand_partition['seq-middle'])
                 for x in hand_partition['seq-middle']:
                     tiles_needed.append(x + 1) # need index tile + 1
+                    tiles_used.append(x)
+                    tiles_used.append(x + 2)
                 num_waiting = num_waiting - len(hand_partition['seq-one-way'])
                 for x in hand_partition['seq-one-way']:
-                    if x % 9 == 0: tiles_needed.append(x + 2) # need 4 or 7
-                    else: tiles_needed.append(x - 1)
+                    if x % 9 == 0: # 123 one way
+                        tiles_needed.append(x + 2)
+                        tiles_used.append(x)
+                        tiles_used.append(x + 1)
+                    else: # 789 one way
+                        tiles_needed.append(x - 1)
+                        tiles_used.append(x)
+                        tiles_used.append(x + 1)
             num_seq_two = len(hand_partition['seq-two-way'])
             if num_seq_two == 0: 
                 num_waiting = num_waiting + 1 # need +1 tile to complete two-way-seq
                 for x in hand_partition['single']:
                     if 7 > (x % 9) > 1 and x < 26:
                         tiles_needed.append([x-1, x+1]) # every single needs + or - 1 to become 2-way
+                        tiles_used.append(x)
             else: # -1 waiting tile for every two-way-seq over the needed 1
                 temp = num_seq_two - 1
                 num_waiting = num_waiting - temp
                 for x in hand_partition['seq-two-way']:
                     tiles_needed.append([x-1, x+2]) # each 2-way is waiting for x-1 or x+2
+                    tiles_used.append(x)
+                    tiles_used.append(x + 1)
             if len(hand_partition['pair']) == 0: #add 1 if there is no pair
                 num_waiting = num_waiting + 1
         else: num_waiting = 99
-        return_dict.setdefault("pinfu", [num_waiting, tuple(tiles_needed)])
+        return_dict.setdefault("pinfu", [num_waiting, tuple(tiles_needed), tuple(tiles_used)])
         num_waiting = 0
         tiles_needed.clear()
+        tiles_used.clear()
 
         # 2. all simple
         # condition: check each partition's index != 1 or 9 or honor, and for sequence, index+1 and index+2 if necessary
@@ -51,34 +68,67 @@ class Mahjong_AI:
                     num_waiting = num_waiting + 1
                     if k == 'triplet':
                         num_waiting = num_waiting + 2
-                    if k == 'pair':
+                    elif k == 'pair':
                         num_waiting = num_waiting + 1
+                else:
+                    tiles_used.append(tile)
+                    if k == 'triplet':
+                        tiles_used.append(tile)
+                        tiles_used.append(tile)
+                    elif k == 'pair':
+                        tiles_used.append(tile)
                 if 'seq' in k:
                     if k == 'seq-complete':
                         if mod_var == 6: # 789 sequence
                             num_waiting = num_waiting + 1
-                            tiles_needed.append(tile-1) # need tile 6
-                        if mod_var == 0:
-                            tiles_needed.append(tile+3) # need tile 4
+                            tiles_needed.append(tile - 1) # need tile 6
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 1)
+                        if mod_var == 0: # 123 sequence
+                            tiles_needed.append(tile + 3) # need tile 4
+                            tiles_used.append(tile + 1)
+                            tiles_used.append(tile + 2)
                     if k == 'seq-one-way':
                         if mod_var == 0: # Have already added 1 waiting tile in previous check
                             num_waiting = num_waiting + 1
                             tiles_needed.extend([tile+2, tile+3]) # need 3, 4
+                            tiles_used.append(tile + 1)
                         else:
                             num_waiting = num_waiting + 2
-                            tiles_needed.extend([tile-1, tile-2]) # need 6, 5
+                            tiles_needed.extend([tile-1, tile-2]) # need 7, 6
+                            tiles_used.append(tile)
                     if k == 'seq-two-way':
-                        num_waiting = num_waiting + 1
-                        tiles_needed.append([tile-1, tile+2])
+                        if mod_var == 6: #78 two way
+                            num_waiting = num_waiting + 1
+                            tiles_needed.append(tile - 1)
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 1)
+                        if mod_var == 1: #23 two way
+                            num_waiting = num_waiting + 1
+                            tiles_needed.append(tile + 2)
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 2)
+                        else:
+                            num_waiting = num_waiting + 1
+                            tiles_needed.append([tile-1, tile+2])
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 1)
                     if k == 'seq-middle':
                         if mod_var == 6: # 7_9 sequence 
                             num_waiting = num_waiting + 2
                             tiles_needed.extend([tile+1, tile-1]) # need 6, 8
+                            tiles_used.append(tile)
+                        if mod_var == 0: # 1_3 sequence
+                            num_waiting = num_waiting + 1 # already added one from before
+                            tiles_needed.extend([tile+1, tile+3])
+                            tiles_used.append(tile+2)
                         else:
                             num_waiting = num_waiting + 1
-                            tiles_needed.append(tile+1) # need middle tile
+                            tiles_needed.append(tile + 1) # need middle tile
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 2)
                 # Possibly need to deal with single tiles
-        return_dict.setdefault('all-simple', [num_waiting, tuple(tiles_needed)])
+        return_dict.setdefault('all-simple', [num_waiting, tuple(tiles_needed), tuple(tiles_used)])
         num_waiting = 0
         tiles_needed.clear()
 
@@ -89,16 +139,23 @@ class Mahjong_AI:
             if t >= 27:
                 num_waiting = 2
                 tiles_needed.append(t)
+                tiles_used.append(t)
         for t in hand_partition['pair']:
             if t >= 27:
                 num_waiting = 1
                 tiles_needed.clear()
+                tiles_used.clear()
                 tiles_needed.append(t)
+                tiles_used.append(t)
+                tiles_used.append(t)
         if any(t >= 27 for t in hand_partition['triplet']):
             num_waiting = 0
             tiles_needed.clear()
+            tiles_used.append(t)
+            tiles_used.append(t)
+            tiles_used.append(t)
         # TODO how to handle 0 honor tiles in hand for tiles_needed
-        return_dict.setdefault('honor-yaku', [num_waiting, tuple(tiles_needed)])
+        return_dict.setdefault('honor-yaku', [num_waiting, tuple(tiles_needed), tuple(tiles_used)])
         num_waiting = 0
         tiles_needed.clear()
 
@@ -113,52 +170,115 @@ class Mahjong_AI:
                         if v.count(tile) > 1: # two identical two-ways
                             num_waiting = 2
                             tiles_needed.append([tile-1, tile+2])
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 1)
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 1)
                         if (tile + 1) in hand_partition['seq-two-way']:
                             num_waiting = 2
                             tiles_needed.extend([tile, tile+2])
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 1)
+                            tiles_used.append(tile + 1)
+                            tiles_used.append(tile + 2)
                         if (tile - 1) in hand_partition['seq-two-way']:
                             num_waiting = 2
                             tiles_needed.extend([tile+1, tile-1])
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 1)
+                            tiles_used.append(tile - 1)
+                            tiles_used.append(tile)
                 elif k == 'seq-one-way':
                     for tile in v:
                         if v.count(tile) > 1:
                             num_waiting = 2
-                            if tile % 9 == 0: tiles_needed.append(tile+2)
-                            else: tiles_needed.append(tile-1)
+                            if tile % 9 == 0:  # 12 seq
+                                tiles_needed.append(tile+2)
+                                tiles_used.append(tile)
+                                tiles_used.append(tile + 1)
+                                tiles_used.append(tile)
+                                tiles_used.append(tile + 1)
+                            else:  # 89 seq
+                                tiles_needed.append(tile-1)
+                                tiles_used.append(tile)
+                                tiles_used.append(tile + 1)
+                                tiles_used.append(tile)
+                                tiles_used.append(tile + 1)
                 elif k == 'seq-middle':
                     for tile in v:
                         if v.count(tile) > 1:
                             num_waiting = 2
                             tiles_needed.append(tile+1)
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 2)
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 2)
                 elif k == 'seq-complete':
                     for tile in v:
                         if v.count(tile) > 1: # 2 identical seq-com
                             num_waiting = 0
                             tiles_needed.clear()
+                            tiles_used.clear()
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 1)
+                            tiles_used.append(tile + 2)
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 1)
+                            tiles_used.append(tile + 2)
                             break
                         if (tile + 1) in hand_partition['seq-two-way']: #check if seq-com same as incomplete seqs
                             if num_waiting > 1: #clear tiles_needed if waiting on less tiles
                                 tiles_needed.clear()
+                                tiles_used.clear()
                             num_waiting = 1
                             tiles_needed.append(tile)
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 1)
+                            tiles_used.append(tile + 2)
+                            tiles_used.append(tile + 1)
+                            tiles_used.append(tile + 2)
                         if tile in hand_partition['seq-two-way']:
                             if num_waiting > 1: #clear tiles_needed if waiting on less tiles
                                 tiles_needed.clear()
+                                tiles_used.clear()
                             num_waiting = 1
                             tiles_needed.append(tile + 2)
-                        if tile in hand_partition['seq-one-way']:
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 1)
+                            tiles_used.append(tile + 2)
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 1)
+                        if tile in hand_partition['seq-one-way'] or (tile + 1) in hand_partition['seq-one-way']:
                             if num_waiting > 1: #clear tiles_needed if waiting on less tiles
                                 tiles_needed.clear()
+                                tiles_used.clear()
                             num_waiting = 1
-                            if tile % 9 == 0: tiles_needed.append(tile + 2)
-                            else: tiles_needed.append(tile - 1)
+                            if tile % 9 == 0: 
+                                tiles_needed.append(tile + 2)
+                                tiles_used.append(tile)
+                                tiles_used.append(tile + 1)
+                                tiles_used.append(tile + 2)
+                                tiles_used.append(tile)
+                                tiles_used.append(tile + 1)
+                            else: 
+                                tiles_needed.append(tile)
+                                tiles_used.append(tile)
+                                tiles_used.append(tile + 1)
+                                tiles_used.append(tile + 2)
+                                tiles_used.append(tile + 1)
+                                tiles_used.append(tile + 2)
                         if tile in hand_partition['seq-middle']:
                             if num_waiting > 1: #clear tiles_needed if waiting on less tiles
                                 tiles_needed.clear()
                             num_waiting = 1
                             tiles_needed.append(tile + 1)
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 1)
+                            tiles_used.append(tile + 2)
+                            tiles_used.append(tile)
+                            tiles_used.append(tile + 2)
         else: num_waiting = 99
-        return_dict.setdefault('two-identical-seq', [num_waiting, tuple(tiles_needed)])
+        return_dict.setdefault('two-identical-seq', [num_waiting, tuple(tiles_needed), tuple(tiles_used)])
         num_waiting = 0
         ## above Christoph 1-4 ##
 
