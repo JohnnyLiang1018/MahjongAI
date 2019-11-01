@@ -1,6 +1,8 @@
 class Mahjong_AI:
     # hand_partition, meld: list of tuple(partition_str,index_int)
     # hand_partition ex: {seq-complete:[start_tile_seq1, start_tile_seq2, etch],  pair:tile}
+
+    # return dict : {yaku_name: [num_waiting,[waiting_tiles_list],partition_dict_used]}
     def yaku_check(self,hand_partition,meld):
         return_dict = {}
         num_waiting = 0
@@ -162,8 +164,65 @@ class Mahjong_AI:
 
         # 5. straight
         # condtion: 3 seq with index 0, 3, 6
+
         # 6. three color seq
         # condition: 3 seq with the same index after mod 9
+        if(len(meld)<2):
+            min_waiting = 9
+            min_index = -1
+            waiting_tiles_list = ()
+            used_tiles_list = ()
+
+            for i in range(7):
+                waiting_count = 9
+                temp_wait_list = [i,i+1,i+2,i+9,i+10,i+11,i+18,i+19,i+20]
+                temp_use_list = []
+                for index in hand_partition['seq-complete']:
+                    if (index % 9 == i):
+                        print(index)
+                        print(temp_wait_list)
+                        print(type(temp_wait_list))
+                        print(type(temp_wait_list[0]))
+                        waiting_count -= 3
+                        temp_wait_list.remove(index)
+                        temp_wait_list.remove(index+1)
+                        temp_wait_list.remove(index+2)
+                        temp_use_list.append(index)
+                        temp_use_list.append(index+1)
+                        temp_use_list.append(index+2)
+
+                for index in hand_partition['triplet']:
+                    if (index % 9 == i):
+                        waiting_count -= 1
+                        if(index in temp_wait_list):
+                            temp_wait_list.remove(index)
+                        temp_use_list.append(index)
+                
+                for index in hand_partition['pair']:
+                    if(index % 9 == i):
+                        waiting_count -= 1
+                        if(index in temp_wait_list):
+                            temp_wait_list.remove(index)
+                        temp_use_list.append(index)
+                
+                for index in hand_partition['single']:
+                    if (index % 9 >= i and index % 9 <= i+2):
+                        waiting_count -= 1
+                        if(index in temp_wait_list):
+                            temp_wait_list.remove(index)
+                        temp_use_list.append(index)
+                
+                if(waiting_count < min_waiting):
+                    min_waiting = waiting_count
+                    min_index = i
+                    waiting_tiles_list = tuple(temp_wait_list)
+                    used_tiles_list = tuple(temp_use_list)
+
+            
+            value_list = [min_waiting,waiting_tiles_list,used_tiles_list,'seq']
+            return_dict.setdefault('three-color-seq',value_list)     
+
+
         # 7. three color triplet
         # condition: 3 triplet with the same index
         ## above Dane  5-7 ##
@@ -240,8 +299,8 @@ class Mahjong_AI:
 
 def main():
     mai = Mahjong_AI()
-    hand_partition = {'seq-complete':[1,2,3], 'seq-middle': [], 'seq-two-way': [1], 'pair': [1], 
-                        'triplet': [], 'single': []}
+    hand_partition = {'seq-complete':[9,18], 'seq-middle': [], 'seq-two-way': [1], 'pair': [7], 
+                        'triplet': [5], 'single': [1,2]}
     meld = []
     print(mai.yaku_check(hand_partition, meld))
 
