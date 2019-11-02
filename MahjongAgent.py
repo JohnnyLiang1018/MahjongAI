@@ -716,9 +716,8 @@ class MahjongAgent:
 
     # 2. Determine the tiles used in these yaku, modified by the possibility of that yaku and the point value to give these tile a weight. 
     def score_possib_weight(self,yaku_dict):
-        for key in yaku_dict:
+        # for key in yaku_dict:
             
-
         return None
     # 3. For incomplete seq or single tile, calculate the possibility of some sort of advancing (for example, from single tile to seq-two-way, or from seq-one-way to seq-two-way etc). Give tiles weight based on that possibility. Then we have a list of tiles with weight, the one with the least weight should be the least important.
 
