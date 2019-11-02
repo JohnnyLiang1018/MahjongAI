@@ -558,80 +558,155 @@ class Mahjong_AI:
 
         ## above Dane  5-7 ##
 
-        # num_pair = len(hand_partition['pair'])
-        # num_triplet = len(hand_partition['triplet'])
-        # num_seq = len(hand_partition['seq-complete'])
+        tiles_needed_list = []
+        tiles_used_list = []
 
-        # # 8. all triplet
-        # # condition: 4 triplet ( or quads) with 1 pair
-        # if num_pair > 1:
-        #     extra_pair = num_pair - 1 # get number of extra pair
-        # else:
-        #     extra_pair = 0     
+        num_pair = len(hand_partition['pair'])
+        num_triplet = len(hand_partition['triplet'])
+        num_seq = len(hand_partition['seq-complete'])
 
-        # if num_triplet == 4: # 4 tri
-        #     num_waiting = 0
-        # else: # less than 4 tri
-        #     temp = 4 - num_triplet # triplet to complete
-        #     num_waiting = temp * 2
-        #     num_waiting = temp - extra_pair # -1 for each extra pair
-        # if num_pair == 0: # no pair wait +1
-        #     num_waiting = num_waiting + 1    
-        # return_dict.setdefault("all_triplet", num_waiting)
+        # 8. all triplet
+        # condition: 4 triplet ( or quads) with 1 pair  
+        if num_triplet == 4: # 4 tri
+            num_waiting = 0
+        else: # less than 4 tri
+            need_tri = 4 - num_triplet # triplet to complete
+            num_waiting = need_tri * 2
+            if(need_tri - num_pair < 0):
+                num_waiting = num_pair + 2(need_tri - num_pair) 
+            else: 
+                num_waiting = num_waiting - num_pair # -1 for each extra pair            
+        for k, v in hand_partition.items():
+            for index in v:
+                if 'triplet' in k:
+                    tiles_used_list.extend([index, index, index])
+                if 'pair' in k:
+                    if need_tri > 0:       
+                        tiles_used_list.extend([index, index])
+                        tiles_needed_list.extend([index])
+                if 'single' in k:
+                    if ((need_tri - num_pair) > 0):
+                        tiles_used_list.extend([index])
+                        tiles_needed_list.extend([index])
+        return_dict.setdefault("all_triplet", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
 
-        # # 9. terminal in all meld
-        # # condition: (seq + triplet) = 4, index is 1 or 9 or honor, for seq check index+1 and index+2 
-        # num_com = 0
-        # num_almost = 0
-        # pair_used = 0
-        # for k, v in hand_partition.items():
-        #     if 'triplet' in k:
-        #         if v < 26:
-        #             if(v % 9) is 0 or 8:
-        #                 num_com = num_com + 1
-        #         else:
-        #             num_com = num_com + 1
-        #     if 'seq-complete' in k:
-        #         if (v % 9) is 0 or 6:
-        #             num_com = num_com + 1
-        #     if 'seq-one-way' in k:
-        #         if (v % 9) is 0 or 6:
-        #             num_almost = num_almost + 1
-        #     if 'seq-two-way' in k:
-        #         if (v % 9) is 1 or 6:
-        #             num_almost = num_almost + 1
-        #     if 'seq-middle' in k:
-        #         if (v % 9) is 0 or 6:
-        #             num_almost = num_almost + 1
-        #     if 'pair' in k:
-        #         if(v % 9) is 0 or 8:
-        #             num_almost = num_almost + 1
-        #             pair_used = pair_used +1                                                          
-        # temp = 4 - num_com 
-        # num_waiting = (temp * 2) - num_almost
-        # if (num_pair - pair_used) < 1 :
-        #     num_waiting = num_waiting + 1
-        # return_dict.setdefault("ternimal_in_all", num_waiting)
-
-        # # 10. seven pair 
-        # # condition: 7 pair partition
-        # if len(meld) == 0:
-        #     if num_pair < 7:
-        #         temp = 7 - num_pair
-        #         num_waiting = temp - num_triplet 
-        # else: num_waiting = 99         
-        # return_dict.setdefault("seven_pairs", num_waiting)
-        # ## above Lee 8-10 ##
+        # 9. terminal in all meld
+        # condition: (seq + triplet) = 4, index is 1 or 9 or honor, for seq check index+1 and index+2 
+        num_com = 0
+        num_almost = 0
+        num_two = 0
+        pair_used = 0
+        tiles_needed_list = []
+        tiles_used_list = []
+        temp_used = []
         
-        # print("result:")
-        # print(return_dict)
-        return return_dict
+        for k, v in hand_partition.items():
+            for index in v:
+                if 'triplet' in k:
+                    if index < 26:
+                        if((index % 9) in (0, 8)): # 111 OR 999
+                            num_com = num_com + 1
+                            tiles_used_list.extend([index, index, index])
+                    else: # Honor
+                        num_com = num_com + 1
+                        tiles_used_list.extend([index, index, index])
+                if 'seq-complete' in k: # 123 OR 789
+                    if ((index % 9) in (0, 6)):
+                        num_com = num_com + 1
+                        tiles_used_list.extend([index, index+1, index+2])
+                if 'seq-one-way' in k: # 12(3) OR (7)89     
+                    if ((index % 9) == 0): # 12(3)
+                        num_almost = num_almost + 1
+                        tiles_needed_list.extend([index + 2]) # 3
+                        temp_used.extend([index, index + 1])
+                        tiles_used_list.extend([index, index + 1])
+                    if ((index % 9) == 7): # (7)89
+                        num_almost = num_almost + 1
+                        tiles_needed_list.extend(index - 1) # 7
+                        temp_used.extend([index, index + 1])
+                        tiles_used_list.extend([index, index + 1])
+                if 'seq-two-way' in k: # (1)23 OR 78(9) 
+                    if ((index % 9) == 1): # (1)23
+                        num_almost = num_almost + 1
+                        tiles_needed_list.extend([index - 1]) # 1
+                        temp_used.extend([index, index + 1])
+                        tiles_used_list.extend([index, index + 1])
+                    if ((index % 9) == 6): # 78(9)
+                        num_almost = num_almost + 1
+                        tiles_needed_list.extend([index + 2]) # 9
+                        temp_used.extend([index, index + 1])
+                        tiles_used_list.extend([index, index + 1])                      
+                if 'seq-middle' in k: # 1(2)3 OR 7(8)9
+                    if ((index % 9) == 0): # 1(2)3
+                        num_almost = num_almost + 1
+                        tiles_needed_list.extend([index + 1]) # 2
+                        temp_used.extend([index, index + 2])
+                        tiles_used_list.extend([index, index + 2])
+                    if ((index % 9) == 6): # 7(8)9
+                        num_almost = num_almost + 1
+                        tiles_needed_list.extend([index + 1]) # 8
+                        temp_used.extend([index, index + 2])
+                        tiles_used_list.extend([index, index + 2])                     
+                if 'pair' in k:
+                    if((index % 9) in (0, 8)):
+                        num_almost = num_almost + 1
+                        pair_used = pair_used + 1
+                        tiles_needed_list.extend([index]) # 1 or 9
+                        tiles_used_list.extend([index, index])
+                if 'single' in k:
+                   if index not in temp_used:
+                        if((index % 9) in (0, 6)):              
+                            num_two = num_two + 1
+                            tiles_needed_list.extend([index + 1, index + 2])
+                            tiles_used_list.extend([index])
+                        if((index % 9) in (1, 7)):
+                            num_two = num_two + 1
+                            tiles_needed_list.extend([index - 1, index + 1]) 
+                            tiles_used_list.extend([index])                       
+                        if((index % 9) in (2, 8)):
+                            num_two = num_two + 1
+                            tiles_needed_list.extend([index - 1, index - 2])
+                            tiles_used_list.extend([index])
+        
+        needed_com = 4 - num_com
+        if needed_com > 0:
+            if (needed_com - num_almost)  < 1:
+                num_waiting = needed_com
+            elif (needed_com - num_almost - num_two) < 1:
+                needed_com = needed_com - num_almost
+                num_waiting = num_almost + (2 * needed_com)
+            else:
+                needed_com = needed_com - num_almost - num_two
+                num_waiting = num_almost + (2 * num_two) + (3 * needed_com)            
+        else:
+            num_waiting = 0
+        return_dict.setdefault("ternimal_in_all", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
 
+        
+        # 10. seven pair 
+        # condition: 7 pair partition
+        tiles_needed_list = []
+        tiles_used_list = []
+        if len(meld) == 0:
+            if num_pair < 7:
+                temp = 7 - num_pair
+                num_waiting = temp - num_triplet
+            for k, v in hand_partition.items():
+                for index in v:
+                    if ('pair' in k):
+                        tiles_used_list.extend([index, index])
+                    if (('single' in k) and (num_pair < 7)):
+                        tiles_needed_list.extend([index])
+        else: num_waiting = 99         
+        return_dict.setdefault("seven_pairs", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
+        ## above Lee 8-10 ##
+        
+        return return_dict
 
 def main():
     mai = Mahjong_AI()
     hand_partition = {'seq-complete':[9,18], 'seq-middle': [], 'seq-two-way': [1], 'pair': [7], 
-                        'triplet': [5], 'single': [1,2]}
+                        'triplet': [5], 'single': [1,2], 'seq-one-way': []}
     meld = []
     print(mai.yaku_check(hand_partition, meld))
 
