@@ -53,6 +53,17 @@ class Mahjong_AI:
                     tiles_used_list.append(x + 1)
             if len(hand_partition['pair']) == 0: #add 1 if there is no pair
                 num_waiting = num_waiting + 1
+                for t in hand_partition['single']:
+                    possible_pairs_list = []
+                    if t not in tiles_used_list:
+                        possible_pairs_list.append(t)
+                    tiles_needed_list.append(possible_pairs_list)
+                    tiles_used_list.append(possible_pairs_list)
+            elif len(hand_partition['pair']) > 1:
+                num_waiting = num_waiting + len(hand_partition['pair']) - 1
+                for t in hand_partition['pair']:
+                    tiles_needed_list.append(t)
+                    tiles_used_list.append(t)       #TODO Deal with multiple pairs
         else: num_waiting = 99
         return_dict.setdefault("pinfu", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
         num_waiting = 0
@@ -103,7 +114,7 @@ class Mahjong_AI:
                             tiles_needed_list.append(tile - 1)
                             tiles_used_list.append(tile)
                             tiles_used_list.append(tile + 1)
-                        if mod_var == 1: #23 two way
+                        elif mod_var == 1: #23 two way
                             num_waiting = num_waiting + 1
                             tiles_needed_list.append(tile + 2)
                             tiles_used_list.append(tile)
@@ -118,7 +129,7 @@ class Mahjong_AI:
                             num_waiting = num_waiting + 2
                             tiles_needed_list.extend([tile+1, tile-1]) # need 6, 8
                             tiles_used_list.append(tile)
-                        if mod_var == 0: # 1_3 sequence
+                        elif mod_var == 0: # 1_3 sequence
                             num_waiting = num_waiting + 1 # already added one from before
                             tiles_needed_list.extend([tile+1, tile+3])
                             tiles_used_list.append(tile+2)
@@ -131,6 +142,7 @@ class Mahjong_AI:
         return_dict.setdefault('all-simple', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
         num_waiting = 0
         tiles_needed_list.clear()
+        tiles_used_list.clear()
 
         # 3. honor yaku
         # condition: check if honor triplet exist
@@ -138,6 +150,7 @@ class Mahjong_AI:
         for t in hand_partition['single']:
             if t >= 27:
                 num_waiting = 2
+                tiles_needed_list.append(t)
                 tiles_needed_list.append(t)
                 tiles_used_list.append(t)
         for t in hand_partition['pair']:
@@ -158,6 +171,7 @@ class Mahjong_AI:
         return_dict.setdefault('honor-yaku', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
         num_waiting = 0
         tiles_needed_list.clear()
+        tiles_used_list.clear()
 
         # 4. two identical seq
         # condition: all concealed hand, 2 seq with same index
@@ -280,6 +294,8 @@ class Mahjong_AI:
         else: num_waiting = 99
         return_dict.setdefault('two-identical-seq', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
         num_waiting = 0
+        tiles_needed_list.clear()
+        tiles_used_list.clear()
         ## above Christoph 1-4 ##
 
         # 5. straight
@@ -412,10 +428,10 @@ class Mahjong_AI:
                 temp_use_list = []
                 for index in hand_partition['seq-complete']:
                     if (index % 9 == i):
-                        print(index)
-                        print(temp_wait_list)
-                        print(type(temp_wait_list))
-                        print(type(temp_wait_list[0]))
+                        # print(index)
+                        # print(temp_wait_list)
+                        # print(type(temp_wait_list))
+                        # print(type(temp_wait_list[0]))
                         if index in temp_wait_list:
                             waiting_count -= 3
                             temp_wait_list.remove(index)
@@ -448,7 +464,6 @@ class Mahjong_AI:
                 
                 if(waiting_count < min_waiting):
                     min_waiting = waiting_count
-                    min_index = i
                     waiting_tiles_list = tuple(temp_wait_list)
                     used_tiles_list = tuple(temp_use_list)
 
@@ -702,6 +717,11 @@ class Mahjong_AI:
         ## above Lee 8-10 ##
         
         return return_dict
+
+    def complete_hand(self, hand_partition, meld):
+        
+        return
+        
 
 def main():
     mai = Mahjong_AI()
