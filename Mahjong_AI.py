@@ -703,6 +703,7 @@ class Mahjong_AI:
         # condition: 7 pair partition
         tiles_needed_list.clear()
         tiles_used_list.clear()
+        temp_used.clear()
         if len(meld) == 0:
             if num_pair < 7:
                 temp = 7 - num_pair
@@ -711,8 +712,10 @@ class Mahjong_AI:
                 for index in v:
                     if ('pair' in k):
                         tiles_used_list.extend([index, index])
+                        temp_used.extend([index])
                     if (('single' in k) and (num_pair < 7)):
-                        tiles_needed_list.extend([index])
+                        if index not in temp_used:
+                            tiles_needed_list.extend([index])   
         else: num_waiting = 99         
         return_dict.setdefault("seven_pairs", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
         tiles_needed_list.clear()
@@ -728,8 +731,8 @@ class Mahjong_AI:
 
 def main():
     mai = Mahjong_AI()
-    hand_partition = {'seq-complete':[9,18], 'seq-middle': [], 'seq-two-way': [1], 'pair': [7], 
-                        'triplet': [5], 'single': [1,2], 'seq-one-way': []}
+    hand_partition = {'seq-complete':[], 'seq-middle': [], 'seq-two-way': [], 'pair': [5,7], 
+                        'triplet': [], 'single': [1, 2, 30, 9, 10, 11, 18, 19, 20, 5], 'seq-one-way': []}
     meld = []
     print(mai.yaku_check(hand_partition, meld))
 
