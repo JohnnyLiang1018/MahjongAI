@@ -588,7 +588,7 @@ class Mahjong_AI:
             need_tri = 4 - num_triplet # triplet to complete
             num_waiting = need_tri * 2
             if(need_tri - num_pair < 0):
-                num_waiting = num_pair + 2(need_tri - num_pair) 
+                num_waiting = num_pair + 2 * (need_tri - num_pair) 
             else: 
                 num_waiting = num_waiting - num_pair # -1 for each extra pair            
         for k, v in hand_partition.items():
@@ -703,10 +703,7 @@ class Mahjong_AI:
                                 num_two = num_two + 1
                                 tiles_needed_list_two.extend([index - 1, index - 2]) #12 or 78
                                 tiles_used_list_two.extend([index])
-        
-        print('num_com:',num_com)
-        print('num_almost:',num_almost)   
-        print('num_two:',num_two)      
+       
         needed_com = 4 - num_com
         if needed_com > 0:
             if ((needed_com - num_almost) < 1):
