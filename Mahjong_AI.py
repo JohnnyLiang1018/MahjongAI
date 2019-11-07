@@ -611,8 +611,8 @@ class Mahjong_AI:
         num_almost = 0
         num_two = 0
         pair_used = 0
-        tiles_needed_list = []
-        tiles_used_list = []
+        tiles_needed_list.clear()
+        tiles_used_list.clear()
         temp_used = []
         
         for k, v in hand_partition.items():
@@ -701,8 +701,8 @@ class Mahjong_AI:
         
         # 10. seven pair 
         # condition: 7 pair partition
-        tiles_needed_list = []
-        tiles_used_list = []
+        tiles_needed_list.clear()
+        tiles_used_list.clear()
         if len(meld) == 0:
             if num_pair < 7:
                 temp = 7 - num_pair
@@ -715,6 +715,8 @@ class Mahjong_AI:
                         tiles_needed_list.extend([index])
         else: num_waiting = 99         
         return_dict.setdefault("seven_pairs", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
+        tiles_needed_list.clear()
+        tiles_used_list.clear()        
         ## above Lee 8-10 ##
         
         return return_dict
