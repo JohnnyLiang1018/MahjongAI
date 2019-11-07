@@ -663,25 +663,26 @@ class Mahjong_AI:
                         temp_used.extend([index, index + 2])
                         tiles_used_list.extend([index, index + 2])                     
                 if 'pair' in k:
-                    if((index % 9) in (0, 8)):
+                    if((index % 9) in (0, 8)): #11 or 99
                         num_almost = num_almost + 1
                         pair_used = pair_used + 1
                         tiles_needed_list.extend([index]) # 1 or 9
                         tiles_used_list.extend([index, index])
                 if 'single' in k:
-                   if index not in temp_used:
-                        if((index % 9) in (0, 6)):              
-                            num_two = num_two + 1
-                            tiles_needed_list.extend([index + 1, index + 2])
-                            tiles_used_list.extend([index])
-                        if((index % 9) in (1, 7)):
-                            num_two = num_two + 1
-                            tiles_needed_list.extend([index - 1, index + 1]) 
-                            tiles_used_list.extend([index])                       
-                        if((index % 9) in (2, 8)):
-                            num_two = num_two + 1
-                            tiles_needed_list.extend([index - 1, index - 2])
-                            tiles_used_list.extend([index])
+                    if index not in temp_used:
+                        if((num_com + num_almost) < 4):
+                            if((index % 9) in (0, 6)): # 1 or 7             
+                                num_two = num_two + 1 
+                                tiles_needed_list.extend([index + 1, index + 2]) #23 or 89
+                                tiles_used_list.extend([index])
+                            if((index % 9) in (1, 7)): # 2 or 8
+                                num_two = num_two + 1
+                                tiles_needed_list.extend([index - 1, index + 1]) #13 or 79
+                                tiles_used_list.extend([index])                       
+                            if((index % 9) in (2, 8)): #3 or 9
+                                num_two = num_two + 1
+                                tiles_needed_list.extend([index - 1, index - 2]) #12 or 78
+                                tiles_used_list.extend([index])
         
         needed_com = 4 - num_com
         if needed_com > 0:
