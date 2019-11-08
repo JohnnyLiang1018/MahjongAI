@@ -88,6 +88,9 @@ class Mahjong_AI:
                         tiles_used_list.append(tile)
                     elif k == 'pair':
                         tiles_used_list.append(tile)
+                        if len(v) > 1: #can complete pair for triplet
+                            num_waiting = num_waiting + 1
+                            tiles_needed_list.append(tile)
                 if 'seq' in k:
                     if k == 'seq-complete':
                         if mod_var == 6: # 789 sequence
