@@ -75,7 +75,7 @@ class Mahjong_AI:
         for k, v in hand_partition.items():
             for tile in v:
                 mod_var = tile % 9
-                if (mod_var == (0 or 8)) or (tile > 26):
+                if mod_var == 0 or mod_var == 8 or tile > 26:
                     num_waiting = num_waiting + 1
                     if k == 'triplet':
                         num_waiting = num_waiting + 2
@@ -106,41 +106,41 @@ class Mahjong_AI:
                         if mod_var == 0: # Have already added 1 waiting tile in previous check
                             num_waiting = num_waiting + 1
                             tiles_needed_list.extend([tile+2, tile+3]) # need 3, 4
-                            tiles_used_list.append(tile + 1)
+                            # tiles_used_list.append(tile + 1)
                         else:
                             num_waiting = num_waiting + 2
                             tiles_needed_list.extend([tile-1, tile-2]) # need 7, 6
-                            tiles_used_list.append(tile)
+                            # tiles_used_list.append(tile)
                     if k == 'seq-two-way':
                         if mod_var == 6: #78 two way
                             num_waiting = num_waiting + 1
                             tiles_needed_list.append(tile - 1)
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 1)
+                            # tiles_used_list.append(tile)
+                            # tiles_used_list.append(tile + 1)
                         elif mod_var == 1: #23 two way
                             num_waiting = num_waiting + 1
                             tiles_needed_list.append(tile + 2)
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 2)
+                            # tiles_used_list.append(tile)
+                            # tiles_used_list.append(tile + 2)
                         else:
                             num_waiting = num_waiting + 1
                             tiles_needed_list.append([tile-1, tile+2])
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 1)
+                            # tiles_used_list.append(tile)
+                            # tiles_used_list.append(tile + 1)
                     if k == 'seq-middle':
                         if mod_var == 6: # 7_9 sequence 
                             num_waiting = num_waiting + 2
                             tiles_needed_list.extend([tile+1, tile-1]) # need 6, 8
-                            tiles_used_list.append(tile)
+                            # tiles_used_list.append(tile)
                         elif mod_var == 0: # 1_3 sequence
                             num_waiting = num_waiting + 1 # already added one from before
                             tiles_needed_list.extend([tile+1, tile+3])
-                            tiles_used_list.append(tile+2)
+                            # tiles_used_list.append(tile+2)
                         else:
                             num_waiting = num_waiting + 1
                             tiles_needed_list.append(tile + 1) # need middle tile
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 2)
+                            # tiles_used_list.append(tile)
+                            # tiles_used_list.append(tile + 2)
                 # Possibly need to deal with single tiles
         return_dict.setdefault('all-simple', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
         num_waiting = 0
