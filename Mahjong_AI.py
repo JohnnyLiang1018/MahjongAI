@@ -149,7 +149,7 @@ class Mahjong_AI:
 
         # 3. honor yaku
         # condition: check if honor triplet exist
-        num_waiting = 3
+        num_waiting = 3 # if no honor tiles in hand, it will be an empy list
         for t in hand_partition['single']:
             if t >= 27:
                 num_waiting = 2
@@ -170,7 +170,6 @@ class Mahjong_AI:
             tiles_used_list.append(t)
             tiles_used_list.append(t)
             tiles_used_list.append(t)
-        # TODO how to handle 0 honor tiles in hand for tiles_needed_list
         return_dict.setdefault('honor-yaku', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
         num_waiting = 0
         tiles_needed_list.clear()
@@ -187,8 +186,6 @@ class Mahjong_AI:
                     temp_waiting = 6
                     temp_waiting_list = [i, i+1, i+2, i, i+1, i+2]
                     temp_waiting_list = [t + suit_offset for t in temp_waiting_list]
-                    # for t in range(len(temp_waiting_list)):
-                    #     temp_waiting_list[t] += suit_offset
                     temp_used_list = []
 
                     for tile in hand_partition['seq-complete']:
@@ -367,10 +364,6 @@ class Mahjong_AI:
                 temp_use_list = []
                 for index in hand_partition['seq-complete']:
                     if (index % 9 == i):
-                        # print(index)
-                        # print(temp_wait_list)
-                        # print(type(temp_wait_list))
-                        # print(type(temp_wait_list[0]))
                         if index in temp_wait_list:
                             waiting_count -= 3
                             temp_wait_list.remove(index)
