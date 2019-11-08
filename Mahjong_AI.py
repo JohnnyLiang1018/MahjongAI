@@ -178,51 +178,55 @@ class Mahjong_AI:
         # current only checks partial seq with eachother, not checking singles etc
         if len(meld) == 0:
             num_waiting = 6
-        
-            for i in range(7):
-                temp_waiting = 6
-                temp_waiting_list = [i, i+1, i+2, i, i+1, i+2]
-                temp_used_list = []
+            for suit in range(2):
+                suit_offset = suit * 9
+                for i in range(7):
+                    temp_waiting = 6
+                    temp_waiting_list = [i, i+1, i+2, i, i+1, i+2]
+                    temp_waiting_list = [t + suit_offset for t in temp_waiting_list]
+                    # for t in range(len(temp_waiting_list)):
+                    #     temp_waiting_list[t] += suit_offset
+                    temp_used_list = []
 
-                for tile in hand_partition['seq-complete']:
-                    if tile % 9 == i:
-                        if tile in temp_waiting_list:
-                            temp_waiting -= 3
-                            temp_waiting_list.remove(tile)
-                            temp_waiting_list.remove(tile+1)
-                            temp_waiting_list.remove(tile+2)
-                            temp_used_list.append(tile)
-                            temp_used_list.append(tile+1)
-                            temp_used_list.append(tile+2)
-                
-                for tile in hand_partition['triplet']:
-                    if tile % 9 in [i, i+1, i+2]:
-                        if tile in temp_waiting_list:
-                            temp_waiting -= 1
-                            temp_waiting_list.remove(tile)
-                            temp_used_list.append(tile)
+                    for tile in hand_partition['seq-complete']:
+                        if tile % 9 == i:
+                            if tile in temp_waiting_list:
+                                temp_waiting -= 3
+                                temp_waiting_list.remove(tile)
+                                temp_waiting_list.remove(tile+1)
+                                temp_waiting_list.remove(tile+2)
+                                temp_used_list.append(tile)
+                                temp_used_list.append(tile+1)
+                                temp_used_list.append(tile+2)
 
-                for tile in hand_partition['pair']:
-                    if tile % 9 in [i, i+1, i+2]:
-                        if tile in temp_waiting_list:
-                            temp_waiting -= 1
-                            temp_waiting_list.remove(tile)
-                            temp_used_list.append(tile)
+                    for tile in hand_partition['triplet']:
+                        if tile % 9 in [i, i+1, i+2]:
+                            if tile in temp_waiting_list:
+                                temp_waiting -= 1
+                                temp_waiting_list.remove(tile)
+                                temp_used_list.append(tile)
 
-                for tile in hand_partition['single']:
-                    if tile % 9 in [i, i+1, i+2]:
-                        if tile in temp_waiting_list:
-                            temp_waiting -= 1
-                            temp_waiting_list.remove(tile)
-                            temp_used_list.append(tile)
-                if  num_waiting >= temp_waiting:
-                    if num_waiting == temp_waiting:
-                        tiles_needed_list.extend(temp_waiting_list)
-                        tiles_used_list.extend(temp_used_list)
-                    else:
-                        num_waiting = temp_waiting
-                        tiles_needed_list = temp_waiting_list[:]
-                        tiles_used_list = temp_used_list[:]        
+                    for tile in hand_partition['pair']:
+                        if tile % 9 in [i, i+1, i+2]:
+                            if tile in temp_waiting_list:
+                                temp_waiting -= 1
+                                temp_waiting_list.remove(tile)
+                                temp_used_list.append(tile)
+
+                    for tile in hand_partition['single']:
+                        if tile % 9 in [i, i+1, i+2]:
+                            if tile in temp_waiting_list:
+                                temp_waiting -= 1
+                                temp_waiting_list.remove(tile)
+                                temp_used_list.append(tile)
+                    if  num_waiting >= temp_waiting:
+                        if num_waiting == temp_waiting:
+                            tiles_needed_list.extend(temp_waiting_list)
+                            tiles_used_list.extend(temp_used_list)
+                        else:
+                            num_waiting = temp_waiting
+                            tiles_needed_list = temp_waiting_list[:]
+                            tiles_used_list = temp_used_list[:]        
         else: num_waiting = 99
         return_dict.setdefault('two-identical-seq', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
         num_waiting = 0
