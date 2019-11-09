@@ -616,11 +616,17 @@ class MahjongAgent:
         # find the difference
         while index < len(hand_bef):
             value = hand_bef[index]
+<<<<<<< HEAD
             count_after = hand_aft.count(value)
             count_before = hand_bef.count(value)
             if(count_after < count_before):
                 diff.extend([value]*(count_before - count_after))
 
+=======
+            if(hand_aft.count(value) < hand_bef.count(value)):
+                diff.append(value)
+            
+>>>>>>> 14cbb4a1c839cbd5a79f7439175ea287dadefa4e
             index += 1
         
         if(isSeq == False):
