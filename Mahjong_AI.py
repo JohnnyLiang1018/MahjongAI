@@ -244,6 +244,7 @@ class Mahjong_AI:
         # seq-complete partition check (ID suit; modify array) --> singles, pairs, and triplets (check for tiles in similar range (variable-- if yes))
         else:
             closestS = 0
+            num_waiting = 9
             straight_suits = [0] * 3
             straight_counts = [0] * 3
             suit_wan = [0] * 9
@@ -373,7 +374,6 @@ class Mahjong_AI:
 
         # 7. three color triplet
         # condition: 3 triplet with the same index
-        return_dict = {}
         num_waiting = 9
         tiles_needed_list = []
         tiles_used_list = []    
