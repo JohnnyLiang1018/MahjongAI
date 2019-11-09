@@ -373,7 +373,6 @@ class Mahjong_AI:
 
         # 7. three color triplet
         # condition: 3 triplet with the same index
-        return_dict = {}
         num_waiting = 9
         tiles_needed_list = []
         tiles_used_list = []    
