@@ -243,14 +243,15 @@ class Mahjong_AI:
         # 3 arrays (9 total tiles per suit)
         # seq-complete partition check (ID suit; modify array) --> singles, pairs, and triplets (check for tiles in similar range (variable-- if yes))
         else:
-            suit = "wan"
+            closestS = 0
+            straight_suits = [0] * 3
+            straight_counts = [0] * 3
             suit_wan = [0] * 9
             suit_pin = [0] * 9
             suit_sou = [0] * 9
 
             for k, v in hand_partition.items(): # unique tile counted = 1, else 0
                 for tile in v:
-
                     if 'seq-complete' in k:
                         if tile < 7:
                             suit_wan[tile] = suit_wan[tile + 1] = suit_wan[tile + 2] = 1
@@ -260,92 +261,59 @@ class Mahjong_AI:
 
                         else:
                             suit_sou[(tile % 9)] = suit_sou[(tile % 9) + 1] = suit_sou[(tile % 9) + 2] = 1
-
-                    if 'seq-two-way' in k:
-                        if tile < 7:
-                            suit_wan[tile] = suit_wan[tile + 1] = 1
                                 
-                        elif 8 < tile < 16:
-                            suit_pin[(tile % 9)] = suit_pin[(tile % 9) + 1] = 1
-
-                        else:
-                            suit_sou[(tile % 9)] = suit_sou[(tile % 9) + 1] = 1
-
-                    if 'seq-one-way' in k:
-                        if tile == 0:
-                            suit_wan[tile] = suit_wan[tile + 1] = 1
-                        elif tile == 8:
-                            suit_wan[tile] = suit_wan[tile - 1] = 1
-                                
-                        elif tile == 9:
-                            suit_pin[(tile % 9)] = suit_pin[(tile % 9) + 1] = 1
-                        elif tile == 17:
-                            suit_pin[(tile % 9)] = suit_pin[(tile % 9) - 1] = 1
-
-                        elif tile == 18:
-                            suit_sou[(tile % 9)] = suit_sou[(tile % 9) + 1] = 1
-                        else:
-                            suit_sou[(tile % 9)] = suit_sou[(tile % 9) - 1] = 1
-
-                    if 'seq-middle' in k:
-                        if tile < 7:
-                            suit_wan[tile] = suit_wan[tile + 2] = 1
-                                
-                        elif 8 < tile < 16:
-                            suit_pin[(tile % 9)] = suit_pin[(tile % 9) + 2] = 1
-
-                        else:
-                            suit_sou[(tile % 9)] = suit_sou[(tile % 9) + 2] = 1
-                            
                     if 'single' or 'pair' or 'triplet' in k and (tile < 27):
                         if tile < 9:
                             suit_wan[tile] = 1
-                                
+                                    
                         elif 8 < tile < 16:
                             suit_pin[(tile % 9)] = 1
 
                         else:
                             suit_sou[(tile % 9)] = 1
 
-            num_waiting = suit_wan.count(0) # get the suit with the most unique tiles counted
-            if (num_waiting > suit_pin.count(0)):
-                num_waiting = suit_pin.count(0)
-                suit = "pin"
-            if (num_waiting > suit_sou.count(0)):
-                num_waiting = suit_sou.count(0)
-                suit = "sou"
-                
-            if suit == "wan": # append to the list of waiting tiles for the most complete suit
-                for i in range (0, 9):
-                    if suit_wan[i] == 0:
-                        tiles_needed_list.append(i)
+            straight_counts[0] = suit_wan.count(1) # get the suit with the most unique tiles counted
+            straight_counts[1] = suit_pin.count(1)
+            straight_counts[2] = suit_sou.count(1)
 
-            elif suit == "pin":
-                for i in range (0, 9):
-                    if suit_pin[i] == 0:
-                        tiles_needed_list.append((i + 9))
+            if (num_waiting > (9 - straight_counts[0])):
+                num_waiting = 9 - straight_counts[0]
+                closestS = 0
+            if (num_waiting > (9 - straight_counts[1])):
+                num_waiting = 9 - straight_counts[1]
+                closestS = 1
+            if (num_waiting > (9 - straight_counts[2])):
+                num_waiting = 9 - straight_counts[0]
+                closestS = 2
+            straight_suits[closestS] = 1
 
-            else:
-                for i in range (0, 9):
-                    if suit_sou[i] == 0:
-                        tiles_needed_list.append((i + 18))
+            for i in range (0, 3): # find similarly close straights
+                if (9 - straight_counts[i]) == (9 - straight_counts[closestS]):
+                    straight_suits[i] = 1
+        
+            for i in range (0, 3): # append to the waiting tiles and used tiles lists
+                if straight_suits[i] == 1:
+                    if i == 0:
+                        for j in range (0, 9):
+                            if suit_wan[j] == 0:
+                                tiles_needed_list.append(j)
+                            else:
+                                tiles_used_list.append(j)
 
-            if suit == "wan": # append to the list of used tiles for the most complete suit
-                for i in range (0, 9):
-                    if suit_wan[i] == 1:
-                        tiles_used_list.append(i)
+                    if i == 1:
+                        for j in range (0, 9):
+                            if suit_pin[j] == 0:
+                                tiles_needed_list.append((j + 9))
+                            else:
+                                tiles_used_list.append((j + 9))
 
-            elif suit == "pin":
-                for i in range (0, 9):
-                    if suit_pin[i] == 1:
-                        tiles_used_list.append((i + 9))
+                    if i == 2:
+                        for j in range (0, 9):
+                            if suit_sou[j] == 0:
+                                tiles_needed_list.append((j + 18))
+                            else:
+                                tiles_used_list.append((j+ 18))
 
-            else:
-                for i in range (0, 9):
-                    if suit_sou[i] == 1:
-                        tiles_used_list.append((i + 18))
-
-            #print(tiles_needed_list)
             return_dict.setdefault("straight", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
             num_waiting = 0
             tiles_needed_list.clear()
@@ -405,7 +373,11 @@ class Mahjong_AI:
 
         # 7. three color triplet
         # condition: 3 triplet with the same index
-        if len(meld) > 1: # & len(meld['seq-complete']) > 1: # if > 1 exposed sequence
+        return_dict = {}
+        num_waiting = 9
+        tiles_needed_list = []
+        tiles_used_list = []    
+        if len(meld) > 1: # if > 1 exposed sequence
             num_waiting = 99
 
         else:
@@ -414,6 +386,7 @@ class Mahjong_AI:
             suit_pinT = [0] * 9
             suit_souT = [0] * 9
             closestT = [0] * 9
+            closest_indexes = [0] * 9
 
             for k, v in hand_partition.items(): # find and store # of tiles at indexes respective to suits
                 for tile in v:
@@ -421,7 +394,7 @@ class Mahjong_AI:
                         if 'triplet' in k:
                             if tile < 9:
                                 suit_wanT[tile] += 3
-                                            
+                                                
                             elif 8 < tile < 18:
                                 suit_pinT[(tile % 9)] += 3
 
@@ -431,7 +404,7 @@ class Mahjong_AI:
                         if 'pair' in k:
                             if tile < 9:
                                 suit_wanT[tile] += 2
-                                            
+                                                
                             elif 8 < tile < 18:
                                 suit_pinT[(tile % 9)] += 2
 
@@ -441,7 +414,7 @@ class Mahjong_AI:
                         if 'single' in k:
                             if tile < 9:
                                 suit_wanT[tile] += 1
-                                            
+                                                
                             elif 8 < tile < 18:
                                 suit_pinT[(tile % 9)] += 1
 
@@ -454,7 +427,7 @@ class Mahjong_AI:
                                 suit_wanT[(tile + 1)] += 1
                                 suit_wanT[(tile + 2)] += 1
 
-                                            
+                                                
                             elif 8 < tile < 16:
                                 suit_pinT[(tile % 9)] += 1
                                 suit_pinT[((tile % 9) + 1)] += 1
@@ -465,38 +438,52 @@ class Mahjong_AI:
                                 suit_souT[((tile % 9) + 1)] += 1
                                 suit_souT[((tile % 9) + 2)] += 1
 
-            for i in range (0, 9): # find and store the closest 3 color triplet setup
+            for i in range (0, 9): # find and store the closest 3-color-triplet setup
                 closestT[i] = [suit_wanT[i], suit_pinT[i], suit_souT[i], (suit_wanT[i] + suit_pinT[i] + suit_souT[i])]
-                if num_waiting > abs(9 - closestT[i][3]):
-                    num_waiting = abs(9 - closestT[i][3])
+                if (9 - closestT[i][3]) < 0:
+                    closestT[i][3] = 9
+                if  num_waiting > (9 - closestT[i][3]):
+                    num_waiting = 9 - closestT[i][3]
                     closest_index = i
 
-            for i in range (0, 3): # append needed tiles list
-                if closestT[closest_index][i] < 3:
-                    if i == 0:
-                        for j in range (0, (3 - closestT[closest_index][i])):
-                            tiles_needed_list.append(closest_index)
+            for i in range (0, 9): # check for similarly close 3-color-triplet setups
+                if closestT[i][3] == closestT[closest_index][3]:
+                    closest_indexes[i] = 1
 
-                    if i == 1:
-                        for j in range (0, (3 - closestT[closest_index][i])):
-                            tiles_needed_list.append(closest_index + 9)
+            for i in range (0, 9): # append needed & used tiles lists (indexes -> total tiles per value)
+                if closest_indexes[i] == 1:
+                    for j in range (0, 3):
+                        if closestT[i][j] <= 3:
+                            if j == 0:
+                                for k in range (0, (3 - closestT[i][j])):
+                                    tiles_needed_list.append(i)
+                                for k in range (0, closestT[i][j]):
+                                    tiles_used_list.append(i)
 
-                    if i == 2:
-                        for j in range (0, (3 - closestT[closest_index][i])):
-                            tiles_needed_list.append(closest_index + 18)
+                            if j == 1:
+                                for k in range (0, (3 - closestT[i][j])):
+                                    tiles_needed_list.append(i + 9)
+                                for k in range (0, closestT[i][j]):
+                                    tiles_used_list.append(i + 9)
 
-            for i in range (0, 3): # append used tiles list
-                if i == 0:
-                    for j in range (0, closestT[closest_index][i]):
-                        tiles_used_list.append(closest_index)
+                            if j == 2:
+                                for k in range (0, (3 - closestT[i][j])):
+                                    tiles_needed_list.append(i + 18)
+                                for k in range (0, closestT[i][j]):
+                                    tiles_used_list.append(i + 18)
 
-                if i == 1:
-                    for j in range (0, closestT[closest_index][i]):
-                        tiles_used_list.append(closest_index + 9)
+                        else: # 4 tiles under value i in a suit (no need to append needed tiles list)
+                            if j == 0:
+                                for k in range (0, 3):
+                                    tiles_used_list.append(i)
 
-                if i == 2:
-                    for j in range (0, closestT[closest_index][i]):
-                        tiles_used_list.append(closest_index + 18)
+                            if j == 1:
+                                for k in range (0, 3):
+                                    tiles_used_list.append(i + 9)
+
+                            if j == 2:
+                                for k in range (0, 3):
+                                    tiles_used_list.append(i + 18)
 
             return_dict.setdefault("3-color-triplet", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
             num_waiting = 0
