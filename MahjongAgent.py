@@ -610,7 +610,7 @@ class MahjongAgent:
         # find the difference
         while index < len(hand_bef):
             value = hand_bef[index]
-            if(hand_aft.count(value) == 0):
+            if(hand_aft.count(value) < hand_bef.count(value)):
                 diff.append(value)
             
             index += 1
