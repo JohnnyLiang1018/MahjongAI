@@ -1,6 +1,6 @@
 #ignore any csv data
 **.csv
-./test.py
+test.py
 
 #ignore user pycache
 __pycache__/

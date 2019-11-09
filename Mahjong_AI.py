@@ -75,7 +75,7 @@ class Mahjong_AI:
         for k, v in hand_partition.items():
             for tile in v:
                 mod_var = tile % 9
-                if (mod_var == (0 or 8)) or (tile > 26):
+                if mod_var == 0 or mod_var == 8 or tile > 26:
                     num_waiting = num_waiting + 1
                     if k == 'triplet':
                         num_waiting = num_waiting + 2
@@ -88,6 +88,9 @@ class Mahjong_AI:
                         tiles_used_list.append(tile)
                     elif k == 'pair':
                         tiles_used_list.append(tile)
+                        if len(v) > 1: #can complete pair for triplet
+                            num_waiting = num_waiting + 1
+                            tiles_needed_list.append(tile)
                 if 'seq' in k:
                     if k == 'seq-complete':
                         if mod_var == 6: # 789 sequence
@@ -103,41 +106,41 @@ class Mahjong_AI:
                         if mod_var == 0: # Have already added 1 waiting tile in previous check
                             num_waiting = num_waiting + 1
                             tiles_needed_list.extend([tile+2, tile+3]) # need 3, 4
-                            tiles_used_list.append(tile + 1)
+                            # tiles_used_list.append(tile + 1)
                         else:
                             num_waiting = num_waiting + 2
                             tiles_needed_list.extend([tile-1, tile-2]) # need 7, 6
-                            tiles_used_list.append(tile)
+                            # tiles_used_list.append(tile)
                     if k == 'seq-two-way':
                         if mod_var == 6: #78 two way
                             num_waiting = num_waiting + 1
                             tiles_needed_list.append(tile - 1)
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 1)
+                            # tiles_used_list.append(tile)
+                            # tiles_used_list.append(tile + 1)
                         elif mod_var == 1: #23 two way
                             num_waiting = num_waiting + 1
                             tiles_needed_list.append(tile + 2)
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 2)
+                            # tiles_used_list.append(tile)
+                            # tiles_used_list.append(tile + 2)
                         else:
                             num_waiting = num_waiting + 1
                             tiles_needed_list.append([tile-1, tile+2])
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 1)
+                            # tiles_used_list.append(tile)
+                            # tiles_used_list.append(tile + 1)
                     if k == 'seq-middle':
                         if mod_var == 6: # 7_9 sequence 
                             num_waiting = num_waiting + 2
                             tiles_needed_list.extend([tile+1, tile-1]) # need 6, 8
-                            tiles_used_list.append(tile)
+                            # tiles_used_list.append(tile)
                         elif mod_var == 0: # 1_3 sequence
                             num_waiting = num_waiting + 1 # already added one from before
                             tiles_needed_list.extend([tile+1, tile+3])
-                            tiles_used_list.append(tile+2)
+                            # tiles_used_list.append(tile+2)
                         else:
                             num_waiting = num_waiting + 1
                             tiles_needed_list.append(tile + 1) # need middle tile
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 2)
+                            # tiles_used_list.append(tile)
+                            # tiles_used_list.append(tile + 2)
                 # Possibly need to deal with single tiles
         return_dict.setdefault('all-simple', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
         num_waiting = 0
@@ -146,7 +149,7 @@ class Mahjong_AI:
 
         # 3. honor yaku
         # condition: check if honor triplet exist
-        num_waiting = 3
+        num_waiting = 3 # if no honor tiles in hand, it will be an empy list
         for t in hand_partition['single']:
             if t >= 27:
                 num_waiting = 2
@@ -167,7 +170,6 @@ class Mahjong_AI:
             tiles_used_list.append(t)
             tiles_used_list.append(t)
             tiles_used_list.append(t)
-        # TODO how to handle 0 honor tiles in hand for tiles_needed_list
         return_dict.setdefault('honor-yaku', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
         num_waiting = 0
         tiles_needed_list.clear()
@@ -178,119 +180,53 @@ class Mahjong_AI:
         # current only checks partial seq with eachother, not checking singles etc
         if len(meld) == 0:
             num_waiting = 6
-            for k, v in hand_partition.items():
-                if k == 'seq-two-way':
-                    for tile in v:
-                        if v.count(tile) > 1: # two identical two-ways
-                            num_waiting = 2
-                            tiles_needed_list.append([tile-1, tile+2])
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 1)
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 1)
-                        if (tile + 1) in hand_partition['seq-two-way']:
-                            num_waiting = 2
-                            tiles_needed_list.extend([tile, tile+2])
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 1)
-                            tiles_used_list.append(tile + 1)
-                            tiles_used_list.append(tile + 2)
-                        if (tile - 1) in hand_partition['seq-two-way']:
-                            num_waiting = 2
-                            tiles_needed_list.extend([tile+1, tile-1])
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 1)
-                            tiles_used_list.append(tile - 1)
-                            tiles_used_list.append(tile)
-                elif k == 'seq-one-way':
-                    for tile in v:
-                        if v.count(tile) > 1:
-                            num_waiting = 2
-                            if tile % 9 == 0:  # 12 seq
-                                tiles_needed_list.append(tile+2)
-                                tiles_used_list.append(tile)
-                                tiles_used_list.append(tile + 1)
-                                tiles_used_list.append(tile)
-                                tiles_used_list.append(tile + 1)
-                            else:  # 89 seq
-                                tiles_needed_list.append(tile-1)
-                                tiles_used_list.append(tile)
-                                tiles_used_list.append(tile + 1)
-                                tiles_used_list.append(tile)
-                                tiles_used_list.append(tile + 1)
-                elif k == 'seq-middle':
-                    for tile in v:
-                        if v.count(tile) > 1:
-                            num_waiting = 2
-                            tiles_needed_list.append(tile+1)
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 2)
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 2)
-                elif k == 'seq-complete':
-                    for tile in v:
-                        if v.count(tile) > 1: # 2 identical seq-com
-                            num_waiting = 0
-                            tiles_needed_list.clear()
-                            tiles_used_list.clear()
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 1)
-                            tiles_used_list.append(tile + 2)
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 1)
-                            tiles_used_list.append(tile + 2)
-                            break
-                        if (tile + 1) in hand_partition['seq-two-way']: #check if seq-com same as incomplete seqs
-                            if num_waiting > 1: #clear tiles_needed_list if waiting on less tiles
-                                tiles_needed_list.clear()
-                                tiles_used_list.clear()
-                            num_waiting = 1
-                            tiles_needed_list.append(tile)
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 1)
-                            tiles_used_list.append(tile + 2)
-                            tiles_used_list.append(tile + 1)
-                            tiles_used_list.append(tile + 2)
-                        if tile in hand_partition['seq-two-way']:
-                            if num_waiting > 1: #clear tiles_needed_list if waiting on less tiles
-                                tiles_needed_list.clear()
-                                tiles_used_list.clear()
-                            num_waiting = 1
-                            tiles_needed_list.append(tile + 2)
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 1)
-                            tiles_used_list.append(tile + 2)
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 1)
-                        if tile in hand_partition['seq-one-way'] or (tile + 1) in hand_partition['seq-one-way']:
-                            if num_waiting > 1: #clear tiles_needed_list if waiting on less tiles
-                                tiles_needed_list.clear()
-                                tiles_used_list.clear()
-                            num_waiting = 1
-                            if tile % 9 == 0: 
-                                tiles_needed_list.append(tile + 2)
-                                tiles_used_list.append(tile)
-                                tiles_used_list.append(tile + 1)
-                                tiles_used_list.append(tile + 2)
-                                tiles_used_list.append(tile)
-                                tiles_used_list.append(tile + 1)
-                            else: 
-                                tiles_needed_list.append(tile)
-                                tiles_used_list.append(tile)
-                                tiles_used_list.append(tile + 1)
-                                tiles_used_list.append(tile + 2)
-                                tiles_used_list.append(tile + 1)
-                                tiles_used_list.append(tile + 2)
-                        if tile in hand_partition['seq-middle']:
-                            if num_waiting > 1: #clear tiles_needed_list if waiting on less tiles
-                                tiles_needed_list.clear()
-                            num_waiting = 1
-                            tiles_needed_list.append(tile + 1)
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 1)
-                            tiles_used_list.append(tile + 2)
-                            tiles_used_list.append(tile)
-                            tiles_used_list.append(tile + 2)
+            for suit in range(2):
+                suit_offset = suit * 9
+                for i in range(7):
+                    temp_waiting = 6
+                    temp_waiting_list = [i, i+1, i+2, i, i+1, i+2]
+                    temp_waiting_list = [t + suit_offset for t in temp_waiting_list]
+                    temp_used_list = []
+
+                    for tile in hand_partition['seq-complete']:
+                        if tile % 9 == i:
+                            if tile in temp_waiting_list:
+                                temp_waiting -= 3
+                                temp_waiting_list.remove(tile)
+                                temp_waiting_list.remove(tile+1)
+                                temp_waiting_list.remove(tile+2)
+                                temp_used_list.append(tile)
+                                temp_used_list.append(tile+1)
+                                temp_used_list.append(tile+2)
+
+                    for tile in hand_partition['triplet']:
+                        if tile % 9 in [i, i+1, i+2]:
+                            if tile in temp_waiting_list:
+                                temp_waiting -= 1
+                                temp_waiting_list.remove(tile)
+                                temp_used_list.append(tile)
+
+                    for tile in hand_partition['pair']:
+                        if tile % 9 in [i, i+1, i+2]:
+                            if tile in temp_waiting_list:
+                                temp_waiting -= 1
+                                temp_waiting_list.remove(tile)
+                                temp_used_list.append(tile)
+
+                    for tile in hand_partition['single']:
+                        if tile % 9 in [i, i+1, i+2]:
+                            if tile in temp_waiting_list:
+                                temp_waiting -= 1
+                                temp_waiting_list.remove(tile)
+                                temp_used_list.append(tile)
+                    if  num_waiting >= temp_waiting:
+                        if num_waiting == temp_waiting:
+                            tiles_needed_list.extend(temp_waiting_list)
+                            tiles_used_list.extend(temp_used_list)
+                        else:
+                            num_waiting = temp_waiting
+                            tiles_needed_list = temp_waiting_list[:]
+                            tiles_used_list = temp_used_list[:]        
         else: num_waiting = 99
         return_dict.setdefault('two-identical-seq', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
         num_waiting = 0
@@ -396,10 +332,6 @@ class Mahjong_AI:
                 temp_use_list = []
                 for index in hand_partition['seq-complete']:
                     if (index % 9 == i):
-                        # print(index)
-                        # print(temp_wait_list)
-                        # print(type(temp_wait_list))
-                        # print(type(temp_wait_list[0]))
                         if index in temp_wait_list:
                             waiting_count -= 3
                             temp_wait_list.remove(index)
@@ -575,7 +507,7 @@ class Mahjong_AI:
             need_tri = 4 - num_triplet # triplet to complete
             num_waiting = need_tri * 2
             if(need_tri - num_pair < 0):
-                num_waiting = num_pair + 2(need_tri - num_pair) 
+                num_waiting = num_pair + 2 * (need_tri - num_pair) 
             else: 
                 num_waiting = num_waiting - num_pair # -1 for each extra pair            
         for k, v in hand_partition.items():
@@ -598,8 +530,12 @@ class Mahjong_AI:
         num_almost = 0
         num_two = 0
         pair_used = 0
-        tiles_needed_list = []
-        tiles_used_list = []
+        tiles_needed_list.clear()
+        tiles_used_list.clear()
+        tiles_needed_list_almost = []
+        tiles_needed_list_two = []
+        tiles_used_list_almost = []
+        tiles_used_list_two = []
         temp_used = []
         
         for k, v in hand_partition.items():
@@ -612,83 +548,116 @@ class Mahjong_AI:
                     else: # Honor
                         num_com = num_com + 1
                         tiles_used_list.extend([index, index, index])
-                if 'seq-complete' in k: # 123 OR 789
-                    if ((index % 9) in (0, 6)):
+                if 'seq-complete' in k: 
+                    if ((index % 9) in (0, 6)): # 123 OR 789
                         num_com = num_com + 1
                         tiles_used_list.extend([index, index+1, index+2])
+                    if ((index % 9) in (1, 5)): # 234 OR 678
+                        num_almost = num_almost + 1
+                        if (index == 1):
+                            tiles_used_list_almost.extend([index, index + 1]) #23
+                            tiles_needed_list_almost.extend([index - 1]) 
+                        if (index == 5):
+                            tiles_used_list_almost.extend([index + 1, index + 2]) #78
+                            tiles_needed_list_almost.extend([index + 3])
+                    if ((index % 9) in (2, 4)): # 345 OR 567
+                        num_two = num_two + 1
+                        if (index == 2):
+                            tiles_used_list_two.extend([index]) #3
+                            tiles_needed_list_two.extend([index - 2, index - 1]) #12
+                        if (index == 4):
+                            tiles_used_list_two.extend([index + 2]) #7
+                            tiles_needed_list_two.extend([index + 3, index + 4]) #89         
                 if 'seq-one-way' in k: # 12(3) OR (7)89     
                     if ((index % 9) == 0): # 12(3)
                         num_almost = num_almost + 1
-                        tiles_needed_list.extend([index + 2]) # 3
+                        tiles_needed_list_almost.extend([index + 2]) # 3
                         temp_used.extend([index, index + 1])
-                        tiles_used_list.extend([index, index + 1])
+                        tiles_used_list_almost.extend([index, index + 1])
                     if ((index % 9) == 7): # (7)89
                         num_almost = num_almost + 1
-                        tiles_needed_list.extend(index - 1) # 7
+                        tiles_needed_list_almost.extend(index - 1) # 7
                         temp_used.extend([index, index + 1])
-                        tiles_used_list.extend([index, index + 1])
+                        tiles_used_list_almost.extend([index, index + 1])
                 if 'seq-two-way' in k: # (1)23 OR 78(9) 
                     if ((index % 9) == 1): # (1)23
                         num_almost = num_almost + 1
-                        tiles_needed_list.extend([index - 1]) # 1
+                        tiles_needed_list_almost.extend([index - 1]) # 1
                         temp_used.extend([index, index + 1])
-                        tiles_used_list.extend([index, index + 1])
+                        tiles_used_list_almost.extend([index, index + 1])
                     if ((index % 9) == 6): # 78(9)
                         num_almost = num_almost + 1
-                        tiles_needed_list.extend([index + 2]) # 9
+                        tiles_needed_list_almost.extend([index + 2]) # 9
                         temp_used.extend([index, index + 1])
-                        tiles_used_list.extend([index, index + 1])                      
+                        tiles_used_list_almost.extend([index, index + 1])                      
                 if 'seq-middle' in k: # 1(2)3 OR 7(8)9
                     if ((index % 9) == 0): # 1(2)3
                         num_almost = num_almost + 1
-                        tiles_needed_list.extend([index + 1]) # 2
+                        tiles_needed_list_almost.extend([index + 1]) # 2
                         temp_used.extend([index, index + 2])
-                        tiles_used_list.extend([index, index + 2])
+                        tiles_used_list_almost.extend([index, index + 2])
                     if ((index % 9) == 6): # 7(8)9
                         num_almost = num_almost + 1
-                        tiles_needed_list.extend([index + 1]) # 8
+                        tiles_needed_list_almost.extend([index + 1]) # 8
                         temp_used.extend([index, index + 2])
-                        tiles_used_list.extend([index, index + 2])                     
+                        tiles_used_list_almost.extend([index, index + 2])                     
                 if 'pair' in k:
-                    if((index % 9) in (0, 8)):
+                    if((index % 9) in (0, 8)): #11 or 99
                         num_almost = num_almost + 1
                         pair_used = pair_used + 1
-                        tiles_needed_list.extend([index]) # 1 or 9
-                        tiles_used_list.extend([index, index])
+                        tiles_needed_list_almost.extend([index]) # 1 or 9
+                        tiles_used_list_almost.extend([index, index])
                 if 'single' in k:
-                   if index not in temp_used:
-                        if((index % 9) in (0, 6)):              
-                            num_two = num_two + 1
-                            tiles_needed_list.extend([index + 1, index + 2])
-                            tiles_used_list.extend([index])
-                        if((index % 9) in (1, 7)):
-                            num_two = num_two + 1
-                            tiles_needed_list.extend([index - 1, index + 1]) 
-                            tiles_used_list.extend([index])                       
-                        if((index % 9) in (2, 8)):
-                            num_two = num_two + 1
-                            tiles_needed_list.extend([index - 1, index - 2])
-                            tiles_used_list.extend([index])
-        
+                    if index not in temp_used:
+                        if((num_com + num_almost) < 4):
+                            if((index % 9) in (0, 6)): # 1 or 7             
+                                num_two = num_two + 1 
+                                tiles_needed_list_two.extend([index + 1, index + 2]) #23 or 89
+                                tiles_used_list_two.extend([index])
+                            if((index % 9) in (1, 7)): # 2 or 8
+                                num_two = num_two + 1
+                                tiles_needed_list_two.extend([index - 1, index + 1]) #13 or 79
+                                tiles_used_list_two.extend([index])                       
+                            if((index % 9) in (2, 8)): #3 or 9
+                                num_two = num_two + 1
+                                tiles_needed_list_two.extend([index - 1, index - 2]) #12 or 78
+                                tiles_used_list_two.extend([index])
+       
         needed_com = 4 - num_com
         if needed_com > 0:
-            if (needed_com - num_almost)  < 1:
+            if ((needed_com - num_almost) < 1):
                 num_waiting = needed_com
-            elif (needed_com - num_almost - num_two) < 1:
+                tiles_used_list.extend(tiles_used_list_almost)
+                tiles_needed_list.extend(tiles_needed_list_almost)
+            elif ((needed_com - num_almost - num_two) < 1):
                 needed_com = needed_com - num_almost
                 num_waiting = num_almost + (2 * needed_com)
+                tiles_used_list.extend(tiles_used_list_almost)
+                tiles_used_list.extend(tiles_used_list_two)
+                tiles_needed_list.extend(tiles_needed_list_almost)
+                tiles_needed_list.extend(tiles_needed_list_two)
             else:
                 needed_com = needed_com - num_almost - num_two
-                num_waiting = num_almost + (2 * num_two) + (3 * needed_com)            
+                num_waiting = num_almost + (2 * num_two) + (3 * needed_com)
+                tiles_used_list.extend(tiles_used_list_almost)
+                tiles_used_list.extend(tiles_used_list_two)
+                tiles_needed_list.extend(tiles_needed_list_almost)
+                tiles_needed_list.extend(tiles_needed_list_two)           
         else:
             num_waiting = 0
         return_dict.setdefault("ternimal_in_all", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
-
+        tiles_used_list_almost.clear()
+        tiles_used_list_two.clear()
+        tiles_needed_list_almost.clear()
+        tiles_needed_list_two.clear()
+        tiles_used_list_almost.clear()
+        tiles_used_list_two.clear()
         
         # 10. seven pair 
         # condition: 7 pair partition
-        tiles_needed_list = []
-        tiles_used_list = []
+        tiles_needed_list.clear()
+        tiles_used_list.clear()
+        temp_used.clear()
         if len(meld) == 0:
             if num_pair < 7:
                 temp = 7 - num_pair
@@ -697,25 +666,26 @@ class Mahjong_AI:
                 for index in v:
                     if ('pair' in k):
                         tiles_used_list.extend([index, index])
+                        temp_used.extend([index])
                     if (('single' in k) and (num_pair < 7)):
-                        tiles_needed_list.extend([index])
+                        if index not in temp_used:
+                            tiles_needed_list.extend([index])   
         else: num_waiting = 99         
         return_dict.setdefault("seven_pairs", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
+        tiles_needed_list.clear()
+        tiles_used_list.clear()        
         ## above Lee 8-10 ##
         
         return return_dict
-
-    def complete_hand(self, hand_partition, meld):
-        
-        return
         
 
 def main():
     mai = Mahjong_AI()
-    hand_partition = {'seq-complete':[9,18], 'seq-middle': [], 'seq-two-way': [1], 'pair': [7], 
-                        'triplet': [5], 'single': [1,2,8], 'seq-one-way': []}
+    hand_partition = {'seq-complete':[1, 5], 'seq-middle': [], 'seq-two-way': [], 'pair': [5,7], 
+                        'triplet': [20], 'single': [17], 'seq-one-way': []}
     meld = []
     print(mai.yaku_check(hand_partition, meld))
+
 
 if __name__ == '__main__':
     main()
