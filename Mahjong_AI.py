@@ -301,7 +301,7 @@ class Mahjong_AI:
 
 def main():
     mai = Mahjong_AI()
-    hand_partition = {'seq-complete':[9,18], 'seq-middle': [], 'seq-two-way': [1], 'pair': [7], 
+    hand_partition = {'seq-complete':[9], 'seq-middle': [], 'seq-two-way': [1],'seq-one-way':[], 'pair': [7], 
                         'triplet': [5], 'single': [1,2]}
     meld = []
     print(mai.yaku_check(hand_partition, meld))
