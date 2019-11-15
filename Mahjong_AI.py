@@ -323,7 +323,7 @@ class Mahjong_AI:
             suit_pin = [0] * 9
             suit_sou = [0] * 9
 
-            for k, v in hand_partition.items(): # unique tile counted = 1, else 0
+            for k, v in partition_seq.items(): # unique tile counted = 1, else 0
                 for tile in v:
                     if 'seq-complete' in k:
                         if tile < 7:
@@ -403,7 +403,7 @@ class Mahjong_AI:
                 waiting_count = 9
                 temp_wait_list = [i,i+1,i+2,i+9,i+10,i+11,i+18,i+19,i+20]
                 temp_use_list = []
-                for index in hand_partition['seq-complete']:
+                for index in partition_seq['seq-complete']:
                     if (index % 9 == i):
                         if index in temp_wait_list:
                             waiting_count -= 3
@@ -414,21 +414,21 @@ class Mahjong_AI:
                             temp_use_list.append(index+1)
                             temp_use_list.append(index+2)
 
-                for index in hand_partition['triplet']:
+                for index in partition_seq['triplet']:
                     if (index % 9 == i):
                         if(index in temp_wait_list):
                             waiting_count -= 1
                             temp_wait_list.remove(index)
                             temp_use_list.append(index)
                 
-                for index in hand_partition['pair']:
+                for index in partition_seq['pair']:
                     if(index % 9 == i):
                         if(index in temp_wait_list):
                             waiting_count -= 1
                             temp_wait_list.remove(index)
                             temp_use_list.append(index)
                 
-                for index in hand_partition['single']:
+                for index in partition_seq['single']:
                     if (index % 9 >= i and index % 9 <= i+2):
                         if(index in temp_wait_list):
                             waiting_count -= 1
@@ -460,7 +460,7 @@ class Mahjong_AI:
             closestT = [0] * 9
             closest_indexes = [0] * 9
 
-            for k, v in hand_partition.items(): # find and store # of tiles at indexes respective to suits
+            for k, v in partition_triplet.items(): # find and store # of tiles at indexes respective to suits
                 for tile in v:
                     if tile < 27:
                         if 'triplet' in k:
