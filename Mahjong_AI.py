@@ -92,7 +92,8 @@ class Mahjong_AI:
                     elif k == 'pair':
                         triplet_num_waiting = triplet_num_waiting + 1
                 else:
-                    tiles_used_list.append(tile)
+                    if 'seq' not in k:
+                        tiles_used_list.append(tile)
                     if k == 'triplet':
                         tiles_used_list.append(tile)
                         tiles_used_list.append(tile)
@@ -109,6 +110,10 @@ class Mahjong_AI:
                         tiles_used_list.append(tile + 1)
                     if mod_var == 0: # 123 sequence
                         tiles_needed_list.append(tile + 3) # need tile 4
+                        tiles_used_list.append(tile + 1)
+                        tiles_used_list.append(tile + 2)
+                    else:
+                        tiles_used_list.append(tile)
                         tiles_used_list.append(tile + 1)
                         tiles_used_list.append(tile + 2)
                 elif k == 'seq-one-way':
