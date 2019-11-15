@@ -573,7 +573,7 @@ class Mahjong_AI:
 
         pair_num_pair = len(partition_pair['pair'])
         pair_num_triplet = len(partition_pair['triplet'])
-        pair_num_seq = len(partition_pait['seq-complete'])
+        pair_num_seq = len(partition_pair['seq-complete'])
 
         # 8. all triplet
         # condition: 4 triplet ( or quads) with 1 pair  
