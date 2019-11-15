@@ -7,10 +7,16 @@ class MahjongAgent:
     pin = [1,1,0,1,0,0,0,0,0]  #18-26
     honor = [0,0,0,0,0,0,0]
     hands = [wan,so,pin]
+
+    hand = []
+    open_meld = []
     partition = {}
     efficiency_map = {}
     num_remain_tile = 70
     tile_count = [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]
+
+    han = 0
+    fu = 20
     
     
     # sequence_two-way * 0.7 * 0.24
@@ -610,9 +616,11 @@ class MahjongAgent:
         # find the difference
         while index < len(hand_bef):
             value = hand_bef[index]
-            if(hand_aft.count(value) < hand_bef.count(value)):
-                diff.append(value)
-            
+            count_after = hand_aft.count(value)
+            count_before = hand_bef.count(value)
+            if(count_after < count_before):
+                diff.extend([value]*(count_before - count_after))
+
             index += 1
         
         if(isSeq == False):
@@ -687,11 +695,11 @@ class MahjongAgent:
 
     # 1. Determine a list of goals for the yaku (by the tile distance and needed tile remaining to calculate the possibility) and have a threshold. 
     def yaku_goal_list(self,yaku_dict):
-        return_dict = {}
+        prob_dict = {}
         for yaku in yaku_dict:
             num_waiting = yaku_dict[yaku][0]
             waiting_tile_list = yaku_dict[yaku][1]
-            #partition = yaku_dict[2]
+            partition = yaku_dict[yaku][3]
             possibility = 1
             # 1 - (1-p1)*(1-p2)
             # p1*p2
@@ -706,20 +714,63 @@ class MahjongAgent:
                     possibility *= 1 - (1 - (temp_total/self.num_remain_tile))**5
 
             print(yaku,':',possibility)
-            return_dict.setdefault(yaku,possibility)
+            prob_dict.setdefault(yaku,possibility)
         
-        print(return_dict)
-        return return_dict
-                        
-          
-                
+        print(prob_dict)
+                            
+    #2. Determine the tiles used in these yaku, modified by the possibility of that yaku and the point value to give these tile a weight. 
+        # yaku that are set up as goals
+        tile_weight_dict = {}
+        for yaku in prob_dict:
+            prob = prob_dict[yaku]
+            # calculate yaku's point value
+            # 1 han
+            used_tile_list = yaku_dict[yaku][2]
+            point_value = 2000
+        
+            for tile in used_tile_list:
+                if(tile in tile_weight_dict.keys()):
+                    tile_weight_dict[tile] += point_value*prob
+                else:
+                    tile_weight_dict.setdefault(tile,point_value*prob)    
 
-    # 2. Determine the tiles used in these yaku, modified by the possibility of that yaku and the point value to give these tile a weight. 
-    def score_possib_weight(self,yaku_dict):
-        # for key in yaku_dict:
-            
-        return None
+        return tile_weight_dict
     # 3. For incomplete seq or single tile, calculate the possibility of some sort of advancing (for example, from single tile to seq-two-way, or from seq-one-way to seq-two-way etc). Give tiles weight based on that possibility. Then we have a list of tiles with weight, the one with the least weight should be the least important.
+    # def incomplete_tile(self,partition):
+    #     for index in partition['seq-two-way']:
+        
+    #     for index in partition['seq-one-way']:
+            
+    
+    def han_fu_calculation(self,han_string,partition):
+        if('pinfu' in han_string):
+            return 1,0
+        
+        if('all simple' in han_string):
+            return 1,0
+
+
+    def point_calculation(self,fu,han):
+        self.fu += fu
+        self.han += han
+        if(self.han <= 4):
+            return fu*2**(han+2)
+
+        elif(self.han == 5):
+            return 8000
+        
+        elif(self.han <= 7):
+            return 12000
+        
+        elif(self.han <= 10):
+            return 18000
+        
+        elif(self.han <= 12):
+            return 24000
+        
+        else:
+            return 36000
+
 
 
 dummy = MahjongAgent()
@@ -732,8 +783,9 @@ hand_6 = [2,2,3,3,3,4,4,4,5,11,12]
 hand_7 = [2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23]
 hand_test = [1,3,5,7]
 
-yaku_check = {'pinfu':[2,[3,7]],'all-simple':[3,[13,15,23]],'tanyaou':[1,[6]]}
-print(dummy.yaku_goal_list(yaku_check))
+yaku_check = {'pinfu':[2,[3,7],[1,2,3],'seq'],'all-simple':[3,[13,15,23],[3,4,5],'seq'],'tanyaou':[1,[6],[3,6,9],'seq']}
+
+print(dummy.partition_dict(hand_7,'seq'))
 
 # 3, 3, 5, 5, 5, 12, 13, 14, 18, 19, 21, 22, 23, 23
 #2, 11, 12, 13, 20, 21, 22, 28, 28, 29, 29

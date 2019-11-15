@@ -20,7 +20,7 @@ def main():
     for i in test_hands:
         print("Testing Hand {}".format(i))
         print(agent.partition_dict(i,'seq'))
-        print(ai.yaku_check(agent.partition_dict(i,'seq'),''))
+        # print(ai.yaku_check(agent.partition_dict(i,'seq'),''))
         print("="*20)
 
 if __name__ == '__main__':
