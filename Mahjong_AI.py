@@ -233,7 +233,7 @@ class Mahjong_AI:
 
         # 3. honor yaku
         # condition: check if honor triplet exist
-        num_waiting = 3 # if no honor tiles in hand, it will be an empy list
+        num_waiting = 99 # if no honor tiles in hand, it will be an empy list
         for t in partition_triplet['single']:
             if t >= 27:
                 num_waiting = 2
