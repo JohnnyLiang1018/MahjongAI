@@ -65,6 +65,10 @@ class Mahjong_AI:
                     tiles_needed_list.append(t)
                     tiles_used_list.append(t)
                     tiles_used_list.append(t)
+            else:
+                for t in partition_seq['pair']:
+                    tiles_used_list.append(t)
+                    tiles_used_list.append(t)
         else: num_waiting = 99
         return_dict.setdefault("pinfu", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'seq'])
         num_waiting = 0
