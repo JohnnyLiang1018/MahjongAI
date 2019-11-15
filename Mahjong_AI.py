@@ -102,7 +102,7 @@ class Mahjong_AI:
                         tiles_needed_list.append(tile + 3) # need tile 4
                         tiles_used_list.append(tile + 1)
                         tiles_used_list.append(tile + 2)
-                if k == 'seq-one-way':
+                elif k == 'seq-one-way':
                     if mod_var == 0: # Have already added 1 waiting tile in previous check
                         triplet_num_waiting = triplet_num_waiting + 1
                         tiles_needed_list.extend([tile+2, tile+3]) # need 3, 4
@@ -111,7 +111,7 @@ class Mahjong_AI:
                         triplet_num_waiting = triplet_num_waiting + 2
                         tiles_needed_list.extend([tile-1, tile-2]) # need 7, 6
                         # tiles_used_list.append(tile)
-                if k == 'seq-two-way':
+                elif k == 'seq-two-way':
                     if mod_var == 6: #78 two way
                         triplet_num_waiting = triplet_num_waiting + 1
                         tiles_needed_list.append(tile - 1)
@@ -127,7 +127,7 @@ class Mahjong_AI:
                         tiles_needed_list.append([tile-1, tile+2])
                         # tiles_used_list.append(tile)
                         # tiles_used_list.append(tile + 1)
-                if k == 'seq-middle':
+                elif k == 'seq-middle':
                     if mod_var == 6: # 7_9 sequence 
                         triplet_num_waiting = triplet_num_waiting + 2
                         tiles_needed_list.extend([tile+1, tile-1]) # need 6, 8
@@ -170,7 +170,7 @@ class Mahjong_AI:
                         temp_waiting_list.append(tile + 3) # need tile 4
                         temp_used_list.append(tile + 1)
                         temp_used_list.append(tile + 2)
-                if k == 'seq-one-way':
+                elif k == 'seq-one-way':
                     if mod_var == 0: # Have already added 1 waiting tile in previous check
                         seq_num_waiting = seq_num_waiting + 1
                         temp_waiting_list.extend([tile+2, tile+3]) # need 3, 4
@@ -179,7 +179,7 @@ class Mahjong_AI:
                         seq_num_waiting = seq_num_waiting + 2
                         temp_waiting_list.extend([tile-1, tile-2]) # need 7, 6
                         # temp_used_list.append(tile)
-                if k == 'seq-two-way':
+                elif k == 'seq-two-way':
                     if mod_var == 6: #78 two way
                         seq_num_waiting = seq_num_waiting + 1
                         temp_waiting_list.append(tile - 1)
@@ -195,7 +195,7 @@ class Mahjong_AI:
                         temp_waiting_list.append([tile-1, tile+2])
                         # temp_used_list.append(tile)
                         # temp_used_list.append(tile + 1)
-                if k == 'seq-middle':
+                elif k == 'seq-middle':
                     if mod_var == 6: # 7_9 sequence 
                         seq_num_waiting = seq_num_waiting + 2
                         temp_waiting_list.extend([tile+1, tile-1]) # need 6, 8
