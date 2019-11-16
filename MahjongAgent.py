@@ -21,14 +21,14 @@ class MahjongAgent:
     han = 0
     fu = 20
     
-    def __init__(self,gameboard):
-        self.hand = []
-        self.open_meld = []
-        self.gameboard = gameboard
-        self.tile_count = [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]
-        self.num_remain_tile = 83
-        self.fu = 20
-        self.han = 0
+    # def __init__(self,gameboard):
+    #     self.hand = []
+    #     self.open_meld = []
+    #     self.gameboard = gameboard
+    #     self.tile_count = [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]
+    #     self.num_remain_tile = 83
+    #     self.fu = 20
+    #     self.han = 0
 
     
     # sequence_two-way * 0.7 * 0.24
@@ -631,7 +631,7 @@ class MahjongAgent:
             count_after = hand_aft.count(value)
             count_before = hand_bef.count(value)
             if(count_after < count_before):
-                diff.extend([value]*(count_before - count_after))
+                diff.append(value)
 
             index += 1
         
@@ -688,18 +688,18 @@ class MahjongAgent:
                 # if there are two consecutive tiles
                 if(second_tile > 0):
                     if(x % 9 == 0 or x % 9 == 8):
-                        return_dict["seq-one-way"].append(x)
+                        return_dict["seq-one-way"].extend([x]*first_tile)
                     else:
-                        return_dict["seq-two-way"].append(x)
+                        return_dict["seq-two-way"].extend([x]*first_tile)
                     
-                    x += 2
+                    x += 1
 
                 elif(third_tile > 0):
                     if((x+2) // 9 == (x+3) // 9 and hand.count(x+3) == 0):
                         return_dict["seq-middle"].append(x)
                     
                     if(third_tile == 1 and hand.count(x+3) == 0):
-                        x += 2
+                        x += 1
                 
             x += 1
 
@@ -732,7 +732,7 @@ class MahjongAgent:
                             
     #2. Determine the tiles used in these yaku, modified by the possibility of that yaku and the point value to give these tile a weight. 
         # yaku that are set up as goals
-        tile_weight_dict = {}
+        tile_weight_dict = {'default':99}
         for yaku in prob_dict:
             prob = prob_dict[yaku]
             # calculate yaku's point value
@@ -741,7 +741,7 @@ class MahjongAgent:
             point_value = 2000
         
             for tile in used_tile_list:
-                if(tile in tile_weight_dict.keys()):
+                if(tile in tile_weight_dict):
                     tile_weight_dict[tile] += point_value*prob
                 else:
                     tile_weight_dict.setdefault(tile,point_value*prob)    
@@ -752,7 +752,7 @@ class MahjongAgent:
         for tile in partition['seq-two-way']:
             total_remain = self.tile_count_getter(tile-1) + self.tile_count_getter(tile+2)
             prob = total_remain / self.num_remain_tile
-            if(tile in tile_weight_dict.keys()):
+            if(tile in tile_weight_dict):
                 tile_weight_dict[tile] += prob
             else:
                 tile_weight_dict.setdefault(tile,prob)
@@ -763,28 +763,28 @@ class MahjongAgent:
             else:
                 total_remain = self.tile_count_getter(tile-1)
             prob = total_remain / self.num_remain_tile
-            if(tile in tile_weight_dict.keys()):
+            if(tile in tile_weight_dict):
                 tile_weight_dict[tile] += prob
             else:
                 tile_weight_dict.setdefault(tile,prob)
 
         for tile in partition['seq-middle']:
             prob = self.tile_count_getter(tile+1) / self.num_remain_tile
-            if(tile in tile_weight_dict.keys()):
+            if(tile in tile_weight_dict):
                 tile_weight_dict[tile] += prob
             else:
                 tile_weight_dict.setdefault(tile,prob)
         
         for tile in partition['pair']:
             prob = self.tile_count_getter(tile) / self.num_remain_tile
-            if(tile in tile_weight_dict.keys()):
+            if(tile in tile_weight_dict):
                 tile_weight_dict[tile] += prob
             else:
                 tile_weight_dict.setdefault(tile,prob)
         
         for tile in partition['single']:
             prob = self.tile_count_getter(tile) / self.num_remain_tile
-            if(tile in tile_weight_dict.keys()):
+            if(tile in tile_weight_dict):
                 tile_weight_dict[tile] + prob
             else:
                 tile_weight_dict.setdefault(tile,prob)
@@ -818,7 +818,7 @@ class MahjongAgent:
 
         partition_tri = self.partition_dict(self.hand,'tri')
         partition_pair = self.partition_dict(self.hand,'pair')
-        yaku_dict = ma.yaku_check(partition_seq,self.open_meld)
+        yaku_dict = ma.yaku_check(partition_seq,partition_tri,partition_pair,self.open_meld)
         print('Yaku_dict: ',yaku_dict)
 
         tile_weight_dict = self.yaku_goal_list(yaku_dict)
@@ -826,7 +826,7 @@ class MahjongAgent:
 
         min_weight = 1
         min_tile = None
-        for tile in tile_weight_dict.keys():
+        for tile in tile_weight_dict:
             if (tile_weight_dict[tile] < min_weight):
                 min_weight = tile_weight_dict[tile]
                 min_tile = tile
@@ -895,19 +895,19 @@ class MahjongAgent:
     
 
 
-# dummy = MahjongAgent()
-# hand = [0,0,1,1,2,2,4,4,7,7,9,9,20,30]
-# hand_2 = [0,1,2,3,4,5,6,7,8,9,10,11,12,13]
-# hand_3 = [2,3,4,6,7,8,13,14,15,16,16,19,20,23]
-# hand_4 = [9,10,12,13,14,19,20,21,23,24,25,30,30,31]
-# hand_5 = [1,2,3,4,4,4,5,6,7,7,7,9,10,12]
-# hand_6 = [2,2,3,3,3,4,4,4,5,11,12]
-# hand_7 = [2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23]
-# hand_test = [1,3,5,7]
+dummy = MahjongAgent()
+hand = [0,0,1,1,2,2,4,4,7,7,9,9,20,30]
+hand_2 = [0,1,2,3,4,5,6,7,8,9,10,11,12,13]
+hand_3 = [2,3,4,6,7,8,13,14,15,16,16,19,20,23]
+hand_4 = [9,10,12,13,14,19,20,21,23,24,25,30,30,31]
+hand_5 = [1,2,3,4,4,4,5,6,7,7,7,9,10,12]
+hand_6 = [2,2,3,3,3,4,4,4,5,11,12]
+hand_7 = [2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23]
+hand_test = [1,1,2,2,3,3,5,5,6,6,10,10,12,12]
 
-# yaku_check = {'pinfu':[2,[3,7],[1,2,3],'seq'],'all-simple':[3,[13,15,23],[3,4,5],'seq'],'tanyaou':[1,[6],[3,6,9],'seq']}
+yaku_check = {'pinfu':[2,[3,7],[1,2,3],'seq'],'all-simple':[3,[13,15,23],[3,4,5],'seq'],'tanyaou':[1,[6],[3,6,9],'seq']}
 
-# print(dummy.yaku_goal_list(yaku_check,[1,2,4,5,8,9]))
+print(dummy.partition_dict(hand_test,'seq'))
 
 # 3, 3, 5, 5, 5, 12, 13, 14, 18, 19, 21, 22, 23, 23
 #2, 11, 12, 13, 20, 21, 22, 28, 28, 29, 29
