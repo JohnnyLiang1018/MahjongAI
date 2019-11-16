@@ -2,7 +2,7 @@ class Mahjong_AI:
     # hand_partition, meld: list of tuple(partition_str,index_int)
     # hand_partition ex: {seq-complete:[start_tile_seq1, start_tile_seq2, etch],  pair:tile}
 
-    # return dict : {yaku_name: [num_waiting,[waiting_tiles_list], tiles_used_list]}
+    # return dict : {yaku_name: [num_waiting,[waiting_tiles_list], tiles_used_list], partition_used}
     def yaku_check(self,partition_seq, partition_triplet, partition_pair,meld):
         return_dict = {}
         num_waiting = 0
@@ -57,8 +57,8 @@ class Mahjong_AI:
                     possible_pairs_list = []
                     if t not in tiles_used_list:
                         possible_pairs_list.append(t)
-                    tiles_needed_list.append(possible_pairs_list)
-                    tiles_used_list.append(possible_pairs_list)
+                    tiles_needed_list.extend(possible_pairs_list)
+                    tiles_used_list.extend(possible_pairs_list)
             elif len(partition_seq['pair']) > 1:
                 num_waiting = num_waiting + len(partition_seq['pair']) - 1
                 for t in partition_seq['pair']:
@@ -330,7 +330,6 @@ class Mahjong_AI:
         else:
             closestS = 0
             num_waiting = 9
-            straight_suits = [0] * 3
             straight_counts = [0] * 3
             suit_wan = [0] * 9
             suit_pin = [0] * 9
@@ -371,34 +370,30 @@ class Mahjong_AI:
             if (num_waiting > (9 - straight_counts[2])):
                 num_waiting = 9 - straight_counts[0]
                 closestS = 2
-            straight_suits[closestS] = 1
 
-            for i in range (0, 3): # find similarly close straights
-                if (9 - straight_counts[i]) == (9 - straight_counts[closestS]):
-                    straight_suits[i] = 1
+            if num_waiting == 9: # if all honors
+                num_waiting = 99
         
-            for i in range (0, 3): # append to the waiting tiles and used tiles lists
-                if straight_suits[i] == 1:
-                    if i == 0:
-                        for j in range (0, 9):
-                            if suit_wan[j] == 0:
-                                tiles_needed_list.append(j)
-                            else:
-                                tiles_used_list.append(j)
+            if closestS == 0: # append to waiting and used tiles lists
+                for i in range (0, 9):
+                    if suit_wan[i] == 0:
+                        tiles_needed_list.append(i)
+                    else:
+                        tiles_used_list.append(i)
 
-                    if i == 1:
-                        for j in range (0, 9):
-                            if suit_pin[j] == 0:
-                                tiles_needed_list.append((j + 9))
-                            else:
-                                tiles_used_list.append((j + 9))
+            if closestS == 1:
+                for i in range (0, 9):
+                    if suit_pin[i] == 0:
+                        tiles_needed_list.append((i + 9))
+                    else:
+                        tiles_used_list.append((i + 9))
 
-                    if i == 2:
-                        for j in range (0, 9):
-                            if suit_sou[j] == 0:
-                                tiles_needed_list.append((j + 18))
-                            else:
-                                tiles_used_list.append((j+ 18))
+            if closestS == 2:
+                for i in range (0, 9):
+                    if suit_sou[i] == 0:
+                        tiles_needed_list.append((i + 18))
+                    else:
+                        tiles_used_list.append((i + 18))
 
             return_dict.setdefault("straight", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'seq'])
             num_waiting = 0
@@ -471,7 +466,6 @@ class Mahjong_AI:
             suit_pinT = [0] * 9
             suit_souT = [0] * 9
             closestT = [0] * 9
-            closest_indexes = [0] * 9
 
             for k, v in partition_triplet.items(): # find and store # of tiles at indexes respective to suits
                 for tile in v:
@@ -531,44 +525,41 @@ class Mahjong_AI:
                     num_waiting = 9 - closestT[i][3]
                     closest_index = i
 
-            for i in range (0, 9): # check for similarly close 3-color-triplet setups
-                if closestT[i][3] == closestT[closest_index][3]:
-                    closest_indexes[i] = 1
+            if num_waiting == 9: # if all honors
+                num_waiting = 99
 
-            for i in range (0, 9): # append needed & used tiles lists (indexes -> total tiles per value)
-                if closest_indexes[i] == 1:
-                    for j in range (0, 3):
-                        if closestT[i][j] <= 3:
-                            if j == 0:
-                                for k in range (0, (3 - closestT[i][j])):
-                                    tiles_needed_list.append(i)
-                                for k in range (0, closestT[i][j]):
-                                    tiles_used_list.append(i)
+            for i in range (0, 3): # append needed & used tiles lists
+                if closestT[closest_index][i] <= 3:
+                    if i == 0:
+                        for j in range (0, (3 - closestT[closest_index][i])):
+                            tiles_needed_list.append(closest_index)
+                        for j in range (0, closestT[closest_index][i]):
+                            tiles_used_list.append(closest_index)
 
-                            if j == 1:
-                                for k in range (0, (3 - closestT[i][j])):
-                                    tiles_needed_list.append(i + 9)
-                                for k in range (0, closestT[i][j]):
-                                    tiles_used_list.append(i + 9)
+                    if i == 1:
+                        for j in range (0, (3 - closestT[closest_index][i])):
+                            tiles_needed_list.append(closest_index + 9)
+                        for j in range (0, closestT[closest_index][i]):
+                            tiles_used_list.append(closest_index + 9)
 
-                            if j == 2:
-                                for k in range (0, (3 - closestT[i][j])):
-                                    tiles_needed_list.append(i + 18)
-                                for k in range (0, closestT[i][j]):
-                                    tiles_used_list.append(i + 18)
+                    if i == 2:
+                        for j in range (0, (3 - closestT[closest_index][i])):
+                            tiles_needed_list.append(closest_index + 18)
+                        for j in range (0, closestT[closest_index][i]):
+                            tiles_used_list.append(closest_index + 18)
 
-                        else: # 4 tiles under value i in a suit (no need to append needed tiles list)
-                            if j == 0:
-                                for k in range (0, 3):
-                                    tiles_used_list.append(i)
+                else: # 4 tiles under value i in a suit (no need to append needed tiles list)
+                    if i == 0:
+                        for j in range (0, 3):
+                            tiles_used_list.append(closest_index)
 
-                            if j == 1:
-                                for k in range (0, 3):
-                                    tiles_used_list.append(i + 9)
+                    if i == 1:
+                        for j in range (0, 3):
+                            tiles_used_list.append(closest_index + 9)
 
-                            if j == 2:
-                                for k in range (0, 3):
-                                    tiles_used_list.append(i + 18)
+                    if i == 2:
+                        for j in range (0, 3):
+                            tiles_used_list.append(closest_index + 18)
 
             return_dict.setdefault("3-color-triplet", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'tri'])
             num_waiting = 0
@@ -583,7 +574,7 @@ class Mahjong_AI:
         tri_num_pair = len(partition_triplet['pair'])
         tri_num_triplet = len(partition_triplet['triplet'])
         #tri_num_seq = len(partition_triplet['seq-complete'])
-        # need_tri = 0
+        need_tri = 0
 
         pair_num_pair = len(partition_pair['pair'])
 
@@ -591,6 +582,7 @@ class Mahjong_AI:
         # condition: 4 triplet ( or quads) with 1 pair 
         if tri_num_triplet == 4: # 4 tri
             num_waiting = 0
+            need_tri = 0
         else: # less than 4 tri
             need_tri = 4 - tri_num_triplet # triplet to complete
             num_waiting = need_tri * 2
@@ -753,6 +745,8 @@ class Mahjong_AI:
                     for index in v:
                         if ('pair' in k):
                             tiles_used_list.extend([index, index])
+                        if ('single' in k):
+                            tiles_needed_list.extend([index])   
             else: num_waiting = 0                     
         else: num_waiting = 99         
         return_dict.setdefault("seven_pairs", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'pair'])
