@@ -582,6 +582,7 @@ class Mahjong_AI:
         # condition: 4 triplet ( or quads) with 1 pair 
         if tri_num_triplet == 4: # 4 tri
             num_waiting = 0
+            need_tri = 0
         else: # less than 4 tri
             need_tri = 4 - tri_num_triplet # triplet to complete
             num_waiting = need_tri * 2
@@ -744,6 +745,8 @@ class Mahjong_AI:
                     for index in v:
                         if ('pair' in k):
                             tiles_used_list.extend([index, index])
+                        if ('single' in k):
+                            tiles_needed_list.extend([index])   
             else: num_waiting = 0                     
         else: num_waiting = 99         
         return_dict.setdefault("seven_pairs", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'pair'])

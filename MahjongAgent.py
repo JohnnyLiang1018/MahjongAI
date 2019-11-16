@@ -21,26 +21,6 @@ class MahjongAgent:
     han = 0
     fu = 20
     
-<<<<<<< HEAD
-    # def __init__(self,gameboard):
-    #     self.hand = []
-    #     self.open_meld = []
-    #     self.gameboard = gameboard
-    #     self.tile_count = [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]
-    #     self.num_remain_tile = 83
-    #     self.fu = 20
-    #     self.han = 0
-=======
-<<<<<<< HEAD
-    def __init__(self,gameboard):
-        self.hand = []
-        self.open_meld = []
-        self.gameboard = gameboard
-        self.tile_count = [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]
-        self.num_remain_tile = 83
-        self.fu = 20
-        self.han = 0
-=======
     # def __init__(self,gameboard):
         # self.hand = []
         # self.open_meld = []
@@ -49,8 +29,7 @@ class MahjongAgent:
         # self.num_remain_tile = 83
         # self.fu = 20
         # self.han = 0
->>>>>>> ddf9db1db29be1c24061a28e6cbce290d7a0f060
->>>>>>> f58cbe2b53d893395a2e54bb74b1e6b58794efe3
+
 
     
     # sequence_two-way * 0.7 * 0.24
