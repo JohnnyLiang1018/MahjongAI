@@ -21,6 +21,7 @@ class MahjongAgent:
     han = 0
     fu = 20
     
+<<<<<<< HEAD
     # def __init__(self,gameboard):
     #     self.hand = []
     #     self.open_meld = []
@@ -29,6 +30,27 @@ class MahjongAgent:
     #     self.num_remain_tile = 83
     #     self.fu = 20
     #     self.han = 0
+=======
+<<<<<<< HEAD
+    def __init__(self,gameboard):
+        self.hand = []
+        self.open_meld = []
+        self.gameboard = gameboard
+        self.tile_count = [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]
+        self.num_remain_tile = 83
+        self.fu = 20
+        self.han = 0
+=======
+    # def __init__(self,gameboard):
+        # self.hand = []
+        # self.open_meld = []
+        # self.gameboard = gameboard
+        # self.tile_count = [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]
+        # self.num_remain_tile = 83
+        # self.fu = 20
+        # self.han = 0
+>>>>>>> ddf9db1db29be1c24061a28e6cbce290d7a0f060
+>>>>>>> f58cbe2b53d893395a2e54bb74b1e6b58794efe3
 
     
     # sequence_two-way * 0.7 * 0.24
@@ -631,7 +653,7 @@ class MahjongAgent:
             count_after = hand_aft.count(value)
             count_before = hand_bef.count(value)
             if(count_after < count_before):
-                diff.extend([value]*(count_before - count_after))
+                diff.append(value)
 
             index += 1
         
@@ -688,18 +710,18 @@ class MahjongAgent:
                 # if there are two consecutive tiles
                 if(second_tile > 0):
                     if(x % 9 == 0 or x % 9 == 8):
-                        return_dict["seq-one-way"].append(x)
+                        return_dict["seq-one-way"].extend([x]*first_tile)
                     else:
-                        return_dict["seq-two-way"].append(x)
+                        return_dict["seq-two-way"].extend([x]*first_tile)
                     
-                    x += 2
+                    x += 1
 
                 elif(third_tile > 0):
                     if((x+2) // 9 == (x+3) // 9 and hand.count(x+3) == 0):
                         return_dict["seq-middle"].append(x)
                     
                     if(third_tile == 1 and hand.count(x+3) == 0):
-                        x += 2
+                        x += 1
                 
             x += 1
 
@@ -741,7 +763,7 @@ class MahjongAgent:
             point_value = 2000
         
             for tile in used_tile_list:
-                if(tile in tile_weight_dict.keys()):
+                if(tile in tile_weight_dict):
                     tile_weight_dict[tile] += point_value*prob
                 else:
                     tile_weight_dict.setdefault(tile,point_value*prob)    
@@ -752,7 +774,7 @@ class MahjongAgent:
         for tile in partition['seq-two-way']:
             total_remain = self.tile_count_getter(tile-1) + self.tile_count_getter(tile+2)
             prob = total_remain / self.num_remain_tile
-            if(tile in tile_weight_dict.keys()):
+            if(tile in tile_weight_dict):
                 tile_weight_dict[tile] += prob
             else:
                 tile_weight_dict.setdefault(tile,prob)
@@ -763,29 +785,29 @@ class MahjongAgent:
             else:
                 total_remain = self.tile_count_getter(tile-1)
             prob = total_remain / self.num_remain_tile
-            if(tile in tile_weight_dict.keys()):
+            if(tile in tile_weight_dict):
                 tile_weight_dict[tile] += prob
             else:
                 tile_weight_dict.setdefault(tile,prob)
 
         for tile in partition['seq-middle']:
             prob = self.tile_count_getter(tile+1) / self.num_remain_tile
-            if(tile in tile_weight_dict.keys()):
+            if(tile in tile_weight_dict):
                 tile_weight_dict[tile] += prob
             else:
                 tile_weight_dict.setdefault(tile,prob)
         
         for tile in partition['pair']:
             prob = self.tile_count_getter(tile) / self.num_remain_tile
-            if(tile in tile_weight_dict.keys()):
+            if(tile in tile_weight_dict):
                 tile_weight_dict[tile] += prob
             else:
                 tile_weight_dict.setdefault(tile,prob)
         
         for tile in partition['single']:
             prob = self.tile_count_getter(tile) / self.num_remain_tile
-            if(tile in tile_weight_dict.keys()):
-                tile_weight_dict[tile] + prob
+            if(tile in tile_weight_dict):
+                tile_weight_dict[tile] += prob
             else:
                 tile_weight_dict.setdefault(tile,prob)
 
@@ -818,17 +840,17 @@ class MahjongAgent:
 
         partition_tri = self.partition_dict(self.hand,'tri')
         partition_pair = self.partition_dict(self.hand,'pair')
-        yaku_dict = ma.yaku_check(partition_seq,self.open_meld)
+        yaku_dict = ma.yaku_check(partition_seq,partition_tri,partition_pair,self.open_meld)
         print('Yaku_dict: ',yaku_dict)
 
-        tile_weight_dict = self.yaku_goal_list(yaku_dict)
-        print('Tile_weight_dict: ', tile_weight_dict)
+        tile_weight = self.yaku_goal_list(yaku_dict)
+        print('Tile_weight_dict: ', tile_weight)
 
         min_weight = 1
         min_tile = None
-        for tile in tile_weight_dict.keys():
-            if (tile_weight_dict[tile] < min_weight):
-                min_weight = tile_weight_dict[tile]
+        for tile in tile_weight:
+            if (tile_weight[tile] < min_weight):
+                min_weight = tile_weight[tile]
                 min_tile = tile
     
         return min_tile
@@ -903,11 +925,11 @@ class MahjongAgent:
 # hand_5 = [1,2,3,4,4,4,5,6,7,7,7,9,10,12]
 # hand_6 = [2,2,3,3,3,4,4,4,5,11,12]
 # hand_7 = [2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23]
-# hand_test = [1,3,5,7]
+# hand_test = [1,1,2,2,3,3,5,5,6,6,10,10,12,12]
 
 # yaku_check = {'pinfu':[2,[3,7],[1,2,3],'seq'],'all-simple':[3,[13,15,23],[3,4,5],'seq'],'tanyaou':[1,[6],[3,6,9],'seq']}
 
-# print(dummy.yaku_goal_list(yaku_check,[1,2,4,5,8,9]))
+# print(dummy.partition_dict(hand_test,'seq'))
 
 # 3, 3, 5, 5, 5, 12, 13, 14, 18, 19, 21, 22, 23, 23
 #2, 11, 12, 13, 20, 21, 22, 28, 28, 29, 29
