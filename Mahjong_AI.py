@@ -61,16 +61,8 @@ class Mahjong_AI:
                     tiles_used_list.append(possible_pairs_list)
             elif len(partition_seq['pair']) > 1:
                 num_waiting = num_waiting + len(partition_seq['pair']) - 1
-                for t in partition_seq['pair']:
-                    tiles_needed_list.append(t)
-                    tiles_used_list.append(t)
-                    tiles_used_list.append(t)
-            else:
-                for t in partition_seq['pair']:
-                    tiles_used_list.append(t)
-                    tiles_used_list.append(t)
         else: num_waiting = 99
-        return_dict.setdefault("pinfu", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'seq'])
+        return_dict.setdefault("pinfu", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
         num_waiting = 0
         tiles_needed_list.clear()
         tiles_used_list.clear()
@@ -81,7 +73,6 @@ class Mahjong_AI:
         seq_num_waiting = 0
         temp_waiting_list = []
         temp_used_list = []
-        return_str = ""
         for k, v in partition_triplet.items():
             for tile in v:
                 mod_var = tile % 9
@@ -92,8 +83,7 @@ class Mahjong_AI:
                     elif k == 'pair':
                         triplet_num_waiting = triplet_num_waiting + 1
                 else:
-                    if 'seq' not in k:
-                        tiles_used_list.append(tile)
+                    tiles_used_list.append(tile)
                     if k == 'triplet':
                         tiles_used_list.append(tile)
                         tiles_used_list.append(tile)
@@ -110,10 +100,6 @@ class Mahjong_AI:
                         tiles_used_list.append(tile + 1)
                     if mod_var == 0: # 123 sequence
                         tiles_needed_list.append(tile + 3) # need tile 4
-                        tiles_used_list.append(tile + 1)
-                        tiles_used_list.append(tile + 2)
-                    else:
-                        tiles_used_list.append(tile)
                         tiles_used_list.append(tile + 1)
                         tiles_used_list.append(tile + 2)
                 elif k == 'seq-one-way':
@@ -227,18 +213,15 @@ class Mahjong_AI:
             num_waiting = seq_num_waiting
             tiles_needed_list = temp_waiting_list[:]
             tiles_used_list = temp_used_list[:]
-            return_str = 'seq'
-        else: 
-            num_waiting = triplet_num_waiting
-            return_str = 'tri'
-        return_dict.setdefault('all-simple', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), return_str])
+        else: num_waiting = triplet_num_waiting
+        return_dict.setdefault('all-simple', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
         num_waiting = 0
         tiles_needed_list.clear()
         tiles_used_list.clear()
 
         # 3. honor yaku
         # condition: check if honor triplet exist
-        num_waiting = 99 # if no honor tiles in hand, it will be an empy list
+        num_waiting = 3 # if no honor tiles in hand, it will be an empy list
         for t in partition_triplet['single']:
             if t >= 27:
                 num_waiting = 2
@@ -259,7 +242,7 @@ class Mahjong_AI:
             tiles_used_list.append(t)
             tiles_used_list.append(t)
             tiles_used_list.append(t)
-        return_dict.setdefault('honor-yaku', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'tri'])
+        return_dict.setdefault('honor-yaku', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
         num_waiting = 0
         tiles_needed_list.clear()
         tiles_used_list.clear()
@@ -313,7 +296,7 @@ class Mahjong_AI:
                         tiles_needed_list = temp_waiting_list[:]
                         tiles_used_list = temp_used_list[:]        
         else: num_waiting = 99
-        return_dict.setdefault('two-identical-seq', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'seq'])
+        return_dict.setdefault('two-identical-seq', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
         num_waiting = 0
         tiles_needed_list.clear()
         tiles_used_list.clear()
@@ -400,7 +383,7 @@ class Mahjong_AI:
                             else:
                                 tiles_used_list.append((j+ 18))
 
-            return_dict.setdefault("straight", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'seq'])
+            return_dict.setdefault("straight", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
             num_waiting = 0
             tiles_needed_list.clear()
             tiles_used_list.clear()
@@ -570,7 +553,7 @@ class Mahjong_AI:
                                 for k in range (0, 3):
                                     tiles_used_list.append(i + 18)
 
-            return_dict.setdefault("3-color-triplet", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'tri'])
+            return_dict.setdefault("3-color-triplet", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list)])
             num_waiting = 0
             tiles_needed_list.clear()
             tiles_used_list.clear()
@@ -583,14 +566,12 @@ class Mahjong_AI:
         tri_num_pair = len(partition_triplet['pair'])
         tri_num_triplet = len(partition_triplet['triplet'])
         #tri_num_seq = len(partition_triplet['seq-complete'])
-        need_tri = 0
+        # need_tri = 0
 
         pair_num_pair = len(partition_pair['pair'])
-        pair_num_triplet = len(partition_triplet['triplet'])
-        pair_num_seq = len(partition_seq['seq-complete'])
 
         # 8. all triplet
-        # condition: 4 triplet ( or quads) with 1 pair  
+        # condition: 4 triplet ( or quads) with 1 pair 
         if tri_num_triplet == 4: # 4 tri
             num_waiting = 0
         else: # less than 4 tri
@@ -750,16 +731,12 @@ class Mahjong_AI:
         temp_used.clear()
         if len(meld) == 0:
             if pair_num_pair < 7:
-                temp = 7 - pair_num_pair
-                num_waiting = temp - pair_num_triplet
-            for k, v in partition_pair.items():
-                for index in v:
-                    if ('pair' in k):
-                        tiles_used_list.extend([index, index])
-                        temp_used.extend([index])
-                    if (('single' in k) and (pair_num_pair < 7)):
-                        if index not in temp_used:
-                            tiles_needed_list.extend([index])   
+                num_waiting = 7 - pair_num_pair
+                for k, v in partition_pair.items():
+                    for index in v:
+                        if ('pair' in k):
+                            tiles_used_list.extend([index, index])
+            else: num_waiting = 0                     
         else: num_waiting = 99         
         return_dict.setdefault("seven_pairs", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'pair'])
         tiles_needed_list.clear()
