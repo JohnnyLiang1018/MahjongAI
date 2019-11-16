@@ -21,14 +21,14 @@ class MahjongAgent:
     han = 0
     fu = 20
     
-    def __init__(self,gameboard):
-        self.hand = []
-        self.open_meld = []
-        self.gameboard = gameboard
-        self.tile_count = [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]
-        self.num_remain_tile = 83
-        self.fu = 20
-        self.han = 0
+    # def __init__(self,gameboard):
+    #     self.hand = []
+    #     self.open_meld = []
+    #     self.gameboard = gameboard
+    #     self.tile_count = [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]
+    #     self.num_remain_tile = 83
+    #     self.fu = 20
+    #     self.han = 0
 
     
     # sequence_two-way * 0.7 * 0.24
