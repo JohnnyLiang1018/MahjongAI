@@ -43,9 +43,9 @@ def main():
 
         print('Round 1: ')
         print('Your hand: ',agent.hand_getter())
-        print('opponent1_discard: ',board.opponent_getter(1).opponent_discard_getter(),'\n')
-        print('opponent2_discard: ',board.opponent_getter(2).opponent_discard_getter(),'\n')
-        print('opponent3_discard: ',board.opponent_getter(3).opponent_discard_getter(), '\n')
+        print('opponent1_discard: ',board.opponent_getter(1).discard_getter(),'\n')
+        print('opponent2_discard: ',board.opponent_getter(2).discard_getter(),'\n')
+        print('opponent3_discard: ',board.opponent_getter(3).discard_getter(), '\n')
         print('agent_discard: ',agent_discard,'\n')
         
         

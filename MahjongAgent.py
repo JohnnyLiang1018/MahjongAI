@@ -21,7 +21,6 @@ class MahjongAgent:
     han = 0
     fu = 20
     
-<<<<<<< HEAD
     def __init__(self,gameboard):
         self.hand = []
         self.open_meld = []
@@ -30,16 +29,6 @@ class MahjongAgent:
         self.num_remain_tile = 83
         self.fu = 20
         self.han = 0
-=======
-    # def __init__(self,gameboard):
-        # self.hand = []
-        # self.open_meld = []
-        # self.gameboard = gameboard
-        # self.tile_count = [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]
-        # self.num_remain_tile = 83
-        # self.fu = 20
-        # self.han = 0
->>>>>>> ddf9db1db29be1c24061a28e6cbce290d7a0f060
 
     
     # sequence_two-way * 0.7 * 0.24
@@ -728,6 +717,7 @@ class MahjongAgent:
             # p1*p2
             for item in waiting_tile_list:
                 if(type(item) is int):
+                    print(item)
                     possibility *= 1 - (1 - (self.tile_count[item]/self.num_remain_tile))**5
                 
                 else:
@@ -749,8 +739,10 @@ class MahjongAgent:
             # calculate yaku's point value
             # 1 han
             used_tile_list = yaku_dict[yaku][2]
+            print(yaku)
+            print(used_tile_list)
             point_value = 2000
-        
+                
             for tile in used_tile_list:
                 if(tile in tile_weight_dict):
                     tile_weight_dict[tile] += point_value*prob
