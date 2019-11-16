@@ -308,14 +308,10 @@ class Mahjong_AI:
                                 temp_waiting -= 1
                                 temp_waiting_list.remove(tile)
                                 temp_used_list.append(tile)
-                    if  num_waiting >= temp_waiting:
-                        if num_waiting == temp_waiting:
-                            tiles_needed_list.extend(temp_waiting_list)
-                            tiles_used_list.extend(temp_used_list)
-                        else:
-                            num_waiting = temp_waiting
-                            tiles_needed_list = temp_waiting_list[:]
-                            tiles_used_list = temp_used_list[:]        
+                    if  num_waiting > temp_waiting:
+                        num_waiting = temp_waiting
+                        tiles_needed_list = temp_waiting_list[:]
+                        tiles_used_list = temp_used_list[:]        
         else: num_waiting = 99
         return_dict.setdefault('two-identical-seq', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'seq'])
         num_waiting = 0
@@ -587,6 +583,7 @@ class Mahjong_AI:
         tri_num_pair = len(partition_triplet['pair'])
         tri_num_triplet = len(partition_triplet['triplet'])
         #tri_num_seq = len(partition_triplet['seq-complete'])
+        need_tri = 0
 
         pair_num_pair = len(partition_pair['pair'])
         pair_num_triplet = len(partition_triplet['triplet'])
