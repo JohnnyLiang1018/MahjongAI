@@ -57,8 +57,8 @@ class Mahjong_AI:
                     possible_pairs_list = []
                     if t not in tiles_used_list:
                         possible_pairs_list.append(t)
-                    tiles_needed_list.append(possible_pairs_list)
-                    tiles_used_list.append(possible_pairs_list)
+                    tiles_needed_list.extend(possible_pairs_list)
+                    tiles_used_list.extend(possible_pairs_list)
             elif len(partition_seq['pair']) > 1:
                 num_waiting = num_waiting + len(partition_seq['pair']) - 1
                 for t in partition_seq['pair']:
@@ -583,7 +583,7 @@ class Mahjong_AI:
         tri_num_pair = len(partition_triplet['pair'])
         tri_num_triplet = len(partition_triplet['triplet'])
         #tri_num_seq = len(partition_triplet['seq-complete'])
-        # need_tri = 0
+        need_tri = 0
 
         pair_num_pair = len(partition_pair['pair'])
 
