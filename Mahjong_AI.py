@@ -2,7 +2,7 @@ class Mahjong_AI:
     # hand_partition, meld: list of tuple(partition_str,index_int)
     # hand_partition ex: {seq-complete:[start_tile_seq1, start_tile_seq2, etch],  pair:tile}
 
-    # return dict : {yaku_name: [num_waiting,[waiting_tiles_list], tiles_used_list]}
+    # return dict : {yaku_name: [num_waiting,[waiting_tiles_list], tiles_used_list], partition_used}
     def yaku_check(self,partition_seq, partition_triplet, partition_pair,meld):
         return_dict = {}
         num_waiting = 0
