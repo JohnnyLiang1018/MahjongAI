@@ -4,6 +4,7 @@ class Mahjong_AI:
 
     # return dict : {yaku_name: [num_waiting,[waiting_tiles_list], tiles_used_list], partition_used}
     def yaku_check(self,partition_seq, partition_triplet, partition_pair,meld):
+        NO_TERMINAL_HONOR_TILES = [1,2,3,4,5,6,7,10,11,12,13,14,15,16,19,20,21,22,23,24,25,26]
         return_dict = {}
         num_waiting = 0
         tiles_needed_list = []
@@ -231,6 +232,8 @@ class Mahjong_AI:
         else: 
             num_waiting = triplet_num_waiting
             return_str = 'tri'
+        if num_waiting < len(tiles_needed_list):
+            tiles_needed_list.append(NO_TERMINAL_HONOR_TILES)
         return_dict.setdefault('all-simple', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), return_str])
         num_waiting = 0
         tiles_needed_list.clear()
@@ -755,6 +758,11 @@ class Mahjong_AI:
         ## above Lee 8-10 ##
         
         return return_dict
+
+    def is_riichi(self, hand_partition, meld):
+        num_melds = len(hand_partition['seq_complete']) + len(hand_partition['triplet']) + len(meld)
+        num_pairs = len(hand_partition['pair'])
+        return (num_melds == 4 and num_pairs == 1)
         
 
 def main():
