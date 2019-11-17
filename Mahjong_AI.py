@@ -17,8 +17,7 @@ class Mahjong_AI:
             if num_seq_com > 3: 
                 num_waiting = 99
             else: # +2 waiting tiles for every seq-com under 3
-                temp = 3 - num_seq_com
-                num_waiting = num_waiting + temp * 2
+                num_waiting = num_waiting + ((3 - num_seq_com) * 2)
                 for x  in partition_seq['seq-complete']:
                     tiles_used_list.append(x)
                     tiles_used_list.append(x + 1)
@@ -26,32 +25,36 @@ class Mahjong_AI:
                 num_waiting = num_waiting - len(partition_seq['seq-middle'])
                 for x in partition_seq['seq-middle']:
                     tiles_needed_list.append(x + 1) # need index tile + 1
+                    num_waiting = num_waiting + 1
                     tiles_used_list.append(x)
                     tiles_used_list.append(x + 2)
-                num_waiting = num_waiting - len(partition_seq['seq-one-way'])
                 for x in partition_seq['seq-one-way']:
                     if x % 9 == 0: # 123 one way
                         tiles_needed_list.append(x + 2)
+                        num_waiting = num_waiting + 1
                         tiles_used_list.append(x)
                         tiles_used_list.append(x + 1)
                     else: # 789 one way
                         tiles_needed_list.append(x - 1)
+                        num_waiting = num_waiting + 1
                         tiles_used_list.append(x)
                         tiles_used_list.append(x + 1)
             num_seq_two = len(partition_seq['seq-two-way'])
             if num_seq_two == 0: 
-                num_waiting = num_waiting + 1 # need +1 tile to complete two-way-seq
+                num_waiting = num_waiting + 1 # need +1 tiles to make two
                 for x in partition_seq['single']:
-                    if 7 > (x % 9) > 1 and x < 26:
+                    mod_var = x % 9
+                    if 7 > mod_var > 1 and x < 26:
                         tiles_needed_list.append([x-1, x+1]) # every single needs + or - 1 to become 2-way
                         tiles_used_list.append(x)
+
             else: # -1 waiting tile for every two-way-seq over the needed 1
-                temp = num_seq_two - 1
-                num_waiting = num_waiting - temp
+                num_waiting = num_waiting - num_seq_two
                 for x in partition_seq['seq-two-way']:
                     tiles_needed_list.append([x-1, x+2]) # each 2-way is waiting for x-1 or x+2
                     tiles_used_list.append(x)
                     tiles_used_list.append(x + 1)
+                    num_waiting = num_waiting + 1
             if len(partition_seq['pair']) == 0: #add 1 if there is no pair
                 num_waiting = num_waiting + 1
                 for t in partition_seq['single']:
@@ -232,8 +235,8 @@ class Mahjong_AI:
         else: 
             num_waiting = triplet_num_waiting
             return_str = 'tri'
-        if num_waiting < len(tiles_needed_list):
-            tiles_needed_list.append(NO_TERMINAL_HONOR_TILES)
+        if num_waiting > len(tiles_needed_list):
+            tiles_needed_list.append(NO_TERMINAL_HONOR_TILES[:])
         return_dict.setdefault('all-simple', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), return_str])
         num_waiting = 0
         tiles_needed_list.clear()
