@@ -66,13 +66,55 @@ class Mahjong_AI:
             elif len(partition_seq['pair']) > 1:
                 num_waiting = num_waiting + len(partition_seq['pair']) - 1
                 for t in partition_seq['pair']:
-                    tiles_needed_list.append(t)
-                    tiles_used_list.append(t)
+                    if 7 > t % 9 > 1 and t < 26:
+                        tiles_needed_list.extend([t + 1, t + 2, t - 1, t - 2])
+                    elif t % 9 == 7:
+                        tiles_needed_list.extend([t + 1, t - 1, t - 2])
+                    elif t % 9 == 8:
+                        tiles_needed_list.extend([t - 1, t - 2])
+                    elif t % 9 == 1:
+                        tiles_needed_list.extend([t - 1, t + 1, t + 2])
+                    elif t % 9 == 0:
+                        tiles_needed_list.extend([t + 1, t + 2])
                     tiles_used_list.append(t)
             else:
                 for t in partition_seq['pair']:
                     tiles_used_list.append(t)
                     tiles_used_list.append(t)
+            if num_waiting > len(tiles_needed_list):
+                temp_single_list = partition_seq['single'][:]
+                try:
+                    for t in partition_seq['seq-two-way']:
+                        temp_single_list.remove(t)
+                        temp_single_list.remove(t + 1)
+                    for t in partition_seq['seq-one-way']:
+                        temp_single_list.remove(t)
+                        temp_single_list.remove(t + 1)
+                    for t in partition_seq['seq-middle']:
+                        temp_single_list.remove(t)
+                        temp_single_list.remove(t + 2)
+                except ValueError:
+                    pass
+                for t in temp_single_list:
+                    if 7 > t % 9 > 1 and t < 26:
+                        tiles_needed_list.extend([t + 1, t + 2, t - 1, t - 2])
+                    elif t % 9 == 7:
+                        tiles_needed_list.extend([t + 1, t - 1, t - 2])
+                    elif t % 9 == 8:
+                        tiles_needed_list.extend([t - 1, t - 2])
+                    elif t % 9 == 1:
+                        tiles_needed_list.extend([t - 1, t + 1, t + 2])
+                    elif t % 9 == 0:
+                        tiles_needed_list.extend([t + 1, t + 2])
+                for t in partition_seq['triplet']:
+                    if 6 > t % 9 > 2 and t < 26:
+                        tiles_needed_list.extend([t + 1, t + 2, t - 1, t - 2])
+                    elif t % 9 == 7:
+                        tiles_needed_list.extend([t + 1, t - 1, t - 2])
+                    elif t % 9 == 1:
+                        tiles_needed_list.extend([t - 1, t + 1, t + 2])
+                if num_waiting > len(tiles_needed_list):
+                    num_waiting = 99
         else: num_waiting = 99
         return_dict.setdefault("pinfu", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'seq'])
         num_waiting = 0
