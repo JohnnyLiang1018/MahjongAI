@@ -801,11 +801,37 @@ class Mahjong_AI:
         tiles_needed_list.clear()
         tiles_used_list.clear()        
         ## above Lee 8-10 ##
+        ## Riichi Check # need 4 melds and 1 pair
+        return_str = ''
+        num_melds = len(partition_seq['seq-complete']) + len(partition_seq['triplet'])
+        num_pair = 1 if (len(partition_seq['pair']) > 0) else 0
+        seq_num_waiting = 14 - (num_melds * 3 + num_pair * 2)
+
+        num_melds = len(partition_triplet['seq-complete']) + len(partition_triplet['triplet'])
+        num_pair = 1 if (len(partition_seq['pair']) > 0) else 0
+        triplet_num_waiting = 14 - (num_melds * 3 + num_pair * 2)
+        closest_partition = partition_seq if seq_num_waiting < triplet_num_waiting else partition_triplet
+        num_waiting = seq_num_waiting if seq_num_waiting < triplet_num_waiting else triplet_num_waiting
+        return_str = 'seq' if seq_num_waiting < triplet_num_waiting else 'tri'
+        pairs_list = []
+
+        for t in closest_partition['seq-complete']:
+            tiles_used_list.extend([t, t + 1, t + 2])
+        for t in closest_partition['triplet']:
+            tiles_used_list.extend([t, t, t])
+        if len(closest_partition['pair']) > 1:
+            for t in closest_partition['pair']:
+                pairs_list.extend([t, t])
+            tiles_used_list.append(pairs_list)
+        elif len(closest_partition['pair']) == 1:
+            t = closest_partition['pair'][0]
+            tiles_used_list.extend([t, t])
+        return_dict.setdefault("riichi", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), return_str])
         
         return return_dict
 
     def is_riichi(self, hand_partition, meld):
-        num_melds = len(hand_partition['seq_complete']) + len(hand_partition['triplet']) + len(meld)
+        num_melds = len(hand_partition['seq-complete']) + len(hand_partition['triplet']) + len(meld)
         num_pairs = len(hand_partition['pair'])
         return (num_melds == 4 and num_pairs == 1)
         
