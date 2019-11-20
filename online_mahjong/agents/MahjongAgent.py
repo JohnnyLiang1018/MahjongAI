@@ -1358,7 +1358,7 @@ class MahjongAgent(AIInterface):
                             if tile < 9:
                                 suit_wan[tile] = 1
                                         
-                            elif 8 < tile < 16:
+                            elif 8 < tile < 18:
                                 suit_pin[(tile % 9)] = 1
 
                             else:
@@ -1375,7 +1375,7 @@ class MahjongAgent(AIInterface):
                 num_waiting = 9 - straight_counts[1]
                 closestS = 1
             if (num_waiting > (9 - straight_counts[2])):
-                num_waiting = 9 - straight_counts[0]
+                num_waiting = 9 - straight_counts[2]
                 closestS = 2
 
             if num_waiting == 9: # if all honors
