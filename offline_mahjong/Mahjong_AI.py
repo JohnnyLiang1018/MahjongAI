@@ -677,80 +677,81 @@ class Mahjong_AI:
                     else: # Honor
                         num_com = num_com + 1
                         tiles_used_list.extend([index, index, index])
-                if 'seq-complete' in k: 
-                    if ((index % 9) in (0, 6)): # 123 OR 789
-                        num_com = num_com + 1
-                        tiles_used_list.extend([index, index+1, index+2])
-                    if ((index % 9) in (1, 5)): # 234 OR 678
-                        num_almost = num_almost + 1
-                        if (index == 1):
-                            tiles_used_list_almost.extend([index, index + 1]) #23
-                            tiles_needed_list_almost.extend([index - 1]) 
-                        if (index == 5):
-                            tiles_used_list_almost.extend([index + 1, index + 2]) #78
-                            tiles_needed_list_almost.extend([index + 3])
-                    if ((index % 9) in (2, 4)): # 345 OR 567
-                        num_two = num_two + 1
-                        if (index == 2):
-                            tiles_used_list_two.extend([index]) #3
-                            tiles_needed_list_two.extend([index - 2, index - 1]) #12
-                        if (index == 4):
-                            tiles_used_list_two.extend([index + 2]) #7
-                            tiles_needed_list_two.extend([index + 3, index + 4]) #89         
-                if 'seq-one-way' in k: # 12(3) OR (7)89     
-                    if ((index % 9) == 0): # 12(3)
-                        num_almost = num_almost + 1
-                        tiles_needed_list_almost.extend([index + 2]) # 3
-                        temp_used.extend([index, index + 1])
-                        tiles_used_list_almost.extend([index, index + 1])
-                    if ((index % 9) == 7): # (7)89
-                        num_almost = num_almost + 1
-                        tiles_needed_list_almost.extend(index - 1) # 7
-                        temp_used.extend([index, index + 1])
-                        tiles_used_list_almost.extend([index, index + 1])
-                if 'seq-two-way' in k: # (1)23 OR 78(9) 
-                    if ((index % 9) == 1): # (1)23
-                        num_almost = num_almost + 1
-                        tiles_needed_list_almost.extend([index - 1]) # 1
-                        temp_used.extend([index, index + 1])
-                        tiles_used_list_almost.extend([index, index + 1])
-                    if ((index % 9) == 6): # 78(9)
-                        num_almost = num_almost + 1
-                        tiles_needed_list_almost.extend([index + 2]) # 9
-                        temp_used.extend([index, index + 1])
-                        tiles_used_list_almost.extend([index, index + 1])                      
-                if 'seq-middle' in k: # 1(2)3 OR 7(8)9
-                    if ((index % 9) == 0): # 1(2)3
-                        num_almost = num_almost + 1
-                        tiles_needed_list_almost.extend([index + 1]) # 2
-                        temp_used.extend([index, index + 2])
-                        tiles_used_list_almost.extend([index, index + 2])
-                    if ((index % 9) == 6): # 7(8)9
-                        num_almost = num_almost + 1
-                        tiles_needed_list_almost.extend([index + 1]) # 8
-                        temp_used.extend([index, index + 2])
-                        tiles_used_list_almost.extend([index, index + 2])                     
-                if 'pair' in k:
-                    if((index % 9) in (0, 8)): #11 or 99
-                        num_almost = num_almost + 1
-                        pair_used = pair_used + 1
-                        tiles_needed_list_almost.extend([index]) # 1 or 9
-                        tiles_used_list_almost.extend([index, index])
-                if 'single' in k:
-                    if index not in temp_used:
-                        if((num_com + num_almost) < 4):
-                            if((index % 9) in (0, 6)): # 1 or 7             
-                                num_two = num_two + 1 
-                                tiles_needed_list_two.extend([index + 1, index + 2]) #23 or 89
-                                tiles_used_list_two.extend([index])
-                            if((index % 9) in (1, 7)): # 2 or 8
-                                num_two = num_two + 1
-                                tiles_needed_list_two.extend([index - 1, index + 1]) #13 or 79
-                                tiles_used_list_two.extend([index])                       
-                            if((index % 9) in (2, 8)): #3 or 9
-                                num_two = num_two + 1
-                                tiles_needed_list_two.extend([index - 1, index - 2]) #12 or 78
-                                tiles_used_list_two.extend([index])
+                if index < 26:       
+                    if 'seq-complete' in k: 
+                        if ((index % 9) in (0, 6)): # 123 OR 789
+                            num_com = num_com + 1
+                            tiles_used_list.extend([index, index+1, index+2])
+                        if ((index % 9) in (1, 5)): # 234 OR 678
+                            num_almost = num_almost + 1
+                            if (index == 1):
+                                tiles_used_list_almost.extend([index, index + 1]) #23
+                                tiles_needed_list_almost.extend([index - 1]) 
+                            if (index == 5):
+                                tiles_used_list_almost.extend([index + 1, index + 2]) #78
+                                tiles_needed_list_almost.extend([index + 3])
+                        if ((index % 9) in (2, 4)): # 345 OR 567
+                            num_two = num_two + 1
+                            if (index == 2):
+                                tiles_used_list_two.extend([index]) #3
+                                tiles_needed_list_two.extend([index - 2, index - 1]) #12
+                            if (index == 4):
+                                tiles_used_list_two.extend([index + 2]) #7
+                                tiles_needed_list_two.extend([index + 3, index + 4]) #89         
+                    if 'seq-one-way' in k: # 12(3) OR (7)89     
+                        if ((index % 9) == 0): # 12(3)
+                            num_almost = num_almost + 1
+                            tiles_needed_list_almost.extend([index + 2]) # 3
+                            temp_used.extend([index, index + 1])
+                            tiles_used_list_almost.extend([index, index + 1])
+                        if ((index % 9) == 7): # (7)89
+                            num_almost = num_almost + 1
+                            tiles_needed_list_almost.extend(index - 1) # 7
+                            temp_used.extend([index, index + 1])
+                            tiles_used_list_almost.extend([index, index + 1])
+                    if 'seq-two-way' in k: # (1)23 OR 78(9) 
+                        if ((index % 9) == 1): # (1)23
+                            num_almost = num_almost + 1
+                            tiles_needed_list_almost.extend([index - 1]) # 1
+                            temp_used.extend([index, index + 1])
+                            tiles_used_list_almost.extend([index, index + 1])
+                        if ((index % 9) == 6): # 78(9)
+                            num_almost = num_almost + 1
+                            tiles_needed_list_almost.extend([index + 2]) # 9
+                            temp_used.extend([index, index + 1])
+                            tiles_used_list_almost.extend([index, index + 1])                      
+                    if 'seq-middle' in k: # 1(2)3 OR 7(8)9
+                        if ((index % 9) == 0): # 1(2)3
+                            num_almost = num_almost + 1
+                            tiles_needed_list_almost.extend([index + 1]) # 2
+                            temp_used.extend([index, index + 2])
+                            tiles_used_list_almost.extend([index, index + 2])
+                        if ((index % 9) == 6): # 7(8)9
+                            num_almost = num_almost + 1
+                            tiles_needed_list_almost.extend([index + 1]) # 8
+                            temp_used.extend([index, index + 2])
+                            tiles_used_list_almost.extend([index, index + 2])                     
+                    if 'pair' in k:
+                        if((index % 9) in (0, 8)): #11 or 99
+                            num_almost = num_almost + 1
+                            pair_used = pair_used + 1
+                            tiles_needed_list_almost.extend([index]) # 1 or 9
+                            tiles_used_list_almost.extend([index, index])
+                    if 'single' in k:
+                        if index not in temp_used:
+                            if((num_com + num_almost) < 4):
+                                if((index % 9) in (0, 6)): # 1 or 7             
+                                    num_two = num_two + 1 
+                                    tiles_needed_list_two.extend([index + 1, index + 2]) #23 or 89
+                                    tiles_used_list_two.extend([index])
+                                if((index % 9) in (1, 7)): # 2 or 8
+                                    num_two = num_two + 1
+                                    tiles_needed_list_two.extend([index - 1, index + 1]) #13 or 79
+                                    tiles_used_list_two.extend([index])                       
+                                if((index % 9) in (2, 8)): #3 or 9
+                                    num_two = num_two + 1
+                                    tiles_needed_list_two.extend([index - 1, index - 2]) #12 or 78
+                                    tiles_used_list_two.extend([index])
        
         needed_com = 4 - num_com
         if needed_com > 0:
@@ -838,7 +839,7 @@ class Mahjong_AI:
         
 
 def main():
-    mai = Mahjong_AI()
+    mai = Mahjong_AI(gameboard = null)
     partition_seq = {'seq-complete':[1, 5], 'seq-middle': [], 'seq-two-way': [], 'pair': [5,7], 
                         'triplet': [20], 'single': [17], 'seq-one-way': []}
     partition_triplet = {'seq-complete':[1, 5], 'seq-middle': [], 'seq-two-way': [], 'pair': [5,7], 
