@@ -1,0 +1,22 @@
+2019-11-20 01:36:50:     Reconnected successfully!
+2019-11-20 01:36:53:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-11-20 01:36:54:     Reconnected. Resuming game state...
+2019-11-20 01:36:58:     --------------------------------------------------
+2019-11-20 01:36:58:     Players: [weavile - 4¼‰ - 21000, Naruhodo - ËÄ¶Î - 24800, norizu - ËÄ¶Î - 42400, ÃÖÑå - ³õ¶Î - 11800]
+2019-11-20 01:36:58:     Dealer: norizu - ËÄ¶Î - 42400
+2019-11-20 01:36:58:  
+2019-11-20 01:36:59: 
+2019-11-20 01:37:00: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 129, in start_game
+    if self._handle_draw_tile(msg):
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 520, in _handle_draw_tile
+    can_call_reach, to_discard_136 = self.game_table.bot.can_call_reach()
+  File "C:\Users\j4903\Documents\MahjongAI\agents\MahjongAgent.py", line 886, in can_call_reach
+    if(len(riichi_list >= 1)):
+TypeError: '>=' not supported between instances of 'dict' and 'int'
+2019-11-20 01:37:00: End the game...
+2019-11-20 01:37:00:     Game was ended unexpected
+2019-11-20 01:37:00: 

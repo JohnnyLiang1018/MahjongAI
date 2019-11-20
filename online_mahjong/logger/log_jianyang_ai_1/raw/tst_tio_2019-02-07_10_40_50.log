@@ -1,0 +1,91 @@
+2019-02-07 10:40:50:     User(ID696E3BCC-hLHNE8Wf) was authenticated successfully
+2019-02-07 10:40:54:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonpusen
+2019-02-07 10:40:54:     A new game started!
+2019-02-07 10:40:54:     The replay link can be found here: http://tenhou.net/0/?log=2019020803gm-0001-0000-2c76ea3a&tw=2
+2019-02-07 10:40:54:     Players are: [tst_tio - 1¼‰ - None, ¥Ø¥¿¥Ã¥Ô©` - ³õ¶Î - None, ToraTora - 7¼‰ - None, ¥¢¥Ó¥¹00 - ³õ¶Î - None]
+2019-02-07 10:40:55:     --------------------------------------------------
+2019-02-07 10:40:55:     Players: [tst_tio - 1¼‰ - 25000, ¥Ø¥¿¥Ã¥Ô©` - ³õ¶Î - 25000, ToraTora - 7¼‰ - 25000, ¥¢¥Ó¥¹00 - ³õ¶Î - 25000]
+2019-02-07 10:40:55:     Dealer: ToraTora - 7¼‰ - 25000
+2019-02-07 10:40:55:  
+2019-02-07 10:40:55:     [Player 2] draws a tile...
+2019-02-07 10:41:05:     [Player 3] draws a tile...
+2019-02-07 10:41:06: 
+2019-02-07 10:41:09: 
+2019-02-07 10:41:09:     Remaining tiles: 67
+2019-02-07 10:41:09:     --------------------------------------------------
+2019-02-07 10:41:09: 
+2019-02-07 10:41:09:     [Player 1] draws a tile...
+2019-02-07 10:41:13:     [Player 2] draws a tile...
+2019-02-07 10:41:15:     [Player 3] draws a tile...
+2019-02-07 10:41:19: 
+2019-02-07 10:41:21: 
+2019-02-07 10:41:21:     Remaining tiles: 63
+2019-02-07 10:41:21:     --------------------------------------------------
+2019-02-07 10:41:21: 
+2019-02-07 10:41:21:     [Player 1] draws a tile...
+2019-02-07 10:41:24:     [Player 2] draws a tile...
+2019-02-07 10:41:27:     [Player 3] draws a tile...
+2019-02-07 10:41:28: 
+2019-02-07 10:41:30: 
+2019-02-07 10:41:30:     Remaining tiles: 59
+2019-02-07 10:41:30:     --------------------------------------------------
+2019-02-07 10:41:30: 
+2019-02-07 10:41:31:     [Player 1] draws a tile...
+2019-02-07 10:41:35:     [Player 2] draws a tile...
+2019-02-07 10:41:37:     [Player 3] draws a tile...
+2019-02-07 10:41:44:     [Player 3] draws a tile...
+2019-02-07 10:41:50: 
+2019-02-07 10:41:51:     [Player 1] draws a tile...
+2019-02-07 10:41:56:     [Player 2] draws a tile...
+2019-02-07 10:41:58:     [Player 3] draws a tile...
+2019-02-07 10:42:02: 
+2019-02-07 10:42:05: 
+2019-02-07 10:42:05:     Remaining tiles: 51
+2019-02-07 10:42:05:     --------------------------------------------------
+2019-02-07 10:42:05: 
+2019-02-07 10:42:07:     [Player 1] draws a tile...
+2019-02-07 10:42:09:     [Player 2] draws a tile...
+2019-02-07 10:42:16:     [Player 3] draws a tile...
+2019-02-07 10:42:21: 
+2019-02-07 10:42:25: 
+2019-02-07 10:42:25:     Remaining tiles: 47
+2019-02-07 10:42:25:     --------------------------------------------------
+2019-02-07 10:42:25: 
+2019-02-07 10:42:26:     [Player 1] draws a tile...
+2019-02-07 10:42:27:     [Player 2] draws a tile...
+2019-02-07 10:42:30:     [Player 3] draws a tile...
+2019-02-07 10:42:32:     Reach was called by 3-th player: ¥¢¥Ó¥¹00 - ³õ¶Î - 25000
+2019-02-07 10:42:32: 
+2019-02-07 10:42:34: 
+2019-02-07 10:42:38: 
+2019-02-07 10:42:38:     Remaining tiles: 43
+2019-02-07 10:42:38:     --------------------------------------------------
+2019-02-07 10:42:38: 
+2019-02-07 10:42:40:     [Player 1] draws a tile...
+2019-02-07 10:42:43:     [Player 2] draws a tile...
+2019-02-07 10:42:45:     [Player 3] draws a tile...
+2019-02-07 10:42:45: 
+2019-02-07 10:42:50: 
+2019-02-07 10:42:50:     Remaining tiles: 39
+2019-02-07 10:42:50:     --------------------------------------------------
+2019-02-07 10:42:50: 
+2019-02-07 10:42:50:     [Player 1] draws a tile...
+2019-02-07 10:42:54:     --------------------------------------------------
+2019-02-07 10:42:54: 
+2019-02-07 10:42:54:     <AGARI ba="0,1" hai="0,4,8,20,24,28,48,49,73,77,80,97,98,99" machi="99" ten="40,2600,0" yaku="1,1,53,1" doraHai="38" doraHaiUra="75" who="3" fromWho="1" sc="250,0,250,-26,250,0,240,36" />
+2019-02-07 10:42:54: Unexpected exception
+Traceback (most recent call last):
+  File "c:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "c:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 146, in start_game
+    '<AGARI' in msg and self._handle_round_end(msg)
+  File "c:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 404, in _handle_round_end
+    self._round_end_info_to_file(res_str)
+  File "c:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 748, in _round_end_info_to_file
+    self.logger_obj.add_round_end_result(msg)
+  File "c:\Users\j4903\Documents\MahjongAI\logger\logger_handler.py", line 57, in add_round_end_result
+    open(self.scores_path, 'a').write(msg)
+UnicodeEncodeError: 'gbk' codec can't encode character '\U0001f016' in position 88: illegal multibyte sequence
+2019-02-07 10:42:54: End the game...
+2019-02-07 10:42:54:     Game was ended unexpected
+2019-02-07 10:42:54: 

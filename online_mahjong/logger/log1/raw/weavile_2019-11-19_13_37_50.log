@@ -1,0 +1,24 @@
+2019-11-19 13:37:53:     Reconnected successfully!
+2019-11-19 13:37:55:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-11-19 13:37:56:     Reconnected. Resuming game state...
+2019-11-19 13:37:58:     --------------------------------------------------
+2019-11-19 13:37:58:     Players: [weavile - 4級 - 19400, onnteddo - 四段 - 18400, かかろっとぉ - 二段 - 29700, axl - 三段 - 32500]
+2019-11-19 13:37:58:     Dealer: onnteddo - 四段 - 18400
+2019-11-19 13:37:58:  
+2019-11-19 13:37:59: 
+2019-11-19 13:37:59: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 129, in start_game
+    if self._handle_draw_tile(msg):
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 534, in _handle_draw_tile
+    discard_tile_136 = self.game_table.bot.to_discard_tile()
+  File "C:\Users\j4903\Documents\MahjongAI\agents\MahjongAgent.py", line 841, in to_discard_tile
+    tile_weight = self.yaku_goal_list(yaku_dict)
+  File "C:\Users\j4903\Documents\MahjongAI\agents\MahjongAgent.py", line 726, in yaku_goal_list
+    temp_p = 1 - (1 - (self.game_table.revealed[item]/self.game_table.count_remaining_tiles))**5
+AttributeError: 'GameTable' object has no attribute 'revealed'
+2019-11-19 13:37:59: End the game...
+2019-11-19 13:37:59:     Game was ended unexpected
+2019-11-19 13:37:59: 

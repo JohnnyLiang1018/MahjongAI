@@ -1,0 +1,26 @@
+2019-11-08 14:47:06:     User(ID76B06F13-c3mhaFM4) was authenticated successfully
+2019-11-08 14:47:21:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-11-08 14:47:21:     A new game started!
+2019-11-08 14:47:21:     The replay link can be found here: http://tenhou.net/0/?log=2019110907gm-0089-0000-0185e034&tw=2
+2019-11-08 14:47:21:     Players are: [weavile - 4級 - None, まくりまろ - 三段 - None, りちや - 三段 - None, ちーといどらはち - 四段 - None]
+2019-11-08 14:47:24:     --------------------------------------------------
+2019-11-08 14:47:24:     Players: [weavile - 4級 - 25000, まくりまろ - 三段 - 25000, りちや - 三段 - 25000, ちーといどらはち - 四段 - 25000]
+2019-11-08 14:47:24:     Dealer: りちや - 三段 - 25000
+2019-11-08 14:47:25:  
+2019-11-08 14:47:25:     [Player 2] draws a tile...
+2019-11-08 14:47:27:     [Player 3] draws a tile...
+2019-11-08 14:47:38: 
+2019-11-08 14:47:39: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 129, in start_game
+    if self._handle_draw_tile(msg):
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 534, in _handle_draw_tile
+    discard_tile_136 = self.game_table.bot.to_discard_tile()
+  File "C:\Users\j4903\Documents\MahjongAI\agents\test_ai.py", line 42, in to_discard_tile
+    if(weight_sum_list[i][1] < min_value):
+IndexError: invalid index to scalar variable.
+2019-11-08 14:47:39: End the game...
+2019-11-08 14:47:40:     Game was ended unexpected
+2019-11-08 14:47:40: 

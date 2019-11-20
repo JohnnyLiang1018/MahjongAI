@@ -1,0 +1,39 @@
+2019-02-07 14:23:20:     Reconnected successfully!
+2019-02-07 14:23:22:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-02-07 14:23:23:     Reconnected. Resuming game state...
+2019-02-07 14:23:26:     --------------------------------------------------
+2019-02-07 14:23:26:  
+2019-02-07 14:23:27: 
+2019-02-07 14:23:31: 
+2019-02-07 14:23:31:     Remaining tiles: 38
+2019-02-07 14:23:31:     --------------------------------------------------
+2019-02-07 14:23:31: 
+2019-02-07 14:23:32:     [Player 1] draws a tile...
+2019-02-07 14:23:34:     [Player 2] draws a tile...
+2019-02-07 14:23:39:     [Player 3] draws a tile...
+2019-02-07 14:23:43: 
+2019-02-07 14:23:47: 
+2019-02-07 14:23:47:     Remaining tiles: 34
+2019-02-07 14:23:47:     --------------------------------------------------
+2019-02-07 14:23:47: 
+2019-02-07 14:23:48:     --------------------------------------------------
+2019-02-07 14:23:48: 
+2019-02-07 14:23:48:     <AGARI ba="0,0" hai="85,88,89,93,94,99,122,123,132,134,135" m="44463" machi="134" ten="30,7700,0" yaku="20,1,34,2,54,1" doraHai="24" who="3" fromWho="0" sc="188,-77,273,0,289,0,250,77" />
+2019-02-07 14:23:48: Unexpected exception
+Traceback (most recent call last):
+  File "c:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "c:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 146, in start_game
+    '<AGARI' in msg and self._handle_round_end(msg)
+  File "c:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 404, in _handle_round_end
+    self._round_end_info_to_file(res_str)
+  File "c:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 748, in _round_end_info_to_file
+    self.logger_obj.add_round_end_result(msg)
+  File "c:\Users\j4903\Documents\MahjongAI\logger\logger_handler.py", line 57, in add_round_end_result
+    open(self.scores_path, 'a').write(msg)
+  File "C:\Users\j4903\AppData\Local\Programs\Python\Python37-32\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f004' in position 81: character maps to <undefined>
+2019-02-07 14:23:48: End the game...
+2019-02-07 14:23:48:     Game was ended unexpected
+2019-02-07 14:23:48: 

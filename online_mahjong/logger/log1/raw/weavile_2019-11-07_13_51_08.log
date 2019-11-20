@@ -1,0 +1,26 @@
+2019-11-07 13:51:08:     User(ID76B06F13-c3mhaFM4) was authenticated successfully
+2019-11-07 13:51:44:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-11-07 13:51:44:     A new game started!
+2019-11-07 13:51:44:     The replay link can be found here: http://tenhou.net/0/?log=2019110806gm-0089-0000-2143bcbd&tw=2
+2019-11-07 13:51:44:     Players are: [weavile - 6級 - None, yozo - 二段 - None, かでなる - 三段 - None, ベトル - 四段 - None]
+2019-11-07 13:51:53:     --------------------------------------------------
+2019-11-07 13:51:53:     Players: [weavile - 6級 - 25000, yozo - 二段 - 25000, かでなる - 三段 - 25000, ベトル - 四段 - 25000]
+2019-11-07 13:51:53:     Dealer: かでなる - 三段 - 25000
+2019-11-07 13:51:53:  
+2019-11-07 13:51:53:     [Player 2] draws a tile...
+2019-11-07 13:51:57:     [Player 3] draws a tile...
+2019-11-07 13:52:00: 
+2019-11-07 13:52:01: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 129, in start_game
+    if self._handle_draw_tile(msg):
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 534, in _handle_draw_tile
+    discard_tile_136 = self.game_table.bot.to_discard_tile()
+  File "C:\Users\j4903\Documents\MahjongAI\agents\test_ai.py", line 16, in to_discard_tile
+    mlp = pickle.load(open('mlp_model.sav','rb'))
+FileNotFoundError: [Errno 2] No such file or directory: 'mlp_model.sav'
+2019-11-07 13:52:01: End the game...
+2019-11-07 13:52:01:     Game was ended unexpected
+2019-11-07 13:52:01: 

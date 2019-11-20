@@ -1,0 +1,24 @@
+2019-11-20 01:55:03:     Reconnected successfully!
+2019-11-20 01:55:07:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-11-20 01:55:08:     Reconnected. Resuming game state...
+2019-11-20 01:55:11:     --------------------------------------------------
+2019-11-20 01:55:11:     Players: [weavile - 4級 - 19100, あらてん - 三段 - 23000, とまてぃー - 二段 - 25300, ゴーゼワロス - 三段 - 32600]
+2019-11-20 01:55:11:     Dealer: あらてん - 三段 - 23000
+2019-11-20 01:55:11:  
+2019-11-20 01:55:13: 
+2019-11-20 01:55:13: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 129, in start_game
+    if self._handle_draw_tile(msg):
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 534, in _handle_draw_tile
+    discard_tile_136 = self.game_table.bot.to_discard_tile()
+  File "C:\Users\j4903\Documents\MahjongAI\agents\MahjongAgent.py", line 861, in to_discard_tile
+    yaku_dict = self.yaku_check(partition_seq,partition_tri,partition_pair,self.meld34)
+  File "C:\Users\j4903\Documents\MahjongAI\agents\MahjongAgent.py", line 1749, in yaku_check
+    temp_used.clear()
+NameError: name 'temp_used' is not defined
+2019-11-20 01:55:13: End the game...
+2019-11-20 01:55:13:     Game was ended unexpected
+2019-11-20 01:55:13: 

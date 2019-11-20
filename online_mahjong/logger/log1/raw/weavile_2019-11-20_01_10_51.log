@@ -1,0 +1,20 @@
+2019-11-20 01:10:52:     Reconnected successfully!
+2019-11-20 01:10:55:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-11-20 01:10:56:     Reconnected. Resuming game state...
+2019-11-20 01:11:00:     --------------------------------------------------
+2019-11-20 01:11:00:     Players: [weavile - 4級 - 23100, 星の内海 - 三段 - 23100, Rｒｒ - 三段 - 25800, ｋｇｇｈｇｇ - 三段 - 28000]
+2019-11-20 01:11:00:     Dealer: ｋｇｇｈｇｇ - 三段 - 28000
+2019-11-20 01:11:00: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 120, in start_game
+    '<INIT' in msg and self._handle_initial_msg(msg)
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 340, in _handle_initial_msg
+    self._log('    Player wind: {}'.format(Tile.tile_graph_dict[self.game_table.bot.player_wind]))
+  File "C:\Users\j4903\Documents\MahjongAI\client\mahjong_player.py", line 64, in player_wind
+    if self.seat >= self.dealer_seat:
+AttributeError: 'MahjongAgent' object has no attribute 'seat'
+2019-11-20 01:11:00: End the game...
+2019-11-20 01:11:00:     Game was ended unexpected
+2019-11-20 01:11:00: 

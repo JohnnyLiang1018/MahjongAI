@@ -1,0 +1,24 @@
+2019-11-19 13:33:21:     Reconnected successfully!
+2019-11-19 13:33:23:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-11-19 13:33:24:     Reconnected. Resuming game state...
+2019-11-19 13:33:27:     --------------------------------------------------
+2019-11-19 13:33:27:     Players: [weavile - 4¼‰ - 19400, onnteddo - ËÄ¶Î - 18400, ¤«¤«¤í¤Ã¤È¤© - ¶þ¶Î - 32700, axl - Èý¶Î - 29500]
+2019-11-19 13:33:27:     Dealer: weavile - 4¼‰ - 19400
+2019-11-19 13:33:27:  
+2019-11-19 13:33:27: 
+2019-11-19 13:33:28: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 129, in start_game
+    if self._handle_draw_tile(msg):
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 534, in _handle_draw_tile
+    discard_tile_136 = self.game_table.bot.to_discard_tile()
+  File "C:\Users\j4903\Documents\MahjongAI\agents\MahjongAgent.py", line 841, in to_discard_tile
+    tile_weight = self.yaku_goal_list(yaku_dict)
+  File "C:\Users\j4903\Documents\MahjongAI\agents\MahjongAgent.py", line 726, in yaku_goal_list
+    temp_p = 1 - (1 - (self.tile_count[item]/self.num_remain_tile))**5
+IndexError: list index out of range
+2019-11-19 13:33:28: End the game...
+2019-11-19 13:33:28:     Game was ended unexpected
+2019-11-19 13:33:28: 

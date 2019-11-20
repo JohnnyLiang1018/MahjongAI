@@ -1,0 +1,86 @@
+2019-02-07 18:42:28:     User(ID76B06F13-c3mhaFM4) was authenticated successfully
+2019-02-07 18:42:34:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-02-07 18:42:34:     A new game started!
+2019-02-07 18:42:34:     The replay link can be found here: http://tenhou.net/0/?log=2019020811gm-0089-0000-fc75afff&tw=0
+2019-02-07 18:42:37:     --------------------------------------------------
+2019-02-07 18:42:38:  
+2019-02-07 18:42:38: 
+2019-02-07 18:42:41: 
+2019-02-07 18:42:41:     Remaining tiles: 69
+2019-02-07 18:42:41:     --------------------------------------------------
+2019-02-07 18:42:41: 
+2019-02-07 18:42:47:     [Player 3] draws a tile...
+2019-02-07 18:42:48: 
+2019-02-07 18:42:50: 
+2019-02-07 18:42:50:     Remaining tiles: 67
+2019-02-07 18:42:50:     --------------------------------------------------
+2019-02-07 18:42:50: 
+2019-02-07 18:42:51:     [Player 1] draws a tile...
+2019-02-07 18:42:56:     [Player 2] draws a tile...
+2019-02-07 18:42:59:     [Player 3] draws a tile...
+2019-02-07 18:43:01: 
+2019-02-07 18:43:03: 
+2019-02-07 18:43:03:     Remaining tiles: 63
+2019-02-07 18:43:03:     --------------------------------------------------
+2019-02-07 18:43:03: 
+2019-02-07 18:43:04:     [Player 1] draws a tile...
+2019-02-07 18:43:08:     [Player 2] draws a tile...
+2019-02-07 18:43:09:     [Player 3] draws a tile...
+2019-02-07 18:43:11: 
+2019-02-07 18:43:17: 
+2019-02-07 18:43:17:     Remaining tiles: 59
+2019-02-07 18:43:17:     --------------------------------------------------
+2019-02-07 18:43:17: 
+2019-02-07 18:43:20:     [Player 3] draws a tile...
+2019-02-07 18:43:24: 
+2019-02-07 18:43:28: 
+2019-02-07 18:43:28:     Remaining tiles: 57
+2019-02-07 18:43:28:     --------------------------------------------------
+2019-02-07 18:43:28: 
+2019-02-07 18:43:28:     [Player 1] draws a tile...
+2019-02-07 18:43:32:     [Player 2] draws a tile...
+2019-02-07 18:43:35:     [Player 3] draws a tile...
+2019-02-07 18:43:37: 
+2019-02-07 18:43:46: 
+2019-02-07 18:43:46:     Remaining tiles: 53
+2019-02-07 18:43:46:     --------------------------------------------------
+2019-02-07 18:43:46: 
+2019-02-07 18:43:47:     [Player 1] draws a tile...
+2019-02-07 18:43:52:     [Player 2] draws a tile...
+2019-02-07 18:43:54:     [Player 3] draws a tile...
+2019-02-07 18:43:58: 
+2019-02-07 18:44:07: 
+2019-02-07 18:44:07:     Remaining tiles: 49
+2019-02-07 18:44:07:     --------------------------------------------------
+2019-02-07 18:44:07: 
+2019-02-07 18:44:08:     [Player 1] draws a tile...
+2019-02-07 18:44:11:     [Player 2] draws a tile...
+2019-02-07 18:44:22:     [Player 3] draws a tile...
+2019-02-07 18:44:24: 
+2019-02-07 18:44:26: 
+2019-02-07 18:44:37: 
+2019-02-07 18:44:37:     Remaining tiles: 45
+2019-02-07 18:44:37:     --------------------------------------------------
+2019-02-07 18:44:37: 
+2019-02-07 18:44:38:     [Player 1] draws a tile...
+2019-02-07 18:44:44:     --------------------------------------------------
+2019-02-07 18:44:44: 
+2019-02-07 18:44:44:     <AGARI ba="0,1" hai="55,56,60,64,67,86,87,88,90,92,94,98,100,106" machi="106" ten="30,12000,2" yaku="1,1,2,1,7,1,9,1,54,1,53,2" doraHai="34" doraHaiUra="89" who="3" fromWho="1" sc="250,0,250,-120,250,0,240,130" />
+2019-02-07 18:44:44: Unexpected exception
+Traceback (most recent call last):
+  File "c:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "c:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 146, in start_game
+    '<AGARI' in msg and self._handle_round_end(msg)
+  File "c:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 404, in _handle_round_end
+    self._round_end_info_to_file(res_str)
+  File "c:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 748, in _round_end_info_to_file
+    self.logger_obj.add_round_end_result(msg)
+  File "c:\Users\j4903\Documents\MahjongAI\logger\logger_handler.py", line 57, in add_round_end_result
+    open(self.scores_path, 'a').write(msg)
+  File "C:\Users\j4903\AppData\Local\Programs\Python\Python37-32\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f018' in position 89: character maps to <undefined>
+2019-02-07 18:44:44: End the game...
+2019-02-07 18:44:44:     Game was ended unexpected
+2019-02-07 18:44:44: 

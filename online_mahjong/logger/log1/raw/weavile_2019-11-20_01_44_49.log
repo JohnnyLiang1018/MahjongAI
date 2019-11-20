@@ -1,0 +1,36 @@
+2019-11-20 01:44:50:     Reconnected successfully!
+2019-11-20 01:44:52:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-11-20 01:44:53:     Reconnected. Resuming game state...
+2019-11-20 01:44:56:     --------------------------------------------------
+2019-11-20 01:44:56:     Players: [weavile - 4級 - 25000, あらてん - 三段 - 25000, とまてぃー - 二段 - 25000, ゴーゼワロス - 三段 - 25000]
+2019-11-20 01:44:56:     Dealer: とまてぃー - 二段 - 25000
+2019-11-20 01:44:56:  
+2019-11-20 01:44:57: 
+2019-11-20 01:44:57: 
+2019-11-20 01:44:57:     Remaining tiles: 38
+2019-11-20 01:44:57:     --------------------------------------------------
+2019-11-20 01:44:57: 
+2019-11-20 01:44:58:     [Player 1] draws a tile...
+2019-11-20 01:45:00:     [Player 2] draws a tile...
+2019-11-20 01:45:03:     [Player 3] draws a tile...
+2019-11-20 01:45:09: 
+2019-11-20 01:45:10: 
+2019-11-20 01:45:10:     Remaining tiles: 34
+2019-11-20 01:45:10:     --------------------------------------------------
+2019-11-20 01:45:10: 
+2019-11-20 01:45:12:     [Player 1] draws a tile...
+2019-11-20 01:45:13:     [Player 2] draws a tile...
+2019-11-20 01:45:18:     [Player 3] draws a tile...
+2019-11-20 01:45:26: 
+2019-11-20 01:45:27: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 129, in start_game
+    if self._handle_draw_tile(msg):
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 535, in _handle_draw_tile
+    self.game_table.bot.tiles136.remove(discard_tile_136)
+ValueError: list.remove(x): x not in list
+2019-11-20 01:45:27: End the game...
+2019-11-20 01:45:27:     Game was ended unexpected
+2019-11-20 01:45:27: 

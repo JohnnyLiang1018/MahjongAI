@@ -16,7 +16,7 @@ def main():
 
     while(True):
 
-        for i in range(13):
+        for i in range(14):
             stdin = int(input('Please input your hand' + '\n'))
             agent.hand_add(stdin)
 

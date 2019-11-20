@@ -5,6 +5,7 @@ import numpy as np
 import pickle
 
 class MahjongAgent:
+
     wan = [1,1,3,1,2,3,0,0,1]  #0-8
     so = [0,0,0,1,0,0,0,2,1]   #9-17
     pin = [1,1,0,1,0,0,0,0,0]  #18-26
@@ -21,14 +22,21 @@ class MahjongAgent:
     han = 0
     fu = 20
     
-    # def __init__(self,gameboard):
-    #     self.hand = []
-    #     self.open_meld = []
-    #     self.gameboard = gameboard
-    #     self.tile_count = [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]
-    #     self.num_remain_tile = 83
-    #     self.fu = 20
+    def __init__(self,gameboard):
+        self.hand = []
+        self.open_meld = []
+        self.gameboard = gameboard
+        self.tile_count = [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]
+        self.num_remain_tile = 83
+        self.fu = 20
+        self.han = 0
+        self.seq_meld = 0
+        self.tri_meld = 0
+    # def __init__(self):
     #     self.han = 0
+    #     self.used_tile = 0
+    #     self.seq_meld = 0
+    #     self.tri_meld = 0
 
     
     # sequence_two-way * 0.7 * 0.24
@@ -754,7 +762,8 @@ class MahjongAgent:
             used_tile_list = yaku_dict[yaku][2]
             print(yaku)
             print(used_tile_list)
-            point_value = 2000
+            han,seq,tri = self.han_seq_tri_getter(yaku)
+            point_value = self.point_calculation(30,han)
                 
             for tile in used_tile_list:
                 if(tile in tile_weight_dict):
@@ -764,39 +773,51 @@ class MahjongAgent:
 
     # 3. For incomplete seq or single tile, calculate the possibility of some sort of advancing (for example, from single tile to seq-two-way, or from seq-one-way to seq-two-way etc). Give tiles weight based on that possibility. Then we have a list of tiles with weight, the one with the least weight should be the least important.
         partition = self.partition_dict(self.hand,'seq')
-
+        point_value = self.point_calculation(30,1)
         for tile in partition['seq-two-way']:
             total_remain = self.tile_count_getter(tile-1) + self.tile_count_getter(tile+2)
-            prob = total_remain / self.num_remain_tile
+            prob_weight = total_remain / self.num_remain_tile * point_value
             if(tile in tile_weight_dict):
-                tile_weight_dict[tile] += prob
+                tile_weight_dict[tile] += prob_weight
             else:
-                tile_weight_dict.setdefault(tile,prob)
+                tile_weight_dict.setdefault(tile,prob_weight)
+            if((tile+1) in tile_weight_dict):
+                tile_weight_dict[tile+1] += prob_weight
+            else:
+                tile_weight_dict.setdefault(tile+1,prob_weight)
             
         for tile in partition['seq-one-way']:
             if(tile % 9 == 0):
                 total_remain = self.tile_count_getter(tile+2)
             else:
                 total_remain = self.tile_count_getter(tile-1)
-            prob = total_remain / self.num_remain_tile
+            prob_weight = total_remain / self.num_remain_tile * point_value
             if(tile in tile_weight_dict):
-                tile_weight_dict[tile] += prob
+                tile_weight_dict[tile] += prob_weight
             else:
-                tile_weight_dict.setdefault(tile,prob)
-
+                tile_weight_dict.setdefault(tile,prob_weight)
+            if((tile+1) in tile_weight_dict):
+                tile_weight_dict[tile+1] += prob_weight
+            else:
+                tile_weight_dict.setdefault(tile+1,prob_weight)
+        
         for tile in partition['seq-middle']:
-            prob = self.tile_count_getter(tile+1) / self.num_remain_tile
+            prob_weight = self.tile_count_getter(tile+1) / self.num_remain_tile * point_value
             if(tile in tile_weight_dict):
-                tile_weight_dict[tile] += prob
+                tile_weight_dict[tile] += prob_weight
             else:
-                tile_weight_dict.setdefault(tile,prob)
+                tile_weight_dict.setdefault(tile,prob_weight)
+            if((tile+2) in tile_weight_dict):
+                tile_weight_dict[tile+2] += prob_weight
+            else:
+                tile_weight_dict.setdefault(tile+2,prob_weight)
         
         for tile in partition['pair']:
-            prob = self.tile_count_getter(tile) / self.num_remain_tile
+            prob_weight = self.tile_count_getter(tile) / self.num_remain_tile * point_value
             if(tile in tile_weight_dict):
-                tile_weight_dict[tile] += prob
+                tile_weight_dict[tile] += prob_weight
             else:
-                tile_weight_dict.setdefault(tile,prob)
+                tile_weight_dict.setdefault(tile,prob_weight)
         
         for tile in partition['single']:
             prob = self.tile_count_getter(tile) / self.num_remain_tile
@@ -864,34 +885,61 @@ class MahjongAgent:
 
             
     
-    def han_fu_calculation(self,han_string,partition):
+    def han_seq_tri_getter(self,han_string):
         if('pinfu' in han_string):
-            return 1,0
+            return 1,4,0
         
-        if('all simple' in han_string):
-            return 1,0
+        if('all-simple' in han_string):
+            return 1,0,0
+        
+        if('honor-yaku' in han_string):
+            return 1,0,1
+        
+        if('two-identical-seq' in han_string):
+            return 1,2,0
+        
+        if('straight' in han_string):
+            return 2,3,0
+        
+        if('3-color-seq' in han_string):
+            return 2,3,0
 
+        if('3-color-triplet' in han_string):
+            return 2,0,3
 
+        if('all_triplet' in han_string):
+            return 2,0,4
+        
+        if('terminal_in_all' in han_string):
+            return 2,0,0
+
+        if('seven_pairs' in han_string):
+            return 2,-1,-1
+
+        if('riichi' in han_string):
+            return 1,0,0
+        
     def point_calculation(self,fu,han):
-        self.fu += fu
-        self.han += han
-        if(self.han <= 4):
-            return fu*2**(han+2)
+        if(han <= 4):
+            basic_points = fu*2**(han+2)
+            if(basic_points > 2000):
+                return 2000
+            else: return basic_points
 
-        elif(self.han == 5):
-            return 8000
+        elif(han == 5):
+            return 2000
         
-        elif(self.han <= 7):
-            return 12000
+        elif(han <= 7):
+            return 3000
         
-        elif(self.han <= 10):
-            return 18000
+        elif(han <= 10):
+            return 4000
         
-        elif(self.han <= 12):
-            return 24000
+        elif(han <= 12):
+            return 6000
         
         else:
-            return 36000
+            return 8000
 
     def tile_count_getter(self,index):
         return self.tile_count[index]
@@ -910,6 +958,7 @@ class MahjongAgent:
         return self.hand
     
     def yaku_check(self,partition_seq, partition_triplet, partition_pair,meld):
+        NO_TERMINAL_HONOR_TILES = [1,2,3,4,5,6,7,10,11,12,13,14,15,16,19,20,21,22,23,24,25,26]
         return_dict = {}
         num_waiting = 0
         tiles_needed_list = []
@@ -922,8 +971,7 @@ class MahjongAgent:
             if num_seq_com > 3: 
                 num_waiting = 99
             else: # +2 waiting tiles for every seq-com under 3
-                temp = 3 - num_seq_com
-                num_waiting = num_waiting + temp * 2
+                num_waiting = num_waiting + ((3 - num_seq_com) * 2)
                 for x  in partition_seq['seq-complete']:
                     tiles_used_list.append(x)
                     tiles_used_list.append(x + 1)
@@ -931,32 +979,36 @@ class MahjongAgent:
                 num_waiting = num_waiting - len(partition_seq['seq-middle'])
                 for x in partition_seq['seq-middle']:
                     tiles_needed_list.append(x + 1) # need index tile + 1
+                    num_waiting = num_waiting + 1
                     tiles_used_list.append(x)
                     tiles_used_list.append(x + 2)
-                num_waiting = num_waiting - len(partition_seq['seq-one-way'])
                 for x in partition_seq['seq-one-way']:
                     if x % 9 == 0: # 123 one way
                         tiles_needed_list.append(x + 2)
+                        num_waiting = num_waiting + 1
                         tiles_used_list.append(x)
                         tiles_used_list.append(x + 1)
                     else: # 789 one way
                         tiles_needed_list.append(x - 1)
+                        num_waiting = num_waiting + 1
                         tiles_used_list.append(x)
                         tiles_used_list.append(x + 1)
             num_seq_two = len(partition_seq['seq-two-way'])
             if num_seq_two == 0: 
-                num_waiting = num_waiting + 1 # need +1 tile to complete two-way-seq
+                num_waiting = num_waiting + 1 # need +1 tiles to make two
                 for x in partition_seq['single']:
-                    if 7 > (x % 9) > 1 and x < 26:
+                    mod_var = x % 9
+                    if 7 > mod_var > 1 and x < 26:
                         tiles_needed_list.append([x-1, x+1]) # every single needs + or - 1 to become 2-way
                         tiles_used_list.append(x)
+
             else: # -1 waiting tile for every two-way-seq over the needed 1
-                temp = num_seq_two - 1
-                num_waiting = num_waiting - temp
+                num_waiting = num_waiting - num_seq_two
                 for x in partition_seq['seq-two-way']:
                     tiles_needed_list.append([x-1, x+2]) # each 2-way is waiting for x-1 or x+2
                     tiles_used_list.append(x)
                     tiles_used_list.append(x + 1)
+                    num_waiting = num_waiting + 1
             if len(partition_seq['pair']) == 0: #add 1 if there is no pair
                 num_waiting = num_waiting + 1
                 for t in partition_seq['single']:
@@ -968,13 +1020,55 @@ class MahjongAgent:
             elif len(partition_seq['pair']) > 1:
                 num_waiting = num_waiting + len(partition_seq['pair']) - 1
                 for t in partition_seq['pair']:
-                    tiles_needed_list.append(t)
-                    tiles_used_list.append(t)
+                    if 7 > t % 9 > 1 and t < 26:
+                        tiles_needed_list.extend([t + 1, t + 2, t - 1, t - 2])
+                    elif t % 9 == 7:
+                        tiles_needed_list.extend([t + 1, t - 1, t - 2])
+                    elif t % 9 == 8:
+                        tiles_needed_list.extend([t - 1, t - 2])
+                    elif t % 9 == 1:
+                        tiles_needed_list.extend([t - 1, t + 1, t + 2])
+                    elif t % 9 == 0:
+                        tiles_needed_list.extend([t + 1, t + 2])
                     tiles_used_list.append(t)
             else:
                 for t in partition_seq['pair']:
                     tiles_used_list.append(t)
                     tiles_used_list.append(t)
+            if num_waiting > len(tiles_needed_list):
+                temp_single_list = partition_seq['single'][:]
+                try:
+                    for t in partition_seq['seq-two-way']:
+                        temp_single_list.remove(t)
+                        temp_single_list.remove(t + 1)
+                    for t in partition_seq['seq-one-way']:
+                        temp_single_list.remove(t)
+                        temp_single_list.remove(t + 1)
+                    for t in partition_seq['seq-middle']:
+                        temp_single_list.remove(t)
+                        temp_single_list.remove(t + 2)
+                except ValueError:
+                    pass
+                for t in temp_single_list:
+                    if 7 > t % 9 > 1 and t < 26:
+                        tiles_needed_list.extend([t + 1, t + 2, t - 1, t - 2])
+                    elif t % 9 == 7:
+                        tiles_needed_list.extend([t + 1, t - 1, t - 2])
+                    elif t % 9 == 8:
+                        tiles_needed_list.extend([t - 1, t - 2])
+                    elif t % 9 == 1:
+                        tiles_needed_list.extend([t - 1, t + 1, t + 2])
+                    elif t % 9 == 0:
+                        tiles_needed_list.extend([t + 1, t + 2])
+                for t in partition_seq['triplet']:
+                    if 6 > t % 9 > 2 and t < 26:
+                        tiles_needed_list.extend([t + 1, t + 2, t - 1, t - 2])
+                    elif t % 9 == 7:
+                        tiles_needed_list.extend([t + 1, t - 1, t - 2])
+                    elif t % 9 == 1:
+                        tiles_needed_list.extend([t - 1, t + 1, t + 2])
+                if num_waiting > len(tiles_needed_list):
+                    num_waiting = 99
         else: num_waiting = 99
         return_dict.setdefault("pinfu", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'seq'])
         num_waiting = 0
@@ -1137,6 +1231,8 @@ class MahjongAgent:
         else: 
             num_waiting = triplet_num_waiting
             return_str = 'tri'
+        if num_waiting > len(tiles_needed_list):
+            tiles_needed_list.append(NO_TERMINAL_HONOR_TILES[:])
         return_dict.setdefault('all-simple', [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), return_str])
         num_waiting = 0
         tiles_needed_list.clear()
@@ -1227,10 +1323,8 @@ class MahjongAgent:
 
         # 5. straight
         # condtion: 3 seq with index 0, 3, 6
-        
         if len(meld) > 1: # if > 1 exposed triplet
             num_waiting = 99
-
         # 3 arrays (9 total tiles per suit)
         # seq-complete partition check (ID suit; modify array) --> singles, pairs, and triplets (check for tiles in similar range (variable-- if yes))
         else:
@@ -1243,25 +1337,26 @@ class MahjongAgent:
 
             for k, v in partition_seq.items(): # unique tile counted = 1, else 0
                 for tile in v:
-                    if 'seq-complete' in k:
-                        if tile < 7:
-                            suit_wan[tile] = suit_wan[tile + 1] = suit_wan[tile + 2] = 1
-                            
-                        elif 8 < tile < 16:
-                            suit_pin[(tile % 9)] = suit_pin[(tile % 9) + 1] = suit_pin[(tile % 9) + 2] = 1
-
-                        else:
-                            suit_sou[(tile % 9)] = suit_sou[(tile % 9) + 1] = suit_sou[(tile % 9) + 2] = 1
+                    if tile < 27:
+                        if 'seq-complete' in k:
+                            if tile < 7:
+                                suit_wan[tile] = suit_wan[tile + 1] = suit_wan[tile + 2] = 1
                                 
-                    if 'single' or 'pair' or 'triplet' in k and (tile < 27):
-                        if tile < 9:
-                            suit_wan[tile] = 1
-                                    
-                        elif 8 < tile < 16:
-                            suit_pin[(tile % 9)] = 1
+                            elif 8 < tile < 16:
+                                suit_pin[(tile % 9)] = suit_pin[(tile % 9) + 1] = suit_pin[(tile % 9) + 2] = 1
 
-                        else:
-                            suit_sou[(tile % 9)] = 1
+                            else:
+                                suit_sou[(tile % 9)] = suit_sou[(tile % 9) + 1] = suit_sou[(tile % 9) + 2] = 1
+                                    
+                        if 'single' or 'pair' or 'triplet' in k and (tile < 27):
+                            if tile < 9:
+                                suit_wan[tile] = 1
+                                        
+                            elif 8 < tile < 16:
+                                suit_pin[(tile % 9)] = 1
+
+                            else:
+                                suit_sou[(tile % 9)] = 1
 
             straight_counts[0] = suit_wan.count(1) # get the suit with the most unique tiles counted
             straight_counts[1] = suit_pin.count(1)
@@ -1279,27 +1374,28 @@ class MahjongAgent:
 
             if num_waiting == 9: # if all honors
                 num_waiting = 99
-        
-            if closestS == 0: # append to waiting and used tiles lists
-                for i in range (0, 9):
-                    if suit_wan[i] == 0:
-                        tiles_needed_list.append(i)
-                    else:
-                        tiles_used_list.append(i)
 
-            if closestS == 1:
-                for i in range (0, 9):
-                    if suit_pin[i] == 0:
-                        tiles_needed_list.append((i + 9))
-                    else:
-                        tiles_used_list.append((i + 9))
+            else:
+                if closestS == 0: # append to waiting and used tiles lists
+                    for i in range (0, 9):
+                        if suit_wan[i] == 0:
+                            tiles_needed_list.append(i)
+                        else:
+                            tiles_used_list.append(i)
 
-            if closestS == 2:
-                for i in range (0, 9):
-                    if suit_sou[i] == 0:
-                        tiles_needed_list.append((i + 18))
-                    else:
-                        tiles_used_list.append((i + 18))
+                if closestS == 1:
+                    for i in range (0, 9):
+                        if suit_pin[i] == 0:
+                            tiles_needed_list.append((i + 9))
+                        else:
+                            tiles_used_list.append((i + 9))
+
+                if closestS == 2:
+                    for i in range (0, 9):
+                        if suit_sou[i] == 0:
+                            tiles_needed_list.append((i + 18))
+                        else:
+                            tiles_used_list.append((i + 18))
 
             return_dict.setdefault("straight", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'seq'])
             num_waiting = 0
@@ -1356,7 +1452,7 @@ class MahjongAgent:
 
             
             value_list = [min_waiting, waiting_tiles_list, used_tiles_list, 'seq']
-            return_dict.setdefault('three-color-seq', value_list)     
+            return_dict.setdefault('3-color-seq', value_list)     
 
         # 7. three color triplet
         # condition: 3 triplet with the same index
@@ -1434,38 +1530,39 @@ class MahjongAgent:
             if num_waiting == 9: # if all honors
                 num_waiting = 99
 
-            for i in range (0, 3): # append needed & used tiles lists
-                if closestT[closest_index][i] <= 3:
-                    if i == 0:
-                        for j in range (0, (3 - closestT[closest_index][i])):
-                            tiles_needed_list.append(closest_index)
-                        for j in range (0, closestT[closest_index][i]):
-                            tiles_used_list.append(closest_index)
+            else:
+                for i in range (0, 3): # append needed & used tiles lists
+                    if closestT[closest_index][i] < 3:
+                        if i == 0:
+                            for j in range (0, (3 - closestT[closest_index][i])):
+                                tiles_needed_list.append(closest_index)
+                            for j in range (0, closestT[closest_index][i]):
+                                tiles_used_list.append(closest_index)
 
-                    if i == 1:
-                        for j in range (0, (3 - closestT[closest_index][i])):
-                            tiles_needed_list.append(closest_index + 9)
-                        for j in range (0, closestT[closest_index][i]):
-                            tiles_used_list.append(closest_index + 9)
+                        if i == 1:
+                            for j in range (0, (3 - closestT[closest_index][i])):
+                                tiles_needed_list.append(closest_index + 9)
+                            for j in range (0, closestT[closest_index][i]):
+                                tiles_used_list.append(closest_index + 9)
 
-                    if i == 2:
-                        for j in range (0, (3 - closestT[closest_index][i])):
-                            tiles_needed_list.append(closest_index + 18)
-                        for j in range (0, closestT[closest_index][i]):
-                            tiles_used_list.append(closest_index + 18)
+                        if i == 2:
+                            for j in range (0, (3 - closestT[closest_index][i])):
+                                tiles_needed_list.append(closest_index + 18)
+                            for j in range (0, closestT[closest_index][i]):
+                                tiles_used_list.append(closest_index + 18)
 
-                else: # 4 tiles under value i in a suit (no need to append needed tiles list)
-                    if i == 0:
-                        for j in range (0, 3):
-                            tiles_used_list.append(closest_index)
+                    else: # 3 or 4 tiles under value i in a suit (no need to append needed tiles list)
+                        if i == 0:
+                            for j in range (0, 3):
+                                tiles_used_list.append(closest_index)
 
-                    if i == 1:
-                        for j in range (0, 3):
-                            tiles_used_list.append(closest_index + 9)
+                        if i == 1:
+                            for j in range (0, 3):
+                                tiles_used_list.append(closest_index + 9)
 
-                    if i == 2:
-                        for j in range (0, 3):
-                            tiles_used_list.append(closest_index + 18)
+                        if i == 2:
+                            for j in range (0, 3):
+                                tiles_used_list.append(closest_index + 18)
 
             return_dict.setdefault("3-color-triplet", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'tri'])
             num_waiting = 0
@@ -1527,87 +1624,88 @@ class MahjongAgent:
         for k, v in partition_seq.items():
             for index in v:
                 if 'triplet' in k:
-                    if index < 26:
+                    if index < 27:
                         if((index % 9) in (0, 8)): # 111 OR 999
                             num_com = num_com + 1
                             tiles_used_list.extend([index, index, index])
                     else: # Honor
                         num_com = num_com + 1
                         tiles_used_list.extend([index, index, index])
-                if 'seq-complete' in k: 
-                    if ((index % 9) in (0, 6)): # 123 OR 789
-                        num_com = num_com + 1
-                        tiles_used_list.extend([index, index+1, index+2])
-                    if ((index % 9) in (1, 5)): # 234 OR 678
-                        num_almost = num_almost + 1
-                        if (index == 1):
-                            tiles_used_list_almost.extend([index, index + 1]) #23
-                            tiles_needed_list_almost.extend([index - 1]) 
-                        if (index == 5):
-                            tiles_used_list_almost.extend([index + 1, index + 2]) #78
-                            tiles_needed_list_almost.extend([index + 3])
-                    if ((index % 9) in (2, 4)): # 345 OR 567
-                        num_two = num_two + 1
-                        if (index == 2):
-                            tiles_used_list_two.extend([index]) #3
-                            tiles_needed_list_two.extend([index - 2, index - 1]) #12
-                        if (index == 4):
-                            tiles_used_list_two.extend([index + 2]) #7
-                            tiles_needed_list_two.extend([index + 3, index + 4]) #89         
-                if 'seq-one-way' in k: # 12(3) OR (7)89     
-                    if ((index % 9) == 0): # 12(3)
-                        num_almost = num_almost + 1
-                        tiles_needed_list_almost.extend([index + 2]) # 3
-                        temp_used.extend([index, index + 1])
-                        tiles_used_list_almost.extend([index, index + 1])
-                    if ((index % 9) == 7): # (7)89
-                        num_almost = num_almost + 1
-                        tiles_needed_list_almost.extend(index - 1) # 7
-                        temp_used.extend([index, index + 1])
-                        tiles_used_list_almost.extend([index, index + 1])
-                if 'seq-two-way' in k: # (1)23 OR 78(9) 
-                    if ((index % 9) == 1): # (1)23
-                        num_almost = num_almost + 1
-                        tiles_needed_list_almost.extend([index - 1]) # 1
-                        temp_used.extend([index, index + 1])
-                        tiles_used_list_almost.extend([index, index + 1])
-                    if ((index % 9) == 6): # 78(9)
-                        num_almost = num_almost + 1
-                        tiles_needed_list_almost.extend([index + 2]) # 9
-                        temp_used.extend([index, index + 1])
-                        tiles_used_list_almost.extend([index, index + 1])                      
-                if 'seq-middle' in k: # 1(2)3 OR 7(8)9
-                    if ((index % 9) == 0): # 1(2)3
-                        num_almost = num_almost + 1
-                        tiles_needed_list_almost.extend([index + 1]) # 2
-                        temp_used.extend([index, index + 2])
-                        tiles_used_list_almost.extend([index, index + 2])
-                    if ((index % 9) == 6): # 7(8)9
-                        num_almost = num_almost + 1
-                        tiles_needed_list_almost.extend([index + 1]) # 8
-                        temp_used.extend([index, index + 2])
-                        tiles_used_list_almost.extend([index, index + 2])                     
-                if 'pair' in k:
-                    if((index % 9) in (0, 8)): #11 or 99
-                        num_almost = num_almost + 1
-                        pair_used = pair_used + 1
-                        tiles_needed_list_almost.extend([index]) # 1 or 9
-                        tiles_used_list_almost.extend([index, index])
-                if 'single' in k:
-                    if index not in temp_used:
-                        if((num_com + num_almost) < 4):
-                            if((index % 9) in (0, 6)): # 1 or 7             
-                                num_two = num_two + 1 
-                                tiles_needed_list_two.extend([index + 1, index + 2]) #23 or 89
-                                tiles_used_list_two.extend([index])
-                            if((index % 9) in (1, 7)): # 2 or 8
-                                num_two = num_two + 1
-                                tiles_needed_list_two.extend([index - 1, index + 1]) #13 or 79
-                                tiles_used_list_two.extend([index])                       
-                            if((index % 9) in (2, 8)): #3 or 9
-                                num_two = num_two + 1
-                                tiles_needed_list_two.extend([index - 1, index - 2]) #12 or 78
-                                tiles_used_list_two.extend([index])
+                if index < 27:         
+                    if 'seq-complete' in k: 
+                        if ((index % 9) in (0, 6)): # 123 OR 789
+                            num_com = num_com + 1
+                            tiles_used_list.extend([index, index+1, index+2])
+                        if ((index % 9) in (1, 5)): # 234 OR 678
+                            num_almost = num_almost + 1
+                            if (index == 1):
+                                tiles_used_list_almost.extend([index, index + 1]) #23
+                                tiles_needed_list_almost.extend([index - 1]) 
+                            if (index == 5):
+                                tiles_used_list_almost.extend([index + 1, index + 2]) #78
+                                tiles_needed_list_almost.extend([index + 3])
+                        if ((index % 9) in (2, 4)): # 345 OR 567
+                            num_two = num_two + 1
+                            if (index == 2):
+                                tiles_used_list_two.extend([index]) #3
+                                tiles_needed_list_two.extend([index - 2, index - 1]) #12
+                            if (index == 4):
+                                tiles_used_list_two.extend([index + 2]) #7
+                                tiles_needed_list_two.extend([index + 3, index + 4]) #89         
+                    if 'seq-one-way' in k: # 12(3) OR (7)89     
+                        if ((index % 9) == 0): # 12(3)
+                            num_almost = num_almost + 1
+                            tiles_needed_list_almost.extend([index + 2]) # 3
+                            temp_used.extend([index, index + 1])
+                            tiles_used_list_almost.extend([index, index + 1])
+                        if ((index % 9) == 7): # (7)89
+                            num_almost = num_almost + 1
+                            tiles_needed_list_almost.extend(index - 1) # 7
+                            temp_used.extend([index, index + 1])
+                            tiles_used_list_almost.extend([index, index + 1])
+                    if 'seq-two-way' in k: # (1)23 OR 78(9) 
+                        if ((index % 9) == 1): # (1)23
+                            num_almost = num_almost + 1
+                            tiles_needed_list_almost.extend([index - 1]) # 1
+                            temp_used.extend([index, index + 1])
+                            tiles_used_list_almost.extend([index, index + 1])
+                        if ((index % 9) == 6): # 78(9)
+                            num_almost = num_almost + 1
+                            tiles_needed_list_almost.extend([index + 2]) # 9
+                            temp_used.extend([index, index + 1])
+                            tiles_used_list_almost.extend([index, index + 1])                      
+                    if 'seq-middle' in k: # 1(2)3 OR 7(8)9
+                        if ((index % 9) == 0): # 1(2)3
+                            num_almost = num_almost + 1
+                            tiles_needed_list_almost.extend([index + 1]) # 2
+                            temp_used.extend([index, index + 2])
+                            tiles_used_list_almost.extend([index, index + 2])
+                        if ((index % 9) == 6): # 7(8)9
+                            num_almost = num_almost + 1
+                            tiles_needed_list_almost.extend([index + 1]) # 8
+                            temp_used.extend([index, index + 2])
+                            tiles_used_list_almost.extend([index, index + 2])                     
+                    if 'pair' in k:
+                        if((index % 9) in (0, 8)): #11 or 99
+                            num_almost = num_almost + 1
+                            pair_used = pair_used + 1
+                            tiles_needed_list_almost.extend([index]) # 1 or 9
+                            tiles_used_list_almost.extend([index, index])
+                    if 'single' in k:
+                        if index not in temp_used:
+                            if((num_com + num_almost) < 4):
+                                if((index % 9) in (0, 6)): # 1 or 7             
+                                    num_two = num_two + 1 
+                                    tiles_needed_list_two.extend([index + 1, index + 2]) #23 or 89
+                                    tiles_used_list_two.extend([index])
+                                if((index % 9) in (1, 7)): # 2 or 8
+                                    num_two = num_two + 1
+                                    tiles_needed_list_two.extend([index - 1, index + 1]) #13 or 79
+                                    tiles_used_list_two.extend([index])                       
+                                if((index % 9) in (2, 8)): #3 or 9
+                                    num_two = num_two + 1
+                                    tiles_needed_list_two.extend([index - 1, index - 2]) #12 or 78
+                                    tiles_used_list_two.extend([index])
        
         needed_com = 4 - num_com
         if needed_com > 0:
@@ -1631,7 +1729,7 @@ class MahjongAgent:
                 tiles_needed_list.extend(tiles_needed_list_two)           
         else:
             num_waiting = 0
-        return_dict.setdefault("ternimal_in_all", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'seq'])
+        return_dict.setdefault("terminal_in_all", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'seq'])
         tiles_used_list_almost.clear()
         tiles_used_list_two.clear()
         tiles_needed_list_almost.clear()
@@ -1659,22 +1757,48 @@ class MahjongAgent:
         tiles_needed_list.clear()
         tiles_used_list.clear()        
         ## above Lee 8-10 ##
+        ## Riichi Check # need 4 melds and 1 pair
+        return_str = ''
+        num_melds = len(partition_seq['seq-complete']) + len(partition_seq['triplet'])
+        num_pair = 1 if (len(partition_seq['pair']) > 0) else 0
+        seq_num_waiting = 14 - (num_melds * 3 + num_pair * 2)
+
+        num_melds = len(partition_triplet['seq-complete']) + len(partition_triplet['triplet'])
+        num_pair = 1 if (len(partition_seq['pair']) > 0) else 0
+        triplet_num_waiting = 14 - (num_melds * 3 + num_pair * 2)
+        closest_partition = partition_seq if seq_num_waiting < triplet_num_waiting else partition_triplet
+        num_waiting = seq_num_waiting if seq_num_waiting < triplet_num_waiting else triplet_num_waiting
+        return_str = 'seq' if seq_num_waiting < triplet_num_waiting else 'tri'
+        pairs_list = []
+
+        for t in closest_partition['seq-complete']:
+            tiles_used_list.extend([t, t + 1, t + 2])
+        for t in closest_partition['triplet']:
+            tiles_used_list.extend([t, t, t])
+        if len(closest_partition['pair']) > 1:
+            for t in closest_partition['pair']:
+                pairs_list.extend([t, t])
+            tiles_used_list.extend(pairs_list)
+        elif len(closest_partition['pair']) == 1:
+            t = closest_partition['pair'][0]
+            tiles_used_list.extend([t, t])
+        return_dict.setdefault("riichi", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), return_str])
         
         return return_dict
 
-dummy = MahjongAgent()
-hand = [0,0,1,1,2,2,4,4,7,7,9,9,20,30]
-hand_2 = [0,1,2,3,4,5,6,7,8,9,10,11,12,13]
-hand_3 = [2,3,4,6,7,8,13,14,15,16,16,19,20,23]
-hand_4 = [9,10,12,13,14,19,20,21,23,24,25,30,30,31]
-hand_5 = [1,2,3,4,4,4,5,6,7,7,7,9,10,12]
-hand_6 = [2,2,3,3,3,4,4,4,5,11,12]
-hand_7 = [2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23]
-hand_test = [1,1,2,2,3,3,5,5,6,6,10,10,12,12]
+# dummy = MahjongAgent()
+# hand = [0,0,1,1,2,2,4,4,7,7,9,9,20,30]
+# hand_2 = [0,1,2,3,4,5,6,7,8,9,10,11,12,13]
+# hand_3 = [2,3,4,6,7,8,13,14,15,16,16,19,20,23]
+# hand_4 = [9,10,12,13,14,19,20,21,23,24,25,30,30,31]
+# hand_5 = [1,2,3,4,4,4,5,6,7,7,7,9,10,12]
+# hand_6 = [2,2,3,3,3,4,4,4,5,11,12]
+# hand_7 = [2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23]
+# hand_test = [1,1,2,2,3,3,5,5,6,6,10,10,12,12]
 
-yaku_check = {'pinfu':[2,[3,7],[1,2,3],'seq'],'all-simple':[3,[13,15,23],[3,4,5],'seq'],'tanyaou':[1,[6],[3,6,9],'seq']}
+# yaku_check = {'pinfu':[2,[3,7],[1,2,3],'seq'],'all-simple':[3,[13,15,23],[3,4,5],'seq'],'tanyaou':[1,[6],[3,6,9],'seq']}
 
-print(dummy.seq_extract([0,0,0,1,2,4,5,5,5,6,6,15,16,17],0))
+# print(dummy.seq_extract([0,0,0,1,2,4,5,5,5,6,6,15,16,17],0))
 
 # 3, 3, 5, 5, 5, 12, 13, 14, 18, 19, 21, 22, 23, 23
 #2, 11, 12, 13, 20, 21, 22, 28, 28, 29, 29

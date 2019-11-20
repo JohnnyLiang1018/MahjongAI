@@ -1,0 +1,23 @@
+2019-11-20 01:55:49:     User(ID76B06F13-c3mhaFM4) was authenticated successfully
+2019-11-20 01:55:53:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-11-20 01:55:53:     A new game started!
+2019-11-20 01:55:53:     The replay link can be found here: http://tenhou.net/0/?log=2019112018gm-0089-0000-aaaddc0a&tw=1
+2019-11-20 01:55:53:     Players are: [weavile - 4級 - None, メタルスライム - 二段 - None, ddparis - 二段 - None, ひまたろう - 二段 - None]
+2019-11-20 01:56:01:     --------------------------------------------------
+2019-11-20 01:56:01:     Players: [weavile - 4級 - 25000, メタルスライム - 二段 - 25000, ddparis - 二段 - 25000, ひまたろう - 二段 - 25000]
+2019-11-20 01:56:01:     Dealer: ひまたろう - 二段 - 25000
+2019-11-20 01:56:01:  
+2019-11-20 01:56:01:     [Player 3] draws a tile...
+2019-11-20 01:56:04: 
+2019-11-20 01:56:05: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 129, in start_game
+    if self._handle_draw_tile(msg):
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 535, in _handle_draw_tile
+    self.game_table.bot.tiles136.remove(discard_tile_136)
+ValueError: list.remove(x): x not in list
+2019-11-20 01:56:05: End the game...
+2019-11-20 01:56:05:     Game was ended unexpected
+2019-11-20 01:56:05: 
