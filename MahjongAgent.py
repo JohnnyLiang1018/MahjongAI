@@ -409,15 +409,16 @@ class MahjongAgent:
                                   
 
 
-            x += (index_1_move + index_2_move + index_3_move + 1)
-            remain.append(value)
+            x += (index_1_count + index_1_move)
+            remain.extend([value for i in range(index_1_count)])
             #print("# of index 1 added to remain "+ str(index_1_count))
-            index_1_count = 0
-            index_1_move = 0
-            index_2_count = 0
-            index_2_move = 0
+            index_1_count = index_2_count
+            index_1_move = index_2_move
+            index_2_count = index_3_count
+            index_2_move = index_3_count
             index_3_count = 0
             index_3_move = 0 
+            value += 1
 
         # seq_extract v1.0
         # remain = []
@@ -631,9 +632,10 @@ class MahjongAgent:
             count_after = hand_aft.count(value)
             count_before = hand_bef.count(value)
             if(count_after < count_before):
-                diff.append(value)
-
-            index += 1
+                diff.extend([value for i in range(count_before-count_after)])
+                index += count_before
+            else:
+                index += 1
         
         if(isSeq == False):
             return_list = list(dict.fromkeys(diff))
