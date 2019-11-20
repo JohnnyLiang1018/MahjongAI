@@ -416,7 +416,12 @@ class MahjongAgent:
             index_1_count = index_2_count
             index_1_move = index_2_move
             index_2_count = index_3_count
-            index_2_move = index_3_count
+            index_2_move = index_3_move
+            index_3_count = 0
+            index_3_move = 0 
+            value += 1
+
+        # seq_extract v1.0
         # remain = []
         # remain.extend(hand[0:index])
         # duplicate = []
