@@ -385,25 +385,26 @@ class Mahjong_AI:
 
             for k, v in partition_seq.items(): # unique tile counted = 1, else 0
                 for tile in v:
-                    if 'seq-complete' in k:
-                        if tile < 7:
-                            suit_wan[tile] = suit_wan[tile + 1] = suit_wan[tile + 2] = 1
-                            
-                        elif 8 < tile < 16:
-                            suit_pin[(tile % 9)] = suit_pin[(tile % 9) + 1] = suit_pin[(tile % 9) + 2] = 1
-
-                        else:
-                            suit_sou[(tile % 9)] = suit_sou[(tile % 9) + 1] = suit_sou[(tile % 9) + 2] = 1
+                    if tile < 27:
+                        if 'seq-complete' in k:
+                            if tile < 7:
+                                suit_wan[tile] = suit_wan[tile + 1] = suit_wan[tile + 2] = 1
                                 
-                    if 'single' or 'pair' or 'triplet' in k and (tile < 27):
-                        if tile < 9:
-                            suit_wan[tile] = 1
-                                    
-                        elif 8 < tile < 16:
-                            suit_pin[(tile % 9)] = 1
+                            elif 8 < tile < 16:
+                                suit_pin[(tile % 9)] = suit_pin[(tile % 9) + 1] = suit_pin[(tile % 9) + 2] = 1
 
-                        else:
-                            suit_sou[(tile % 9)] = 1
+                            else:
+                                suit_sou[(tile % 9)] = suit_sou[(tile % 9) + 1] = suit_sou[(tile % 9) + 2] = 1
+                                    
+                        if 'single' or 'pair' or 'triplet' in k and (tile < 27):
+                            if tile < 9:
+                                suit_wan[tile] = 1
+                                        
+                            elif 8 < tile < 16:
+                                suit_pin[(tile % 9)] = 1
+
+                            else:
+                                suit_sou[(tile % 9)] = 1
 
             straight_counts[0] = suit_wan.count(1) # get the suit with the most unique tiles counted
             straight_counts[1] = suit_pin.count(1)
