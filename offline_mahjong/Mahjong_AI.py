@@ -753,7 +753,20 @@ class Mahjong_AI:
                                     num_two = num_two + 1
                                     tiles_needed_list_two.extend([index - 1, index - 2]) #12 or 78
                                     tiles_used_list_two.extend([index])
-       
+                else:
+                    if 'pair' in k: # honor pair
+                        num_almost = num_almost + 1
+                        pair_used = pair_used + 1
+                        tiles_needed_list_almost.extend([index]) # 1 or 9
+                        tiles_used_list_almost.extend([index, index])
+                    if 'single' in k: # honor single
+                        if index not in temp_used:
+                            if((num_com + num_almost) < 4):         
+                                num_two = num_two + 1 
+                                tiles_needed_list_two.extend([index, index]) 
+                                tiles_used_list_two.extend([index])
+
+
         needed_com = 4 - num_com
         if needed_com > 0:
             if ((needed_com - num_almost) < 1):
