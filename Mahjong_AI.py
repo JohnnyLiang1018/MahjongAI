@@ -421,27 +421,28 @@ class Mahjong_AI:
 
             if num_waiting == 9: # if all honors
                 num_waiting = 99
-        
-            if closestS == 0: # append to waiting and used tiles lists
-                for i in range (0, 9):
-                    if suit_wan[i] == 0:
-                        tiles_needed_list.append(i)
-                    else:
-                        tiles_used_list.append(i)
 
-            if closestS == 1:
-                for i in range (0, 9):
-                    if suit_pin[i] == 0:
-                        tiles_needed_list.append((i + 9))
-                    else:
-                        tiles_used_list.append((i + 9))
+            else:
+                if closestS == 0: # append to waiting and used tiles lists
+                    for i in range (0, 9):
+                        if suit_wan[i] == 0:
+                            tiles_needed_list.append(i)
+                        else:
+                            tiles_used_list.append(i)
 
-            if closestS == 2:
-                for i in range (0, 9):
-                    if suit_sou[i] == 0:
-                        tiles_needed_list.append((i + 18))
-                    else:
-                        tiles_used_list.append((i + 18))
+                if closestS == 1:
+                    for i in range (0, 9):
+                        if suit_pin[i] == 0:
+                            tiles_needed_list.append((i + 9))
+                        else:
+                            tiles_used_list.append((i + 9))
+
+                if closestS == 2:
+                    for i in range (0, 9):
+                        if suit_sou[i] == 0:
+                            tiles_needed_list.append((i + 18))
+                        else:
+                            tiles_used_list.append((i + 18))
 
             return_dict.setdefault("straight", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'seq'])
             num_waiting = 0
@@ -576,38 +577,39 @@ class Mahjong_AI:
             if num_waiting == 9: # if all honors
                 num_waiting = 99
 
-            for i in range (0, 3): # append needed & used tiles lists
-                if closestT[closest_index][i] <= 3:
-                    if i == 0:
-                        for j in range (0, (3 - closestT[closest_index][i])):
-                            tiles_needed_list.append(closest_index)
-                        for j in range (0, closestT[closest_index][i]):
-                            tiles_used_list.append(closest_index)
+            else:
+                for i in range (0, 3): # append needed & used tiles lists
+                    if closestT[closest_index][i] < 3:
+                        if i == 0:
+                            for j in range (0, (3 - closestT[closest_index][i])):
+                                tiles_needed_list.append(closest_index)
+                            for j in range (0, closestT[closest_index][i]):
+                                tiles_used_list.append(closest_index)
 
-                    if i == 1:
-                        for j in range (0, (3 - closestT[closest_index][i])):
-                            tiles_needed_list.append(closest_index + 9)
-                        for j in range (0, closestT[closest_index][i]):
-                            tiles_used_list.append(closest_index + 9)
+                        if i == 1:
+                            for j in range (0, (3 - closestT[closest_index][i])):
+                                tiles_needed_list.append(closest_index + 9)
+                            for j in range (0, closestT[closest_index][i]):
+                                tiles_used_list.append(closest_index + 9)
 
-                    if i == 2:
-                        for j in range (0, (3 - closestT[closest_index][i])):
-                            tiles_needed_list.append(closest_index + 18)
-                        for j in range (0, closestT[closest_index][i]):
-                            tiles_used_list.append(closest_index + 18)
+                        if i == 2:
+                            for j in range (0, (3 - closestT[closest_index][i])):
+                                tiles_needed_list.append(closest_index + 18)
+                            for j in range (0, closestT[closest_index][i]):
+                                tiles_used_list.append(closest_index + 18)
 
-                else: # 4 tiles under value i in a suit (no need to append needed tiles list)
-                    if i == 0:
-                        for j in range (0, 3):
-                            tiles_used_list.append(closest_index)
+                    else: # 3 or 4 tiles under value i in a suit (no need to append needed tiles list)
+                        if i == 0:
+                            for j in range (0, 3):
+                                tiles_used_list.append(closest_index)
 
-                    if i == 1:
-                        for j in range (0, 3):
-                            tiles_used_list.append(closest_index + 9)
+                        if i == 1:
+                            for j in range (0, 3):
+                                tiles_used_list.append(closest_index + 9)
 
-                    if i == 2:
-                        for j in range (0, 3):
-                            tiles_used_list.append(closest_index + 18)
+                        if i == 2:
+                            for j in range (0, 3):
+                                tiles_used_list.append(closest_index + 18)
 
             return_dict.setdefault("3-color-triplet", [num_waiting, tuple(tiles_needed_list), tuple(tiles_used_list), 'tri'])
             num_waiting = 0
