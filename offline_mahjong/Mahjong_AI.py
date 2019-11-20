@@ -655,6 +655,7 @@ class Mahjong_AI:
 
         # 9. terminal in all meld
         # condition: (seq + triplet) = 4, index is 1 or 9 or honor, for seq check index+1 and index+2 
+        num_waiting = 0
         num_com = 0
         num_almost = 0
         num_two = 0
@@ -684,18 +685,18 @@ class Mahjong_AI:
                             tiles_used_list.extend([index, index+1, index+2])
                         if ((index % 9) in (1, 5)): # 234 OR 678
                             num_almost = num_almost + 1
-                            if (index == 1):
+                            if ((index % 9) == 1):
                                 tiles_used_list_almost.extend([index, index + 1]) #23
                                 tiles_needed_list_almost.extend([index - 1]) 
-                            if (index == 5):
+                            if ( (index % 9) == 5):
                                 tiles_used_list_almost.extend([index + 1, index + 2]) #78
                                 tiles_needed_list_almost.extend([index + 3])
                         if ((index % 9) in (2, 4)): # 345 OR 567
                             num_two = num_two + 1
-                            if (index == 2):
+                            if ((index % 9) == 2):
                                 tiles_used_list_two.extend([index]) #3
                                 tiles_needed_list_two.extend([index - 2, index - 1]) #12
-                            if (index == 4):
+                            if ((index % 9)== 4):
                                 tiles_used_list_two.extend([index + 2]) #7
                                 tiles_needed_list_two.extend([index + 3, index + 4]) #89         
                     if 'seq-one-way' in k: # 12(3) OR (7)89     
