@@ -1624,14 +1624,14 @@ class MahjongAgent:
         for k, v in partition_seq.items():
             for index in v:
                 if 'triplet' in k:
-                    if index < 26:
+                    if index < 27:
                         if((index % 9) in (0, 8)): # 111 OR 999
                             num_com = num_com + 1
                             tiles_used_list.extend([index, index, index])
                     else: # Honor
                         num_com = num_com + 1
                         tiles_used_list.extend([index, index, index])
-                if index < 26:         
+                if index < 27:         
                     if 'seq-complete' in k: 
                         if ((index % 9) in (0, 6)): # 123 OR 789
                             num_com = num_com + 1
