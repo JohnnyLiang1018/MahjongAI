@@ -1,0 +1,20 @@
+2019-11-20 01:21:25:     User(ID76B06F13-c3mhaFM4) was authenticated successfully
+2019-11-20 01:21:42:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-11-20 01:21:42:     A new game started!
+2019-11-20 01:21:42:     The replay link can be found here: http://tenhou.net/0/?log=2019112018gm-0089-0000-ee625b0b&tw=3
+2019-11-20 01:21:42: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 100, in start_game
+    if not self._looking_for_a_game():
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 275, in _looking_for_a_game
+    self._log('    Players are: {}'.format([self.game_table.bot] + self.game_table.opponents))
+  File "C:\Users\j4903\Documents\MahjongAI\client\mahjong_player.py", line 42, in __repr__
+    return self.__str__()
+  File "C:\Users\j4903\Documents\MahjongAI\client\mahjong_player.py", line 39, in __str__
+    return "{} - {} - {}".format(self.name, self.level, self.score)
+AttributeError: 'MahjongAgent' object has no attribute 'score'
+2019-11-20 01:21:42: End the game...
+2019-11-20 01:21:42:     Game was ended unexpected
+2019-11-20 01:21:42: 

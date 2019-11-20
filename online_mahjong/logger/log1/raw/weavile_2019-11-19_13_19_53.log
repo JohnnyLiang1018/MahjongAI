@@ -1,0 +1,39 @@
+2019-11-19 13:19:54:     User(ID76B06F13-c3mhaFM4) was authenticated successfully
+2019-11-19 13:20:16:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-11-19 13:20:16:     A new game started!
+2019-11-19 13:20:16:     The replay link can be found here: http://tenhou.net/0/?log=2019112006gm-0089-0000-2685e44a&tw=1
+2019-11-19 13:20:16:     Players are: [weavile - 4級 - None, onnteddo - 四段 - None, かかろっとぉ - 二段 - None, axl - 三段 - None]
+2019-11-19 13:20:29:     --------------------------------------------------
+2019-11-19 13:20:29:     Players: [weavile - 4級 - 25000, onnteddo - 四段 - 25000, かかろっとぉ - 二段 - 25000, axl - 三段 - 25000]
+2019-11-19 13:20:29:     Dealer: axl - 三段 - 25000
+2019-11-19 13:20:29:  
+2019-11-19 13:20:29:     [Player 3] draws a tile...
+2019-11-19 13:20:36:     NO ONE WINS, NO MORE TILES...
+
+2019-11-19 13:20:36:     --------------------------------------------------
+2019-11-19 13:20:47:     --------------------------------------------------
+2019-11-19 13:20:47:     Players: [weavile - 4級 - 25000, onnteddo - 四段 - 25000, かかろっとぉ - 二段 - 25000, axl - 三段 - 25000]
+2019-11-19 13:20:47:     Dealer: axl - 三段 - 25000
+2019-11-19 13:20:47:  
+2019-11-19 13:20:47:     [Player 3] draws a tile...
+2019-11-19 13:20:52: 
+2019-11-19 13:20:52: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 129, in start_game
+    if self._handle_draw_tile(msg):
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 534, in _handle_draw_tile
+    discard_tile_136 = self.game_table.bot.to_discard_tile()
+  File "C:\Users\j4903\Documents\MahjongAI\agents\MahjongAgent.py", line 841, in to_discard_tile
+    tile_weight = self.yaku_goal_list(yaku_dict)
+  File "C:\Users\j4903\Documents\MahjongAI\agents\MahjongAgent.py", line 768, in yaku_goal_list
+    partition = self.partition_dict(self.hand,'seq')
+  File "C:\Users\j4903\Documents\MahjongAI\agents\MahjongAgent.py", line 576, in partition_dict
+    hand_1 = self.seq_extract(hand,0)
+  File "C:\Users\j4903\Documents\MahjongAI\agents\MahjongAgent.py", line 259, in seq_extract
+    value = partial_hand[0]
+IndexError: list index out of range
+2019-11-19 13:20:52: End the game...
+2019-11-19 13:20:52:     Game was ended unexpected
+2019-11-19 13:20:52: 

@@ -1,0 +1,25 @@
+2019-11-08 14:16:39:     User(ID76B06F13-c3mhaFM4) was authenticated successfully
+2019-11-08 14:17:11:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-11-08 14:17:12:     A new game started!
+2019-11-08 14:17:12:     The replay link can be found here: http://tenhou.net/0/?log=2019110907gm-0089-0000-fbdcdf15&tw=1
+2019-11-08 14:17:12:     Players are: [weavile - 4級 - None, 丼@刮目党 - 二段 - None, たどたどしい - 二段 - None, MAY - 二段 - None]
+2019-11-08 14:17:19:     --------------------------------------------------
+2019-11-08 14:17:19:     Players: [weavile - 4級 - 25000, 丼@刮目党 - 二段 - 25000, たどたどしい - 二段 - 25000, MAY - 二段 - 25000]
+2019-11-08 14:17:19:     Dealer: MAY - 二段 - 25000
+2019-11-08 14:17:19:  
+2019-11-08 14:17:19:     [Player 3] draws a tile...
+2019-11-08 14:17:23: 
+2019-11-08 14:17:24: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 129, in start_game
+    if self._handle_draw_tile(msg):
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 534, in _handle_draw_tile
+    discard_tile_136 = self.game_table.bot.to_discard_tile()
+  File "C:\Users\j4903\Documents\MahjongAI\agents\test_ai.py", line 32, in to_discard_tile
+    weight_sum_list = np.add(predictions[0] + predictions[1])
+ValueError: invalid number of arguments
+2019-11-08 14:17:24: End the game...
+2019-11-08 14:17:24:     Game was ended unexpected
+2019-11-08 14:17:24: 

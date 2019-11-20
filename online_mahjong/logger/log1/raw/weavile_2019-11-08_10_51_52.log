@@ -1,0 +1,25 @@
+2019-11-08 10:51:52:     User(ID76B06F13-c3mhaFM4) was authenticated successfully
+2019-11-08 10:52:12:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-11-08 10:52:12:     A new game started!
+2019-11-08 10:52:12:     The replay link can be found here: http://tenhou.net/0/?log=2019110903gm-0089-0000-f2645cf1&tw=1
+2019-11-08 10:52:12:     Players are: [weavile - 5級 - None, satc - 三段 - None, shun. - 三段 - None, コウシモ - 四段 - None]
+2019-11-08 10:52:26:     --------------------------------------------------
+2019-11-08 10:52:26:     Players: [weavile - 5級 - 25000, satc - 三段 - 25000, shun. - 三段 - 25000, コウシモ - 四段 - 25000]
+2019-11-08 10:52:26:     Dealer: コウシモ - 四段 - 25000
+2019-11-08 10:52:26:  
+2019-11-08 10:52:26:     [Player 3] draws a tile...
+2019-11-08 10:52:32: 
+2019-11-08 10:52:37: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 129, in start_game
+    if self._handle_draw_tile(msg):
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 534, in _handle_draw_tile
+    discard_tile_136 = self.game_table.bot.to_discard_tile()
+  File "C:\Users\j4903\Documents\MahjongAI\agents\test_ai.py", line 37, in to_discard_tile
+    weight_sum_list[j] += oppo_pred[j][1]
+IndexError: invalid index to scalar variable.
+2019-11-08 10:52:37: End the game...
+2019-11-08 10:52:38:     Game was ended unexpected
+2019-11-08 10:52:38: 

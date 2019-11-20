@@ -1,0 +1,56 @@
+2019-02-07 12:26:03:     Reconnected successfully!
+2019-02-07 12:26:04:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonpusen
+2019-02-07 12:26:04:     Reconnected. Resuming game state...
+2019-02-07 12:26:07:     --------------------------------------------------
+2019-02-07 12:26:07:  
+2019-02-07 12:26:08: 
+2019-02-07 12:26:10: 
+2019-02-07 12:26:10:     Remaining tiles: 33
+2019-02-07 12:26:10:     --------------------------------------------------
+2019-02-07 12:26:10: 
+2019-02-07 12:26:12:     [Player 1] draws a tile...
+2019-02-07 12:26:13: 
+2019-02-07 12:26:15:     [Player 2] draws a tile...
+2019-02-07 12:26:18:     [Player 3] draws a tile...
+2019-02-07 12:26:21: 
+2019-02-07 12:26:24: 
+2019-02-07 12:26:24:     Remaining tiles: 29
+2019-02-07 12:26:24:     --------------------------------------------------
+2019-02-07 12:26:24: 
+2019-02-07 12:26:25:     [Player 1] draws a tile...
+2019-02-07 12:26:25:     [Player 2] draws a tile...
+2019-02-07 12:26:30:     [Player 3] draws a tile...
+2019-02-07 12:26:32: 
+2019-02-07 12:26:35: 
+2019-02-07 12:26:35:     Remaining tiles: 25
+2019-02-07 12:26:35:     --------------------------------------------------
+2019-02-07 12:26:35: 
+2019-02-07 12:26:36:     [Player 1] draws a tile...
+2019-02-07 12:26:36:     [Player 2] draws a tile...
+2019-02-07 12:26:39:     [Player 3] draws a tile...
+2019-02-07 12:26:41: 
+2019-02-07 12:26:43: 
+2019-02-07 12:26:43:     Remaining tiles: 21
+2019-02-07 12:26:43:     --------------------------------------------------
+2019-02-07 12:26:43: 
+2019-02-07 12:26:45:     --------------------------------------------------
+2019-02-07 12:26:45: 
+2019-02-07 12:26:45:     <AGARI ba="0,1" hai="15,18,21,26,28,34,48,49,58,63,67,76,77,79" machi="79" ten="40,1300,0" yaku="1,1,53,0" doraHai="39" doraHaiUra="38" who="1" fromWho="0" sc="230,-13,220,23,250,0,290,0" />
+2019-02-07 12:26:45: Unexpected exception
+Traceback (most recent call last):
+  File "c:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "c:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 146, in start_game
+    '<AGARI' in msg and self._handle_round_end(msg)
+  File "c:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 404, in _handle_round_end
+    self._round_end_info_to_file(res_str)
+  File "c:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 748, in _round_end_info_to_file
+    self.logger_obj.add_round_end_result(msg)
+  File "c:\Users\j4903\Documents\MahjongAI\logger\logger_handler.py", line 57, in add_round_end_result
+    open(self.scores_path, 'a').write(msg)
+  File "C:\Users\j4903\AppData\Local\Programs\Python\Python37-32\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f011' in position 89: character maps to <undefined>
+2019-02-07 12:26:45: End the game...
+2019-02-07 12:26:45:     Game was ended unexpected
+2019-02-07 12:26:45: 

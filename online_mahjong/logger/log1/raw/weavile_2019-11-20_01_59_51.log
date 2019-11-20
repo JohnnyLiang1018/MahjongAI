@@ -1,0 +1,25 @@
+2019-11-20 01:59:51:     Reconnected successfully!
+2019-11-20 01:59:55:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-11-20 01:59:56:     Reconnected. Resuming game state...
+2019-11-20 01:59:59:     --------------------------------------------------
+2019-11-20 01:59:59:     Players: [weavile - 4級 - 25000, メタルスライム - 二段 - 25000, ddparis - 二段 - 23500, ひまたろう - 二段 - 26500]
+2019-11-20 01:59:59:     Dealer: ひまたろう - 二段 - 26500
+2019-11-20 01:59:59:  
+2019-11-20 02:00:01:     [Player 3] draws a tile...
+2019-11-20 02:00:03: 
+2019-11-20 02:00:04: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 129, in start_game
+    if self._handle_draw_tile(msg):
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 534, in _handle_draw_tile
+    discard_tile_136 = self.game_table.bot.to_discard_tile()
+  File "C:\Users\j4903\Documents\MahjongAI\agents\MahjongAgent.py", line 874, in to_discard_tile
+    return self.tile_34_to_136(min_tile)
+  File "C:\Users\j4903\Documents\MahjongAI\client\mahjong_player.py", line 220, in tile_34_to_136
+    return [t136 for t136 in self.tiles136 if tile34 == (t136 // 4)][-1]
+IndexError: list index out of range
+2019-11-20 02:00:04: End the game...
+2019-11-20 02:00:04:     Game was ended unexpected
+2019-11-20 02:00:04: 

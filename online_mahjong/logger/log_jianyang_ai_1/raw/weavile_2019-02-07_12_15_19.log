@@ -1,0 +1,32 @@
+2019-02-07 12:15:19:     Reconnected successfully!
+2019-02-07 12:15:20:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonpusen
+2019-02-07 12:15:20:     Reconnected. Resuming game state...
+2019-02-07 12:15:22:     --------------------------------------------------
+2019-02-07 12:15:22:  
+2019-02-07 12:15:23: 
+2019-02-07 12:15:26: 
+2019-02-07 12:15:26:     Remaining tiles: 26
+2019-02-07 12:15:26:     --------------------------------------------------
+2019-02-07 12:15:26: 
+2019-02-07 12:15:27:     [Player 1] draws a tile...
+2019-02-07 12:15:30:     --------------------------------------------------
+2019-02-07 12:15:30: 
+2019-02-07 12:15:30:     <AGARI ba="0,1" hai="93,97,100,108,110,111,132,133" m="34859,45579" machi="111" ten="40,8000,1" yaku="14,1,34,2,54,1" doraHai="21" who="0" fromWho="1" sc="240,90,240,-80,230,0,280,0" />
+2019-02-07 12:15:30: Unexpected exception
+Traceback (most recent call last):
+  File "c:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "c:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 146, in start_game
+    '<AGARI' in msg and self._handle_round_end(msg)
+  File "c:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 404, in _handle_round_end
+    self._round_end_info_to_file(res_str)
+  File "c:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 748, in _round_end_info_to_file
+    self.logger_obj.add_round_end_result(msg)
+  File "c:\Users\j4903\Documents\MahjongAI\logger\logger_handler.py", line 57, in add_round_end_result
+    open(self.scores_path, 'a').write(msg)
+  File "C:\Users\j4903\AppData\Local\Programs\Python\Python37-32\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f000' in position 89: character maps to <undefined>
+2019-02-07 12:15:30: End the game...
+2019-02-07 12:15:30:     Game was ended unexpected
+2019-02-07 12:15:30: 

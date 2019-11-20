@@ -1,0 +1,63 @@
+2019-11-08 15:45:01:     User(ID76B06F13-c3mhaFM4) was authenticated successfully
+2019-11-08 15:45:10:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-11-08 15:45:10:     A new game started!
+2019-11-08 15:45:10:     The replay link can be found here: http://tenhou.net/0/?log=2019110908gm-0089-0000-5e19e9cf&tw=3
+2019-11-08 15:45:10:     Players are: [weavile - 4級 - None, アニスシード - 二段 - None, Tafuku - 二段 - None, は、とってもま - 三段 - None]
+2019-11-08 15:45:22:     --------------------------------------------------
+2019-11-08 15:45:22:     Players: [weavile - 4級 - 25000, アニスシード - 二段 - 25000, Tafuku - 二段 - 25000, は、とってもま - 三段 - 25000]
+2019-11-08 15:45:22:     Dealer: アニスシード - 二段 - 25000
+2019-11-08 15:45:22:  
+2019-11-08 15:45:22:     [Player 1] draws a tile...
+2019-11-08 15:45:31:     [Player 2] draws a tile...
+2019-11-08 15:45:33:     [Player 3] draws a tile...
+2019-11-08 15:45:36: 
+2019-11-08 15:45:37: 
+2019-11-08 15:45:37:     Remaining tiles: 66
+2019-11-08 15:45:37:     --------------------------------------------------
+2019-11-08 15:45:37: 
+2019-11-08 15:45:38:     [Player 1] draws a tile...
+2019-11-08 15:45:39:     [Player 2] draws a tile...
+2019-11-08 15:45:41:     [Player 3] draws a tile...
+2019-11-08 15:45:43: 
+2019-11-08 15:45:43: 
+2019-11-08 15:45:43:     Remaining tiles: 62
+2019-11-08 15:45:43:     --------------------------------------------------
+2019-11-08 15:45:43: 
+2019-11-08 15:45:44:     [Player 1] draws a tile...
+2019-11-08 15:45:51:     [Player 3] draws a tile...
+2019-11-08 15:45:55:     [Player 3] draws a tile...
+2019-11-08 15:45:58: 
+2019-11-08 15:45:59: 
+2019-11-08 15:45:59:     Remaining tiles: 58
+2019-11-08 15:45:59:     --------------------------------------------------
+2019-11-08 15:45:59: 
+2019-11-08 15:46:00:     [Player 1] draws a tile...
+2019-11-08 15:46:02:     [Player 2] draws a tile...
+2019-11-08 15:46:03:     [Player 3] draws a tile...
+2019-11-08 15:46:07: 
+2019-11-08 15:46:07: 
+2019-11-08 15:46:07:     Remaining tiles: 54
+2019-11-08 15:46:07:     --------------------------------------------------
+2019-11-08 15:46:07: 
+2019-11-08 15:46:08:     [Player 1] draws a tile...
+2019-11-08 15:46:11:     [Player 2] draws a tile...
+2019-11-08 15:46:15:     [Player 3] draws a tile...
+2019-11-08 15:46:19:     --------------------------------------------------
+2019-11-08 15:46:19: 
+2019-11-08 15:46:19:     <AGARI ba="0,0" hai="41,44,51,120,123,132,133,134" m="41481,16831" machi="41" ten="40,8000,1" yaku="20,1,14,1,52,2" doraHai="118" who="2" fromWho="3" sc="250,0,250,0,250,80,250,-80" />
+2019-11-08 15:46:19: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 146, in start_game
+    '<AGARI' in msg and self._handle_round_end(msg)
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 404, in _handle_round_end
+    self._round_end_info_to_file(res_str)
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 748, in _round_end_info_to_file
+    self.logger_obj.add_round_end_result(msg)
+  File "C:\Users\j4903\Documents\MahjongAI\logger\logger_handler.py", line 57, in add_round_end_result
+    open(self.scores_path, 'a').write(msg)
+UnicodeEncodeError: 'gbk' codec can't encode character '\U0001f01a' in position 80: illegal multibyte sequence
+2019-11-08 15:46:19: End the game...
+2019-11-08 15:46:19:     Game was ended unexpected
+2019-11-08 15:46:19: 

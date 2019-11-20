@@ -1,0 +1,23 @@
+2019-10-17 23:49:11:     User(ID76B06F13-c3mhaFM4) was authenticated successfully
+2019-10-17 23:49:12:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-10-17 23:49:12:     A new game started!
+2019-10-17 23:49:12:     The replay link can be found here: http://tenhou.net/0/?log=2019101815gm-0089-0000-9a015e8c&tw=1
+2019-10-17 23:49:12:     Players are: [weavile - 7級 - None, 名無忍 - 1級 - None, かんちゃんウマル - 三段 - None, ALBLACKS - 二段 - None]
+2019-10-17 23:49:25:     --------------------------------------------------
+2019-10-17 23:49:25:     Players: [weavile - 7級 - 25000, 名無忍 - 1級 - 25000, かんちゃんウマル - 三段 - 25000, ALBLACKS - 二段 - 25000]
+2019-10-17 23:49:25:     Dealer: ALBLACKS - 二段 - 25000
+2019-10-17 23:49:25:  
+2019-10-17 23:49:25:     [Player 3] draws a tile...
+2019-10-17 23:49:30: 
+2019-10-17 23:49:31: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 129, in start_game
+    if self._handle_draw_tile(msg):
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 520, in _handle_draw_tile
+    can_call_reach, to_discard_136 = self.game_table.bot.can_call_reach()
+TypeError: cannot unpack non-iterable bool object
+2019-10-17 23:49:31: End the game...
+2019-10-17 23:49:31:     Game was ended unexpected
+2019-10-17 23:49:31: 

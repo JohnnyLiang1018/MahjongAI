@@ -1,0 +1,43 @@
+2019-10-18 00:42:33:     Reconnected successfully!
+2019-10-18 00:42:34:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-10-18 00:42:35:     Reconnected. Resuming game state...
+2019-10-18 00:42:41:     --------------------------------------------------
+2019-10-18 00:42:41:     Players: [weavile - 6級 - 25000, ふらにい - 四段 - 25000, Minus - 三段 - 25000, クシロウ1129 - 五段 - 25000]
+2019-10-18 00:42:41:     Dealer: Minus - 三段 - 25000
+2019-10-18 00:42:41:  
+2019-10-18 00:42:41: 
+2019-10-18 00:42:42: 
+2019-10-18 00:42:42:     Remaining tiles: 42
+2019-10-18 00:42:42:     --------------------------------------------------
+2019-10-18 00:42:42: 
+2019-10-18 00:42:42:     [Player 1] draws a tile...
+2019-10-18 00:42:46:     [Player 2] draws a tile...
+2019-10-18 00:42:48:     [Player 3] draws a tile...
+2019-10-18 00:42:50: 
+2019-10-18 00:42:51: 
+2019-10-18 00:42:51:     Remaining tiles: 38
+2019-10-18 00:42:51:     --------------------------------------------------
+2019-10-18 00:42:51: 
+2019-10-18 00:42:51:     [Player 1] draws a tile...
+2019-10-18 00:42:58:     [Player 2] draws a tile...
+2019-10-18 00:43:00:     [Player 3] draws a tile...
+2019-10-18 00:43:04: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 157, in start_game
+    res = self._handle_opponent_discard(msg)
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 640, in _handle_opponent_discard
+    self.drawer and self.drawer.discard(tile, opponent_seat)
+  File "gui_main.py", line 689, in discard
+    self._add_drop(x, y, self.red_dict.get(tile136, tile136 // 4), player)
+  File "gui_main.py", line 901, in _add_drop
+    x, y, image=self.photes[player][tile], anchor='nw'
+  File "C:\Users\j4903\AppData\Local\Programs\Python\Python37\lib\tkinter\__init__.py", line 2489, in create_image
+    return self._create('image', args, kw)
+  File "C:\Users\j4903\AppData\Local\Programs\Python\Python37\lib\tkinter\__init__.py", line 2480, in _create
+    *(args + self._options(cnf, kw))))
+_tkinter.TclError: invalid command name ".!canvas"
+2019-10-18 00:43:04: End the game...
+2019-10-18 00:43:04:     Game was ended unexpected
+2019-10-18 00:43:04: 

@@ -1,0 +1,28 @@
+2019-11-20 01:42:07:     User(ID76B06F13-c3mhaFM4) was authenticated successfully
+2019-11-20 01:42:23:     Game type = "Red bonus tile" : True, "Open tanyao" : True, "Game  length" : tonnansen
+2019-11-20 01:42:23:     A new game started!
+2019-11-20 01:42:23:     The replay link can be found here: http://tenhou.net/0/?log=2019112018gm-0089-0000-aa840db7&tw=2
+2019-11-20 01:42:23:     Players are: [weavile - 4級 - None, あらてん - 三段 - None, とまてぃー - 二段 - None, ゴーゼワロス - 三段 - None]
+2019-11-20 01:42:40:     --------------------------------------------------
+2019-11-20 01:42:40:     Players: [weavile - 4級 - 25000, あらてん - 三段 - 25000, とまてぃー - 二段 - 25000, ゴーゼワロス - 三段 - 25000]
+2019-11-20 01:42:40:     Dealer: とまてぃー - 二段 - 25000
+2019-11-20 01:42:40:  
+2019-11-20 01:42:40:     [Player 2] draws a tile...
+2019-11-20 01:42:47:     [Player 3] draws a tile...
+2019-11-20 01:42:52: 
+2019-11-20 01:42:52: Unexpected exception
+Traceback (most recent call last):
+  File "C:\Users\j4903\Documents\MahjongAI\main.py", line 17, in connect_and_play
+    return client.start_game()
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 129, in start_game
+    if self._handle_draw_tile(msg):
+  File "C:\Users\j4903\Documents\MahjongAI\client\tenhou_client.py", line 534, in _handle_draw_tile
+    discard_tile_136 = self.game_table.bot.to_discard_tile()
+  File "C:\Users\j4903\Documents\MahjongAI\agents\MahjongAgent.py", line 864, in to_discard_tile
+    tile_weight = self.yaku_goal_list(yaku_dict)
+  File "C:\Users\j4903\Documents\MahjongAI\agents\MahjongAgent.py", line 782, in yaku_goal_list
+    total_remain = 8 - self.game_table.revealed_tiles(tile-1) - self.game_table.revealed_tiles(tile+2)
+TypeError: 'list' object is not callable
+2019-11-20 01:42:52: End the game...
+2019-11-20 01:42:53:     Game was ended unexpected
+2019-11-20 01:42:53: 
