@@ -5,6 +5,7 @@ import numpy as np
 import pickle
 
 class MahjongAgent:
+
     wan = [1,1,3,1,2,3,0,0,1]  #0-8
     so = [0,0,0,1,0,0,0,2,1]   #9-17
     pin = [1,1,0,1,0,0,0,0,0]  #18-26
@@ -409,27 +410,13 @@ class MahjongAgent:
                                   
 
 
-<<<<<<< HEAD
-            x += (index_1_move + index_1_count)
-            remain.extend([value for i in range(index_1_count))
-=======
             x += (index_1_count + index_1_move)
             remain.extend([value for i in range(index_1_count)])
->>>>>>> a2599ea60d40dd083792934e73fef13b6d5d464d
             #print("# of index 1 added to remain "+ str(index_1_count))
             index_1_count = index_2_count
             index_1_move = index_2_move
             index_2_count = index_3_count
-<<<<<<< HEAD
-            index_2_move = index_3_move
-=======
             index_2_move = index_3_count
->>>>>>> a2599ea60d40dd083792934e73fef13b6d5d464d
-            index_3_count = 0
-            index_3_move = 0 
-            value += 1
-
-        # seq_extract v1.0
         # remain = []
         # remain.extend(hand[0:index])
         # duplicate = []
@@ -642,14 +629,9 @@ class MahjongAgent:
             count_before = hand_bef.count(value)
             if(count_after < count_before):
                 diff.extend([value for i in range(count_before-count_after)])
-<<<<<<< HEAD
-                index += (count_before-count_after)
-            index += 1
-=======
                 index += count_before
             else:
                 index += 1
->>>>>>> a2599ea60d40dd083792934e73fef13b6d5d464d
         
         if(isSeq == False):
             return_list = list(dict.fromkeys(diff))
@@ -885,27 +867,29 @@ class MahjongAgent:
         if('all simple' in han_string):
             return 1,0
 
-
     def point_calculation(self,fu,han):
         self.fu += fu
         self.han += han
         if(self.han <= 4):
-            return fu*2**(han+2)
+            basic_points = fu*2**(han+2)
+            if(basic_points > 2000):
+                return 2000
+            else: return basic_points
 
         elif(self.han == 5):
-            return 8000
+            return 2000
         
         elif(self.han <= 7):
-            return 12000
+            return 3000
         
         elif(self.han <= 10):
-            return 18000
+            return 4000
         
         elif(self.han <= 12):
-            return 24000
+            return 6000
         
         else:
-            return 36000
+            return 8000
 
     def tile_count_getter(self,index):
         return self.tile_count[index]

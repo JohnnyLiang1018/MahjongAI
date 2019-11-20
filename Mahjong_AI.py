@@ -369,10 +369,8 @@ class Mahjong_AI:
 
         # 5. straight
         # condtion: 3 seq with index 0, 3, 6
-        
         if len(meld) > 1: # if > 1 exposed triplet
             num_waiting = 99
-
         # 3 arrays (9 total tiles per suit)
         # seq-complete partition check (ID suit; modify array) --> singles, pairs, and triplets (check for tiles in similar range (variable-- if yes))
         else:
