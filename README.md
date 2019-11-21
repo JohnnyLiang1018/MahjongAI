@@ -30,7 +30,7 @@ git clone https://github.com/JohnnyLiang1018/MahjongAI.git
 
 ```sh
 path ./online_mahjong
-python3 gui_main.py
+py gui_main.py
 ```
 
 ## Release History
