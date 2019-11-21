@@ -20,7 +20,10 @@ In this project we developed our own algorithms for decision making and adapted 
 12. SciKit Learn
 
 ## Installation
-1. Clone it (git clone https://github.com/JohnnyLiang1018/MahjongAI.git)
+1. Clone the repository.
+```sh
+git clone https://github.com/JohnnyLiang1018/MahjongAI.git
+```
 2. Update your own tenhou.net user and user_name in main,py 
 
 ## Usage example
@@ -31,7 +34,7 @@ python3
 
 ## Release History
 
-* 0.0.1
+* 0.0.1 (2019/11/20)
     * The inititial release.
 
 ## Authors
