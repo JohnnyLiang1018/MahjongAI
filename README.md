@@ -37,6 +37,6 @@ Lee-Yu Lai - (zhonglin.liang@sjsu.edu)
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+Speical thanks to Jianyang Tang for inspiring and support this project.
+Speical thanks to our advisor Shih Yu Chang for providing feedback and suggection.
+
