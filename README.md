@@ -29,7 +29,7 @@ git clone https://github.com/JohnnyLiang1018/MahjongAI.git
 ## Usage example
 
 ```sh
-python3
+python3 gui_main.py
 ```
 
 ## Release History
