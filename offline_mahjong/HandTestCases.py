@@ -5,7 +5,6 @@ import MahjongAgent as mjagent
 
 import MahjongAgent as ma
 import Mahjong_AI as mai
-import GameBoard as gameboard
 
 def main():   
     test_hands =[  
