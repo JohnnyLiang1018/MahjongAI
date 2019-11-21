@@ -27,10 +27,13 @@ npm test
 
 ## Authors
 
-*Zhonglin Liang - (zhonglin.liang@sjsu.edu)
-*Christoph Spilker - (christoph.spilker@sjsu.edu)
-*Dane Godard - (Dane.Godard@gmail.com)
-*Lee-Yu Lai - (zhonglin.liang@sjsu.edu)
+Zhonglin Liang - (zhonglin.liang@sjsu.edu)
+
+Christoph Spilker - (christoph.spilker@sjsu.edu)
+
+Dane Godard - (Dane.Godard@gmail.com)
+
+Lee-Yu Lai - (zhonglin.liang@sjsu.edu)
 
 ## Acknowledgments
 
