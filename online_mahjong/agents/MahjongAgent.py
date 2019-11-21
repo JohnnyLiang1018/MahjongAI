@@ -1,6 +1,4 @@
 from agents.ai_interface import AIInterface
-from agents.utils.wait_calc import WaitCalc
-from agents.utils.win_calc import WinCalc
 from client.mahjong_meld import Meld
 from client.mahjong_tile import Tile
 from client.mahjong_player import OpponentPlayer
@@ -832,27 +830,45 @@ class MahjongAgent(AIInterface):
 
         return tile_weight_dict
 
-    def predict_opponent(self,opponent_num):
+    def predict_opponent(self,opponent_num_list):
         input = np.zeros((14,47))
-        opponent = self.game_table.get_player(opponent_num)
         mlp = pickle.load(open('mlp_model.sav','rb'))
-        for i in range(14):
-            tile = self.hand34[i]
-            tile_attr = tile // 9
-            tile_num = tile % 9
-            input[i][34 + tile_attr] = 1
-            input[i][37 + tile_num] = 1 
-            
-            for discard in opponent.discard_getter():
-                input[i][discard] = 1
-            
-        prediction = mlp.predict_proba(input)
+        weight_sum_list = np.zeros((14,2))
+        for opponent_num in opponent_num_list:
+            opponent = self.game_table.get_player(opponent_num)
+            for i in range(14):
+                tile = self.hand34[i]
+                tile_attr = tile // 9
+                tile_num = tile % 9
+                input[i][34 + tile_attr] = 1
+                input[i][37 + tile_num] = 1 
+                for discard in opponent.discard34:
+                    input[i][discard] = 1
+                
+            prediction = mlp.predict_proba(input)
+            weight_sum_list = np.add(weight_sum_list,prediction)
 
-        return prediction
+        min_value = 1
+        min_index = 1
+        for i in range(14):
+            if(weight_sum_list[i][1] < min_value):
+                min_value = weight_sum_list[i][1]
+                min_index = i
+        
+        return self.tile_34_to_136(self.hand34[min_index])
         
 
 
     def to_discard_tile(self):
+        if self.called_reach:
+            return self.tile_34_to_136(self.to_discard_after_reach)
+        riichi_opponent = []
+        for i in range(3):
+            if(self.game_table.get_player(i+1).reach_status):
+                riichi_opponent.append(i+1)
+        if(len(riichi_opponent) > 0):
+            return self.predict_opponent(riichi_opponent)
+
         partition_seq = self.partition_dict(self.hand34,'seq')
         print('Partition: ',partition_seq)
 
@@ -874,7 +890,7 @@ class MahjongAgent(AIInterface):
         return self.tile_34_to_136(min_tile)
     
     def try_to_call_meld(self,tile136,might_call_chi):
-
+        
         return None,None
     
     def should_call_kan(self,tile136,from_opponent):
@@ -884,7 +900,25 @@ class MahjongAgent(AIInterface):
     def can_call_reach(self):
         riichi_dict = self.tenpai_status_check(self.hand34)
         if(len(riichi_dict) >= 1):
-            return True, list(riichi_dict.keys())[0]
+            self.called_reach = True
+            waiting = 0
+            for key in riichi_dict:
+                item = riichi_dict[key]
+                if(type(item) is int):
+                    temp_waiting = (4 - self.game_table.revealed_tiles[item])
+                    if(waiting < temp_waiting):
+                        waiting = temp_waiting
+                        self.to_discard_after_reach = key
+                else:
+                    temp_waiting = 0
+                    for index in item:
+                        temp_waiting += (4 - self.game_table.revealed_tiles[index])
+                    if(waiting < temp_waiting):
+                        waiting = temp_waiting
+                        self.to_discard_after_reach = key
+
+            return True, self.tile_34_to_136(self.to_discard_after_reach)
+
         else:
             return False,0
 
@@ -1799,11 +1833,12 @@ class MahjongAgent(AIInterface):
 # hand_5 = [1,2,3,4,4,4,5,6,7,7,7,9,10,12]
 # hand_6 = [2,2,3,3,3,4,4,4,5,11,12]
 # hand_7 = [2, 2, 3, 4, 5, 5, 12, 13, 13, 14, 14, 15, 22, 23]
-# hand_test = [1,1,2,2,3,3,5,5,6,6,10,10,12,12]
+# hand_test = [3,4,10,10,11,12,21,21,21,26,26,26,28,28]
 
 # yaku_check = {'pinfu':[2,[3,7],[1,2,3],'seq'],'all-simple':[3,[13,15,23],[3,4,5],'seq'],'tanyaou':[1,[6],[3,6,9],'seq']}
 
-# print(dummy.seq_extract([0,0,0,1,2,4,5,5,5,6,6,15,16,17],0))
+# print(list(dummy.tenpai_status_check(hand_test).keys())[0])
+
 
 # 3, 3, 5, 5, 5, 12, 13, 14, 18, 19, 21, 22, 23, 23
 #2, 11, 12, 13, 20, 21, 22, 28, 28, 29, 29
