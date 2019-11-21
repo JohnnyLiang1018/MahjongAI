@@ -3,7 +3,7 @@
 
 This repository is dedicated for a SJSU Fall 2019 senior project.
 
-In this project we developed our own algorithms for decision making and adapted the tenhou.net client model developed by Jianyang Tang (https://github.com/erreurt/MahjongAI). 
+In this project we developed our own Mahjong agent with algorithms and Artificial Neural Network for decision making and adapted the tenhou.net client and AI Interface developed by Jianyang Tang (https://github.com/erreurt/MahjongAI). 
 
 ## Required Librarys 
 1. os
@@ -24,7 +24,7 @@ In this project we developed our own algorithms for decision making and adapted 
 ```sh
 git clone https://github.com/JohnnyLiang1018/MahjongAI.git
 ```
-2. Update your own tenhou.net user and user_name in main,py 
+2. Update your own tenhou.net user and user_name in main.py 
 
 ## Usage example
 
@@ -49,7 +49,7 @@ Lee-Yu Lai - (zhonglin.liang@sjsu.edu)
 
 ## Acknowledgments
 
-Speical thanks to Jianyang Tang for inspiring and support this project.
+Speical thanks to Jianyang Tang for the inspiration and support.
 
 Speical thanks to our advisor Shih Yu Chang for providing feedback and suggection.
 
