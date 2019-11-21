@@ -1,24 +1,19 @@
 # Mahjong_AI
 > An AI that can play Japanese (Riichi) Mahjong on tenhou.net
 
-This is 
+This repository is dedicated for a SJSU Fall 2019 senior project.
 
+In this project we developed our own algorithms for decision making and adapted the tenhou.net client model developed by Jianyang Tang (https://github.com/erreurt/MahjongAI). 
 
 ## Installation
-
+1. Clone it (git clone https://github.com/JohnnyLiang1018/MahjongAI.git)
+2. Update your own tenhou.net user and user_name in main,py 
 
 ## Usage example
 
 ### Online
 
 ### Offline
-
-## Development setup
-
-```sh
-make install
-npm test
-```
 
 ## Release History
 
