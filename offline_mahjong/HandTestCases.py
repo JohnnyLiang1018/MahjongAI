@@ -17,7 +17,7 @@ def main():
                     [10,10, 10, 11, 11, 11, 12, 12, 12, 13, 13, 13, 33, 31]
                 ]
 
-    agent = ma.MahjongAgent()
+    agent = ma.MahjongAgent(0)
     ai = mai.Mahjong_AI()
     for i in test_hands:
         print("Testing Hand {}".format(i))
