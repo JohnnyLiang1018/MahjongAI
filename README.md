@@ -29,6 +29,7 @@ git clone https://github.com/JohnnyLiang1018/MahjongAI.git
 ## Usage example
 
 ```sh
+path ./online_mahjong
 python3 gui_main.py
 ```
 
