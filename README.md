@@ -46,7 +46,7 @@ Christoph Spilker - (christoph.spilker@sjsu.edu)
 
 Dane Godard - (Dane.Godard@gmail.com)
 
-Lee-Yu Lai - (zhonglin.liang@sjsu.edu)
+Lee-Yu Lai - (lee-yu.lai@sjsu.edu)
 
 ## Acknowledgments
 
